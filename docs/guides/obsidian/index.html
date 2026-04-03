@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obsidian初心者ガイド</title>
+    <meta name="description" content="大学生のためのObsidian完全入門。インストールから基本操作・ノート術・授業への活用法まで、知識管理ツールをゼロから使いこなすガイドです。">
+    <meta name="date" content="2026-04-03">
+    <meta name="category" content="デジタルツール">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.7;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .progress-bar {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 1rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress-container {
+            background: #e2e8f0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .step-counter {
+            text-align: center;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2rem;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .section-header:hover::before {
+            left: 100%;
+        }
+        
+        .section-header:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .step-number {
+            background: rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .toggle-icon {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        .section.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+        
+        .section-content {
+            padding: 2rem;
+            display: block;
+            transition: all 0.3s ease;
+        }
+        
+        .section.collapsed .section-content {
+            display: none;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .feature-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+        
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .emoji {
+            font-size: 1.3rem;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-block::before {
+            content: 'コード例';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #4a5568;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 0.2rem 0.5rem;
+            border-radius: 5px;
+            font-weight: 500;
+        }
+        
+        .tip-box {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            border-left: 5px solid #ff6b6b;
+            position: relative;
+        }
+        
+        .tip-box::before {
+            content: '💡';
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: white;
+            padding: 0.5rem;
+            border-radius: 50%;
+            font-size: 1.2rem;
+        }
+        
+        .tip-title {
+            font-weight: 600;
+            color: #c53030;
+            margin-bottom: 0.5rem;
+            margin-left: 1rem;
+        }
+        
+        .workflow-diagram {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            text-align: center;
+            border: 2px dashed #cbd5e0;
+        }
+        
+        .workflow-step {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            margin: 0.5rem;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .workflow-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .navigation {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 1rem 0.5rem;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #cbd5e0;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: #667eea;
+            transform: scale(1.3);
+        }
+        
+        .nav-dot:hover {
+            background: #764ba2;
+            transform: scale(1.2);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .section-content {
+                padding: 1.5rem;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .navigation {
+                display: none;
+            }
+            
+            .workflow-step {
+                display: block;
+                margin: 0.5rem auto;
+                width: fit-content;
+            }
+            
+            .workflow-step::after {
+                content: '↓';
+                right: 50%;
+                top: 100%;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧠 Obsidian完全攻略ガイド</h1>
+            <p class="subtitle">知識を繋げ、思考を可視化する最強のノートアプリを基礎から応用まで完全マスター</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-container">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-counter" id="stepCounter">ステップ 0/12 完了</div>
+        </div>
+
+        <div class="section" data-step="1">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">1</div>
+                    <span>📥 Obsidianのダウンロードとインストール</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>Obsidianを始める最初のステップは、アプリケーションのダウンロードとインストールです。この段階は非常にシンプルですが、正しく行うことで後の作業がスムーズに進みます。</p>
+                
+                <div class="workflow-diagram">
+                    <div class="workflow-step">公式サイトにアクセス</div>
+                    <div class="workflow-step">プラットフォーム選択</div>
+                    <div class="workflow-step">ダウンロード実行</div>
+                    <div class="workflow-step">インストール完了</div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🌐</span>
+                            公式サイトへのアクセス
+                        </div>
+                        <p>obsidian.mdにアクセスします。ここがObsidianの本拠地です。安全で最新のバージョンをダウンロードできます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">💻</span>
+                            プラットフォーム対応
+                        </div>
+                        <p>Windows、Mac、Linux、さらにはモバイル版（iOS/Android）も利用可能。あなたの環境に合わせて選択できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">⚡</span>
+                            簡単インストール
+                        </div>
+                        <p>ダウンロードしたファイルを開き、画面の指示に従うだけ。Macの場合は、アプリケーションフォルダにドラッグするだけです。</p>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">インストールのコツ</div>
+                    <p>インストール時に管理者権限が必要な場合があります。また、セキュリティソフトが反応することがありますが、Obsidianは完全に安全なアプリケーションです。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="2">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">2</div>
+                    <span>🏛️ Vault（保管庫）の作成</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>Vaultは、あなたのすべてのノートが保存される「知識の保管庫」です。これは単なるフォルダではなく、Obsidianがその中のファイル同士の関係性を理解し、管理する特別な空間なのです。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📁</span>
+                            Vaultとは何か
+                        </div>
+                        <p>Vaultは、あなたの知識ベース全体を包含するコンテナです。すべてのノート、添付ファイル、設定がここに保存されます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🌍</span>
+                            場所の選択
+                        </div>
+                        <p>ローカルフォルダ、Dropbox、iCloud Drive、OneDriveなど、どこにでも作成可能。クラウドに置けば複数デバイスで同期できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔒</span>
+                            セキュリティ
+                        </div>
+                        <p>すべてのファイルはローカルに保存され、プライバシーが完全に保護されます。あなたのデータはあなたが完全にコントロールします。</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+推奨フォルダ構成例：
+📁 My Knowledge Base (Vault名)
+  ├── 📝 Daily Notes (日記)
+  ├── 📚 Projects (プロジェクト)
+  ├── 💡 Ideas (アイデア)
+  └── 📎 Attachments (添付ファイル)
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">Vault作成のベストプラクティス</div>
+                    <p>最初は1つのVaultから始めることをお勧めします。後から複数のVaultを作成することもできますが、まずは1つの空間ですべての知識を管理する感覚を掴みましょう。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="3">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">3</div>
+                    <span>✏️ ノートの作成</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>ノートの作成は、Obsidianでの知識構築の基礎となる作業です。単純なテキストファイルですが、Markdown記法を使うことで豊かな表現が可能になります。</p>
+
+                <div class="workflow-diagram">
+                    <div class="workflow-step">新規ノート作成</div>
+                    <div class="workflow-step">タイトル設定</div>
+                    <div class="workflow-step">内容入力</div>
+                    <div class="workflow-step">保存（自動）</div>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">⚡</span>
+                            作成方法
+                        </div>
+                        <p><span class="highlight">Ctrl+N</span>（Windows）または<span class="highlight">Cmd+N</span>（Mac）で瞬時に新しいノートを作成できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📝</span>
+                            Markdown対応
+                        </div>
+                        <p>見出し、リスト、太字、斜体、リンクなど、豊富な書式設定がMarkdown記法で簡単に行えます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">💾</span>
+                            自動保存
+                        </div>
+                        <p>タイピングと同時に自動的に保存されるため、作業を失う心配がありません。集中して書くことに専念できます。</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+# 見出し1
+## 見出し2
+### 見出し3
+
+**太字** *斜体* ~~取り消し線~~
+
+- リスト項目1
+- リスト項目2
+  - サブ項目
+
+1. 番号付きリスト
+2. 項目2
+
+> 引用文
+
+`インラインコード`
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">効果的なノート作成のコツ</div>
+                    <p>完璧を求めず、まずは思いついたことを書き始めましょう。後から編集や整理ができるのがObsidianの強みです。「アトミックノート」という考え方で、1つのノートには1つの概念を記録することを心がけると、後でリンクしやすくなります。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="4">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">4</div>
+                    <span>🔗 ノートのリンク機能</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>Obsidianの最大の特徴は、ノート同士を簡単にリンクできることです。これにより、散らばった情報を有機的に繋げ、新しい洞察を生み出すことができます。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔗</span>
+                            Wikilinks
+                        </div>
+                        <p><span class="highlight">[[ノート名]]</span>でノート同士をリンク。入力中に候補が表示され、存在しないノートも自動作成されます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📎</span>
+                            Markdown Links
+                        </div>
+                        <p><span class="highlight">[表示名](ノート名)</span>形式で、より柔軟なリンク表示が可能です。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🎯</span>
+                            セクションリンク
+                        </div>
+                        <p><span class="highlight">[[ノート名#見出し]]</span>で特定の見出しに直接リンクできます。</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+# リンクの書き方例
+
+## Wikilinks
+[[プロジェクト管理]]
+[[読書ノート]]
+[[2024年の目標#健康管理]]
+
+## Markdown Links
+[GTDについて](タスク管理手法)
+[参考資料](https://example.com)
+
+## エイリアス（別名）を使用
+[[長い正式なノート名|短い表示名]]
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">リンクの活用戦略</div>
+                    <p>リンクを作成する時は「関連性」を意識しましょう。単に関連するだけでなく、「なぜこの2つのノートが繋がっているのか」を明確にすることで、後から見返した時により価値のある知識ネットワークになります。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="5">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">5</div>
+                    <span>🔙 バックリンク機能</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>バックリンクは、現在のノートが他のどのノートから参照されているかを自動的に表示する機能です。これにより、知識の繋がりを逆方向からも発見できます。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔍</span>
+                            自動発見
+                        </div>
+                        <p>他のノートからのリンクを自動的に検出し、右パネルに「Linked Mentions」として表示します。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🧩</span>
+                            文脈表示
+                        </div>
+                        <p>単なるリンクだけでなく、そのリンクが使われている文脈も一緒に表示されるため、関係性を理解しやすくなります。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🎨</span>
+                            Unlinked Mentions
+                        </div>
+                        <p>正式なリンクではないが、ノート名が言及されている箇所も検出し、潜在的な関係性を発見できます。</p>
+                    </div>
+                </div>
+
+                <div class="workflow-diagram">
+                    <div class="workflow-step">ノートAを開く</div>
+                    <div class="workflow-step">右パネル確認</div>
+                    <div class="workflow-step">バックリンク発見</div>
+                    <div class="workflow-step">関係性を理解</div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">バックリンクを活用した知識発見</div>
+                    <p>定期的にバックリンクを確認することで、思わぬ知識の繋がりを発見できます。特に、長期間蓄積したノートにおいて、過去に書いた関連性のある内容を再発見する際に非常に有効です。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="6">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">6</div>
+                    <span>🌐 グローバルグラフビュー</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>グローバルグラフビューは、あなたの知識ベース全体を視覚的に表現する魔法のような機能です。ノート同士の関係性が美しいネットワーク図として表示されます。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🗺️</span>
+                            知識の地図
+                        </div>
+                        <p>すべてのノートがノード（点）として、リンクがエッジ（線）として表示され、知識の全体像を一目で把握できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🎨</span>
+                            カスタマイズ
+                        </div>
+                        <p>ノードの色、サイズ、フィルター条件を調整して、特定のパターンや関係性を強調表示できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔍</span>
+                            インタラクティブ
+                        </div>
+                        <p>ノードをクリックして直接ノートを開いたり、ズームや移動で詳細を確認したりできます。</p>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">グラフビューの効果的な使用法</div>
+                    <p>グラフビューは「知識の健康診断」として活用できます。孤立したノード（リンクのないノート）は統合の機会を、密度の高いクラスターは専門領域の発見を意味します。定期的に眺めることで、知識体系の偏りや成長を確認しましょう。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="7">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">7</div>
+                    <span>👁️ ノートの表示モード</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>Obsidianには編集モードと閲覧モードがあり、目的に応じて切り替えることで効率的にノートを活用できます。この切り替えが、思考の流れを止めることなく作業を進める鍵となります。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">✏️</span>
+                            編集モード
+                        </div>
+                        <p>Markdown記法でノートを編集。リアルタイムプレビューで、入力しながら結果を確認できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📖</span>
+                            閲覧モード
+                        </div>
+                        <p>整形されたテキストを読むことに集中。リンククリックやノート間の移動がスムーズに行えます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">⚡</span>
+                            瞬時切り替え
+                        </div>
+                        <p><span class="highlight">Ctrl+E</span>（Windows）または<span class="highlight">Cmd+E</span>（Mac）で瞬時に切り替え可能です。</p>
+                    </div>
+                </div>
+
+                <div class="workflow-diagram">
+                    <div class="workflow-step">編集モードで執筆</div>
+                    <div class="workflow-step">閲覧モードで確認</div>
+                    <div class="workflow-step">必要に応じて再編集</div>
+                    <div class="workflow-step">最終確認</div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">モード切り替えの活用術</div>
+                    <p>執筆時は編集モード、レビューや他のノートとの連携時は閲覧モードと使い分けることで、集中力を維持できます。また、プレゼンテーション時には閲覧モードが見やすく、相手に説明する際にも効果的です。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="8">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">8</div>
+                    <span>📝 Markdownの基本</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>Markdownは、シンプルなテキスト記法でありながら、豊かな表現を可能にする言語です。Obsidianを最大限活用するために、基本的な記法をマスターしましょう。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📋</span>
+                            基本書式
+                        </div>
+                        <p>見出し、太字、斜体、取り消し線など、文書の基本的な装飾が簡単な記号で表現できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📋</span>
+                            リストと表
+                        </div>
+                        <p>箇条書き、番号付きリスト、チェックリスト、表組みなど、情報を整理する強力な機能があります。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🖼️</span>
+                            メディア埋め込み
+                        </div>
+                        <p>画像、PDF、音声、動画、外部サイトなど、様々なメディアをノートに直接埋め込めます。</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+# 📚 Markdown記法一覧
+
+## 基本書式
+**太字** *斜体* ~~取り消し線~~
+==ハイライト== `インラインコード`
+
+## リスト
+- [ ] チェックボックス（未完了）
+- [x] チェックボックス（完了）
+
+## 表
+| 項目 | 説明 | 重要度 |
+|------|------|--------|
+| 学習 | 新しい知識の習得 | ⭐⭐⭐ |
+| 実践 | 学んだことの応用 | ⭐⭐⭐ |
+
+## 引用とコード
+> これは引用文です。
+> 複数行でも表現できます。
+
+```javascript
+// コードブロック
+function hello() {
+    console.log("Hello, Obsidian!");
+}
+```
+
+## 画像とリンク
+![画像の説明](画像ファイル名.png)
+[外部リンク](https://example.com)
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">Markdown習得のコツ</div>
+                    <p>最初からすべてを覚える必要はありません。よく使う記法から徐々に覚えていきましょう。Obsidianには記法のヘルプ機能もあるので、忘れた時はいつでも確認できます。何より、実際に使いながら覚えるのが最も効果的です。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="9">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">9</div>
+                    <span>📥 外部データのインポート</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>既存の他のノートアプリやドキュメントからObsidianにデータを移行することで、過去の資産を無駄にすることなく、新しい知識管理システムを構築できます。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔌</span>
+                            Importerプラグイン
+                        </div>
+                        <p>Notion、Roam Research、Bear、Apple Notes等、主要なノートアプリから直接インポートが可能です。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📄</span>
+                            対応ファイル形式
+                        </div>
+                        <p>HTML、Markdown、CSV、JSON、OPML等、様々なファイル形式に対応しており、柔軟な移行が可能です。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔄</span>
+                            自動変換
+                        </div>
+                        <p>インポート時に自動的にObsidian形式に変換され、リンクや書式も可能な限り保持されます。</p>
+                    </div>
+                </div>
+
+                <div class="workflow-diagram">
+                    <div class="workflow-step">プラグイン有効化</div>
+                    <div class="workflow-step">インポート元選択</div>
+                    <div class="workflow-step">ファイロ指定</div>
+                    <div class="workflow-step">変換実行</div>
+                    <div class="workflow-step">確認・整理</div>
+                </div>
+
+                <div class="code-block">
+# インポート手順例（Notionから）
+
+1. 設定 → コミュニティプラグイン
+2. "Importer"を検索してインストール
+3. プラグインを有効化
+4. コマンドパレット（Ctrl+P）から"Importer"起動
+5. "Notion"を選択
+6. エクスポートしたZIPファイルを指定
+7. インポート設定を確認
+8. 実行ボタンをクリック
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">インポート後の整理術</div>
+                    <p>インポート直後は、元のアプリの構造がそのまま反映されていることが多いです。Obsidianの特性を活かすために、リンクの見直し、タグの統一、フォルダ構造の最適化を行いましょう。一度に完璧にする必要はなく、使いながら徐々に改善していくのがベストです。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="10">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">10</div>
+                    <span>🎨 Canvasプラグイン</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>Canvasは、デジタルホワイトボードのような無限の空間で、ノート、画像、ウェブページなどを自由に配置し、視覚的に情報を整理できる革新的な機能です。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🖼️</span>
+                            無限キャンバス
+                        </div>
+                        <p>制限のない広大な空間で、思考を自由に配置・整理できます。マインドマップやフローチャートの作成に最適です。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔗</span>
+                            視覚的リンク
+                        </div>
+                        <p>カード同士を線で繋ぎ、関係性を視覚的に表現。複雑な概念間の関係を直感的に理解できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📎</span>
+                            多様な要素
+                        </div>
+                        <p>テキスト、ノート、画像、PDF、ウェブページ、動画など、様々な要素を同一空間で扱えます。</p>
+                    </div>
+                </div>
+
+                <div class="workflow-diagram">
+                    <div class="workflow-step">新規Canvas作成</div>
+                    <div class="workflow-step">要素の配置</div>
+                    <div class="workflow-step">線で関係性表現</div>
+                    <div class="workflow-step">レイアウト調整</div>
+                    <div class="workflow-step">完成・共有</div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">Canvas活用のアイデア</div>
+                    <p>プロジェクト管理、アイデアのブレインストーミング、学習計画の視覚化、研究ノートの整理、プレゼンテーション資料作成など、様々な用途で活用できます。特に、複雑な概念を整理する際や、他人に説明する際に威力を発揮します。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="11">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">11</div>
+                    <span>🏷️ プロパティ機能</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>プロパティは、ノートにメタデータ（データについてのデータ）を追加する機能です。これにより、ノートを分類・検索・分析することが格段に簡単になります。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🗂️</span>
+                            メタデータ管理
+                        </div>
+                        <p>作成日、カテゴリ、重要度、ステータスなど、ノートに関する情報を構造化して保存できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔍</span>
+                            高度な検索
+                        </div>
+                        <p>プロパティを使った検索で、特定の条件に合うノートを瞬時に見つけられます。大量のノートから目的の情報を効率的に抽出できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📊</span>
+                            データの可視化
+                        </div>
+                        <p>プロパティを基にした自動的な分類や統計表示により、知識ベースの全体像を把握できます。</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+---
+# プロパティの例
+created: 2024-01-15
+category: 学習ノート
+priority: high
+tags: [obsidian, productivity, note-taking]
+status: 進行中
+completion: 75%
+due_date: 2024-02-01
+---
+
+# ノートの内容がここから始まります
+このノートの上部にあるプロパティにより、
+ノートの管理と検索が効率化されます。
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">プロパティ設計のポイント</div>
+                    <p>プロパティは一貫性が重要です。最初に基本的なプロパティセット（例：カテゴリ、作成日、ステータス）を決めて、すべてのノートで統一して使用しましょう。後から追加・変更も可能ですが、統一されたルールがあると管理が格段に楽になります。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" data-step="12">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">12</div>
+                    <span>🔄 高度なリンク技術</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>トランスクルージョンとディープリンクは、Obsidianの上級者向け機能です。これらをマスターすることで、ノート間の連携が飛躍的に向上し、真の「知識のネットワーク」を構築できます。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📋</span>
+                            トランスクルージョン
+                        </div>
+                        <p>他のノートの内容を現在のノートに「埋め込む」機能。元ノートの更新が自動的に反映されます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🎯</span>
+                            ディープリンク
+                        </div>
+                        <p>ノート内の特定の段落や見出しに直接リンクを作成。精密な参照が可能になります。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🔄</span>
+                            動的更新
+                        </div>
+                        <p>参照元が更新されると、参照しているすべての場所に自動的に変更が反映されます。</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+# 高度なリンク技術の例
+
+## トランスクルージョン（埋め込み）
+![[他のノート名]]          # ノート全体を埋め込み
+![[ノート名#見出し]]       # 特定セクションを埋め込み
+![[ノート名#^段落ID]]      # 特定段落を埋め込み
+
+## ディープリンク
+[[ノート名#見出し]]        # 見出しへのリンク
+[[ノート名#^段落ID]]       # 段落へのリンク
+
+## ブロック参照の作成
+重要な段落 ^important-point
+
+## エイリアスとの組み合わせ
+[[長いノート名#長い見出し名|短い表示名]]
+                </div>
+
+                <div class="workflow-diagram">
+                    <div class="workflow-step">参照したいコンテンツを特定</div>
+                    <div class="workflow-step">適切なリンク形式を選択</div>
+                    <div class="workflow-step">リンク作成</div>
+                    <div class="workflow-step">動作確認</div>
+                    <div class="workflow-step">継続的メンテナンス</div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">高度リンク機能の実践的活用</div>
+                    <p>定期レポートのテンプレートに各プロジェクトの進捗セクションを埋め込んだり、研究ノートで重要な発見を複数のノートから参照したりする際に非常に有効です。「一度書いたら、どこからでも参照可能」という思想で、情報の重複を避けながら豊かな知識ネットワークを構築できます。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section final-section">
+            <div class="section-header" onclick="toggleSection(this)">
+                <div class="section-title">
+                    <div class="step-number">🎯</div>
+                    <span>まとめと次のステップ</span>
+                </div>
+                <div class="toggle-icon">▼</div>
+            </div>
+            <div class="section-content">
+                <p>おめでとうございます！Obsidianの基本から応用まで、重要な機能をすべて学習しました。これで、あなたは単なるノートアプリの利用者から、知識のアーキテクトへと成長しました。</p>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🚀</span>
+                            継続的な学習
+                        </div>
+                        <p>Obsidianは豊富なプラグインエコシステムを持っています。コミュニティプラグインを探索し、あなたの特定のニーズに合わせてカスタマイズしていきましょう。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">🤝</span>
+                            コミュニティ参加</span>
+                        </div>
+                        <p>Obsidianコミュニティは非常に活発です。フォーラム、Discord、Reddit等で他のユーザーとアイデアを共有し、新しい使い方を学びましょう。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-title">
+                            <span class="emoji">📈</span>
+                            知識の成長
+                        </div>
+                        <p>最も重要なのは、継続的に使うことです。毎日少しずつでも、ノートを書き、リンクを作り、知識を蓄積することで、真の価値を実感できるでしょう。</p>
+                    </div>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-title">最後のアドバイス</div>
+                    <p>完璧なシステムを最初から構築しようとせず、シンプルに始めることが成功の鍵です。まずは日々の学習や業務でObsidianを使い始め、必要に応じて機能を追加していきましょう。あなたの知識が成長するにつれ、Obsidianも一緒に進化していくはずです。</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem; padding: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+                    <h3 style="margin-bottom: 1rem;">🎉 学習完了！</h3>
+                    <p>あなたはObsidianマスターになりました。<br>これからは、知識を繋げる新しい冒険が始まります！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation" id="navigation">
+        <!-- ナビゲーションドットは JavaScript で生成 -->
+    </div>
+
+    <script>
+        // セクションの切り替え機能
+        function toggleSection(header) {
+            const section = header.parentElement;
+            section.classList.toggle('collapsed');
+            updateProgress();
+        }
+
+        // プログレスバーの更新
+        function updateProgress() {
+            const sections = document.querySelectorAll('.section[data-step]');
+            const expandedSections = document.querySelectorAll('.section[data-step]:not(.collapsed)');
+            const progress = (expandedSections.length / sections.length) * 100;
+            
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('stepCounter').textContent = 
+                `ステップ ${expandedSections.length}/${sections.length} 完了`;
+        }
+
+        // ナビゲーションドットの生成
+        function createNavigation() {
+            const navigation = document.getElementById('navigation');
+            const sections = document.querySelectorAll('.section[data-step]');
+            
+            sections.forEach((section, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot';
+                dot.onclick = () => {
+                    section.scrollIntoView({ behavior: 'smooth' });
+                    updateActiveNavDot();
+                };
+                navigation.appendChild(dot);
+            });
+        }
+
+        // アクティブなナビゲーションドットの更新
+        function updateActiveNavDot() {
+            const sections = document.querySelectorAll('.section[data-step]');
+            const dots = document.querySelectorAll('.nav-dot');
+            
+            let activeIndex = 0;
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= window.innerHeight / 2) {
+                    activeIndex = index;
+                }
+            });
+
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === activeIndex);
+            });
+        }
+
+        // スクロール時のナビゲーション更新
+        window.addEventListener('scroll', updateActiveNavDot);
+
+        // 初期化
+        document.addEventListener('DOMContentLoaded', () => {
+            createNavigation();
+            updateProgress();
+            updateActiveNavDot();
+            
+            // セクションのアニメーション
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.animationDelay = `${index * 0.1}s`;
+                        }, index * 100);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.section').forEach(section => {
+                observer.observe(section);
+            });
+        });
+
+        // すべてのセクションを展開/折りたたみ
+        function toggleAllSections(expand = true) {
+            const sections = document.querySelectorAll('.section[data-step]');
+            sections.forEach(section => {
+                if (expand) {
+                    section.classList.remove('collapsed');
+                } else {
+                    section.classList.add('collapsed');
+                }
+            });
+            updateProgress();
+        }
+
+        // キーボードショートカット
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 'e':
+                        e.preventDefault();
+                        toggleAllSections(true);
+                        break;
+                    case 'w':
+                        e.preventDefault();
+                        toggleAllSections(false);
+                        break;
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+                

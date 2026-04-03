@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大学生の自炊サバイバルガイド</title>
+<meta name="description" content="一人暮らし大学生のための自炊完全ガイド。食材の買い方・保存・週間献立・簡単レシピ・節約術まで、料理初心者でもすぐ実践できる内容をまとめました。">
+<meta name="date" content="2026-04-03">
+<meta name="category" content="生活">
+<style>
+:root {
+  --bg: #FDFAF5;
+  --ink: #1C1A14;
+  --muted: #6B6554;
+  --card: #FFFFFF;
+  --border: #E8E0D0;
+  --accent1: #E8622A;   /* 深みのあるオレンジ */
+  --accent2: #3D7A4F;   /* 緑 */
+  --accent3: #2561A8;   /* 青 */
+  --accent4: #8B4FCF;   /* 紫 */
+  --accent5: #C4922A;   /* 黄金 */
+  --accent6: #C73050;   /* 赤 */
+  --warm-bg: #FFF8EF;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic Medium", "Yu Gothic", "Meiryo", sans-serif;
+  color: var(--ink);
+  line-height: 1.7;
+}
+
+/* ヘッダー */
+.hero {
+  background: var(--ink);
+  color: white;
+  padding: 60px 40px 50px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(232,98,42,0.35) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px; left: -40px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(61,122,79,0.25) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.hero-label {
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--accent1);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.hero h1 {
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic Medium", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 900;
+  line-height: 1.1;
+  position: relative;
+  z-index: 1;
+}
+.hero h1 em {
+  color: var(--accent1);
+  font-style: normal;
+}
+.hero-sub {
+  margin-top: 16px;
+  color: rgba(255,255,255,0.6);
+  font-size: 15px;
+  max-width: 560px;
+  position: relative;
+  z-index: 1;
+}
+.hero-meta {
+  margin-top: 28px;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.hero-badge {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.85);
+}
+
+/* 目次 */
+.toc-bar {
+  background: var(--accent1);
+  padding: 14px 40px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  align-items: center;
+}
+.toc-bar::-webkit-scrollbar { display: none; }
+.toc-bar-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.7);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+.toc-item {
+  background: rgba(255,255,255,0.18);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 12px;
+  color: white;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.toc-item:hover { background: rgba(255,255,255,0.32); }
+
+/* メインコンテンツ */
+.main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+/* カテゴリカード */
+.category {
+  margin-bottom: 56px;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.cat-header {
+  padding: 28px 32px 24px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.cat-icon {
+  width: 52px; height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.cat-header-text { flex: 1; }
+.cat-num {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.cat-title {
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic Medium", "Yu Gothic", "Meiryo", sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.cat-tagline {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+
+.cat-body {
+  padding: 28px 32px;
+}
+
+/* サマリーボックス */
+.summary-box {
+  background: var(--warm-bg);
+  border-radius: 12px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  line-height: 1.75;
+  border-left: 4px solid transparent;
+}
+
+/* セクション */
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::before {
+  content: '';
+  display: block;
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+}
+
+/* 詳細リスト */
+.detail-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+.detail-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.detail-list li::before {
+  content: '▸';
+  font-size: 11px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* 使い方ブロック */
+.usage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 26px;
+}
+@media(max-width: 560px) { .usage-grid { grid-template-columns: 1fr; } }
+.usage-card {
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 13px;
+}
+.usage-card strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+
+/* アプリ紹介 */
+.app-section {
+  border-top: 1px solid var(--border);
+  padding-top: 22px;
+  margin-top: 24px;
+}
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.app-card {
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.app-name {
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.app-icon {
+  font-size: 18px;
+}
+.app-type {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-radius: 100px;
+  padding: 2px 8px;
+  display: inline-block;
+  width: fit-content;
+}
+.app-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* 出典 */
+.source-section {
+  border-top: 1px dashed var(--border);
+  padding-top: 14px;
+  margin-top: 20px;
+}
+.source-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+.source-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.source-list li {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.source-list li::before {
+  content: '→';
+  font-size: 10px;
+  flex-shrink: 0;
+}
+
+/* カラーテーマ by category */
+.c1 { --cc: var(--accent1); }
+.c2 { --cc: var(--accent2); }
+.c3 { --cc: var(--accent3); }
+.c4 { --cc: var(--accent4); }
+.c5 { --cc: var(--accent5); }
+.c6 { --cc: var(--accent6); }
+
+.category .cat-icon { background: color-mix(in srgb, var(--cc) 15%, white); }
+.category .cat-num { color: var(--cc); }
+.category .cat-title { color: var(--cc); }
+.category .summary-box { border-left-color: var(--cc); background: color-mix(in srgb, var(--cc) 6%, var(--warm-bg)); }
+.category .section-title { color: var(--cc); }
+.category .section-title::before { background: var(--cc); }
+.category .detail-list li::before { color: var(--cc); }
+.category .usage-card { background: color-mix(in srgb, var(--cc) 8%, white); border: 1px solid color-mix(in srgb, var(--cc) 20%, white); }
+.category .usage-card strong { color: var(--cc); }
+.category .app-type { background: color-mix(in srgb, var(--cc) 15%, white); color: var(--cc); }
+
+/* フッター */
+footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding: 30px 20px;
+  font-size: 12px;
+}
+footer strong { color: rgba(255,255,255,0.85); }
+
+/* ポイントバッジ */
+.point-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 100px;
+  padding: 3px 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+  background: color-mix(in srgb, var(--cc) 15%, white);
+  color: var(--cc);
+}
+
+/* レスポンシブ調整 */
+@media(max-width: 480px) {
+  .hero { padding: 40px 24px 36px; }
+  .cat-header { padding: 20px 20px 18px; }
+  .cat-body { padding: 20px; }
+  .toc-bar { padding: 12px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ヒーロー -->
+<div class="hero">
+  <div class="hero-label">大学生のための実践ガイド 2026</div>
+  <h1>自炊<em>サバイバル</em><br>ハンドブック</h1>
+  <p class="hero-sub">一人暮らしで食べていくために知っておきたい6つのカテゴリと、スマホで使えるアプリ・サイトの完全まとめ。</p>
+  <div class="hero-meta">
+    <span class="hero-badge">🍳 レシピ＆献立</span>
+    <span class="hero-badge">🥗 栄養管理</span>
+    <span class="hero-badge">🧊 食材管理</span>
+    <span class="hero-badge">💰 食費節約</span>
+    <span class="hero-badge">⏱ 時短・作り置き</span>
+    <span class="hero-badge">🔪 調理の基本</span>
+  </div>
+</div>
+
+<!-- 目次バー -->
+<div class="toc-bar">
+  <span class="toc-bar-label">JUMP →</span>
+  <a class="toc-item" href="#cat1">レシピ</a>
+  <a class="toc-item" href="#cat2">栄養管理</a>
+  <a class="toc-item" href="#cat3">食材管理</a>
+  <a class="toc-item" href="#cat4">食費節約</a>
+  <a class="toc-item" href="#cat5">時短・作り置き</a>
+  <a class="toc-item" href="#cat6">調理の基本</a>
+</div>
+
+<div class="main">
+
+<!-- ━━━━━━━━━ カテゴリ1 ━━━━━━━━━ -->
+<div class="category c1" id="cat1">
+  <div class="cat-header">
+    <div class="cat-icon">🍳</div>
+    <div class="cat-header-text">
+      <div class="cat-num">CATEGORY 01</div>
+      <div class="cat-title">レシピ＆献立管理</div>
+      <div class="cat-tagline">「今日何作ろう？」から解放される</div>
+    </div>
+  </div>
+  <div class="cat-body">
+    <div class="summary-box">
+      自炊の最大の壁は「何を作るか決めること」。レシピサービスを使えば冷蔵庫にある食材から逆算してメニューが探せる。動画付きの解説なら「焼き加減がわからない」という初心者の不安も解消できる。
+    </div>
+
+    <div class="section-title">詳細ポイント</div>
+    <ul class="detail-list">
+      <li>クックパッドは月間約5,100万人が利用し、380万品目以上のレシピが投稿されている日本最大のレシピサービス。食材名を入力すれば手持ちの食材で作れる料理が検索できる。</li>
+      <li>同じ料理でも「早さ重視」「おいしさ重視」など複数の作り方が掲載されているため、自分のレベルやその日の時間に合わせて選べる。</li>
+      <li>DELISH KITCHENは栄養士・料理研究家などプロが監修したレシピを動画で解説。焼き色・仕上がりを画像と比べながら作れるので、初心者でも失敗が少ない。</li>
+      <li>予算ベースでレシピを検索できるサービスを使えば「思いのほかお金がかかった」という失敗が防げる。</li>
+    </ul>
+
+    <div class="section-title">使い方と応用</div>
+    <div class="usage-grid">
+      <div class="usage-card">
+        <strong>🛒 買い物前に検索</strong>
+        特売品の食材名でレシピを検索し、それを軸に献立を決めてから買い物に行く。衝動買いが減り食費が下がる。
+      </div>
+      <div class="usage-card">
+        <strong>📅 週間献立を固定</strong>
+        「月曜は炒め物、火曜はパスタ」など曜日でジャンルを固定すると献立を考える時間がゼロになる。
+      </div>
+      <div class="usage-card">
+        <strong>🔁 定番レシピを3品覚える</strong>
+        卵かけご飯・野菜炒め・みそ汁の3品を完璧に作れるようになるだけで食生活が激変する。
+      </div>
+      <div class="usage-card">
+        <strong>🎓 動画を先に全部見る</strong>
+        料理を始める前にレシピ動画を全部再生しておくと、作業中に「次は何？」で手が止まらない。
+      </div>
+    </div>
+
+    <div class="app-section">
+      <div class="section-title">おすすめアプリ・サービス</div>
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🍴</span>クックパッド</div>
+          <span class="app-type">無料（一部有料）</span>
+          <div class="app-desc">380万品以上のレシピ。食材名で逆引き検索が強力。スマホ版あり。iOS/Android対応。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🎬</span>DELISH KITCHEN</div>
+          <span class="app-type">無料</span>
+          <div class="app-desc">プロ監修の動画レシピ。手順を映像で確認できるから初心者向き。iOS/Android/Web対応。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🛒</span>楽天レシピ</div>
+          <span class="app-type">無料</span>
+          <div class="app-desc">1人前の材料費目安が表示される。食費予算を決めてからレシピを選ぶ使い方が◎。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🥦</span>Kurashiru</div>
+          <span class="app-type">無料（一部有料）</span>
+          <div class="app-desc">シンプルな動画レシピ。1〜2人分の分量設定に強い。短時間レシピが豊富。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-section">
+      <div class="source-label">出典</div>
+      <ul class="source-list">
+        <li>LIFULL HOME'S「料理初心者の大学生に聞いた！自炊に参考にしているレシピサイト」 https://www.homes.co.jp/cont/1stroom/1stroom_00183/</li>
+        <li>マネコミ「節約に活用できるアプリ33選【用途別】」 https://manekomi.tmn-anshin.co.jp/kakei/17657557</li>
+        <li>クックパッド公式サービス情報 https://cookpad.com</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━ カテゴリ2 ━━━━━━━━━ -->
+<div class="category c2" id="cat2">
+  <div class="cat-header">
+    <div class="cat-icon">🥗</div>
+    <div class="cat-header-text">
+      <div class="cat-num">CATEGORY 02</div>
+      <div class="cat-title">栄養管理・カロリー計算</div>
+      <div class="cat-tagline">コンビニ飯・カップ麺だけでは体が壊れていく</div>
+    </div>
+  </div>
+  <div class="cat-body">
+    <div class="summary-box">
+      大学生が自炊する最大の理由は健康維持。一人暮らしはコンビニやファストフードに偏りやすく、気づかないうちに栄養が偏る。人体に必要な5大栄養素（炭水化物・脂質・タンパク質・ミネラル・ビタミン）をバランスよく取るには意識的な管理が必要。
+    </div>
+
+    <div class="section-title">詳細ポイント</div>
+    <ul class="detail-list">
+      <li><strong>炭水化物</strong>（米・パン・麺・いも類）：エネルギー源。主食として毎食とる。</li>
+      <li><strong>タンパク質</strong>（肉・魚・卵・大豆製品・乳製品）：筋肉・髪・皮膚の材料。特に大学生はとりやすい「卵」が最強。</li>
+      <li><strong>ビタミン・ミネラル</strong>（野菜・果物・海藻）：不足すると免疫低下・疲れやすさにつながる。1日あたり両手1杯分の野菜を目標にする。</li>
+      <li>1週間の夕食献立を先に決めて5大栄養素を「散りばめる」形で考えると、毎食バランスを完璧にしようと頑張らなくて済む。</li>
+      <li>あすけんは1,300万会員を超える食事管理アプリ。食事写真やバーコードを撮るだけで14種類の栄養素とカロリーが自動計算され、管理栄養士監修のアドバイスが毎日届く。</li>
+    </ul>
+
+    <div class="section-title">使い方と応用</div>
+    <div class="usage-grid">
+      <div class="usage-card">
+        <strong>📸 食事写真を撮るだけ</strong>
+        あすけんは食事の写真を撮るだけでAIが自動メニュー推定。バーコード読み取りにも対応。記録の手間がほぼゼロ。
+      </div>
+      <div class="usage-card">
+        <strong>📊 週1回チェックでOK</strong>
+        毎食完璧を目指さず、週単位で「野菜が足りなかった」「タンパク質が多かった」を振り返るだけで十分。
+      </div>
+      <div class="usage-card">
+        <strong>🛒 不足栄養素を買い物に反映</strong>
+        アプリが「鉄分が不足」と教えてくれたら、次の買い物でほうれん草や豆腐を意識的に買うだけでOK。
+      </div>
+      <div class="usage-card">
+        <strong>💪 体重・体脂肪と連動</strong>
+        体重を記録するとグラフで変化が見える。食事内容の変化と体重の相関が分かってくると、コントロールが楽しくなる。
+      </div>
+    </div>
+
+    <div class="app-section">
+      <div class="section-title">おすすめアプリ・サービス</div>
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🌱</span>あすけん</div>
+          <span class="app-type">無料（プレミアムあり）</span>
+          <div class="app-desc">1,300万会員突破。15万件以上のデータ。管理栄養士アドバイス。写真・バーコード対応。iOS/Android対応。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">📱</span>カロミル</div>
+          <span class="app-type">無料（一部有料）</span>
+          <div class="app-desc">写真撮影でAIが栄養素を自動解析。PFCバランス（タンパク質・脂質・炭水化物）管理に強い。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🌍</span>MyFitnessPal</div>
+          <span class="app-type">無料（一部有料）</span>
+          <div class="app-desc">世界的に使われる食事管理アプリ。1,400万件以上の食品DB。バーコードスキャン対応。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-section">
+      <div class="source-label">出典</div>
+      <ul class="source-list">
+        <li>IPPO「料理初心者の大学生必見！栄養・時短料理の食材選びのコツ」 https://i-ppo.com/living-alone/time-saving-cooking.html</li>
+        <li>あすけん公式サイト https://www.asken.jp/</li>
+        <li>アプリブ「無料カロリー計算アプリおすすめ8選」 https://app-liv.jp/health/healthcare/3468/</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━ カテゴリ3 ━━━━━━━━━ -->
+<div class="category c3" id="cat3">
+  <div class="cat-header">
+    <div class="cat-icon">🧊</div>
+    <div class="cat-header-text">
+      <div class="cat-num">CATEGORY 03</div>
+      <div class="cat-title">食材管理・冷蔵庫の中身を把握する</div>
+      <div class="cat-tagline">「腐らせてお金を捨てる」を防ぐ</div>
+    </div>
+  </div>
+  <div class="cat-body">
+    <div class="summary-box">
+      一人暮らし自炊失敗の最大原因のひとつが「食材の使い切れず廃棄」。冷蔵庫の中身を見えない状態のまま買い物に行くと、重複購入や期限切れが頻発する。スマホで管理すれば、外出先からでも冷蔵庫の中身が確認できる。
+    </div>
+
+    <div class="section-title">詳細ポイント</div>
+    <ul class="detail-list">
+      <li>冷蔵庫管理アプリを使うと「在庫の見える化」「賞味期限アラート」「残り食材からのレシピ提案」の3つが同時に解決する。</li>
+      <li>pecco（ぺっこ）は冷蔵庫の食材を登録すると在庫・賞味期限を管理し、手持ちの食材だけで作れるレシピを提案してくれる。管理栄養士による食事バランスチェック機能もある。</li>
+      <li>バーコードスキャンで食材を登録できるアプリなら、買ってきた食品を袋から出す際にサッと登録する習慣がつけやすい。</li>
+      <li>写真を撮るだけのアプリ（Pantry Photoなど）なら入力ゼロで冷蔵庫の状態を記録できるため、ズボラな人でも続けやすい。</li>
+      <li>Wonder Fridgeは冷蔵室・冷凍室・常温を分けて管理でき、400種類以上の食品データベースを搭載。賞味期限通知機能付き。</li>
+    </ul>
+
+    <div class="section-title">使い方と応用</div>
+    <div class="usage-grid">
+      <div class="usage-card">
+        <strong>🛍 買い物中に確認</strong>
+        スーパーで「あれ、まだ卵あったっけ？」という悩みがゼロになる。重複購入防止で節約にも直結。
+      </div>
+      <div class="usage-card">
+        <strong>⏰ 期限アラートで廃棄ゼロへ</strong>
+        賞味期限が近づくとプッシュ通知が届く設定にすれば、食材を捨てることがほぼなくなる。
+      </div>
+      <div class="usage-card">
+        <strong>🍜 残り物でレシピを考える</strong>
+        手持ち食材を入力してレシピ提案機能を使えば、追加で何も買わなくても今日の料理が決まる。
+      </div>
+      <div class="usage-card">
+        <strong>🥶 冷凍庫も管理対象に</strong>
+        冷凍した食材は「いつ入れたか」を忘れがち。アプリに冷凍日を記録する習慣で謎の冷凍品がなくなる。
+      </div>
+    </div>
+
+    <div class="app-section">
+      <div class="section-title">おすすめアプリ・サービス</div>
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🥚</span>pecco（ぺっこ）</div>
+          <span class="app-type">無料</span>
+          <div class="app-desc">食材管理＋レシピ提案＋栄養チェックが一体化。15万件以上のレシピ連携。iOS/Android対応。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">❄️</span>Wonder Fridge</div>
+          <span class="app-type">無料（広告あり）</span>
+          <div class="app-desc">冷蔵・冷凍・常温を一括管理。400種以上の食品DB。賞味期限通知機能付き。iOS/Android対応。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">📦</span>マイくら</div>
+          <span class="app-type">無料</span>
+          <div class="app-desc">バーコード読み取りで即登録。冷蔵・冷凍・調味料をタブ分け管理。Android対応。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">⏱</span>リミッター（Limiter）</div>
+          <span class="app-type">無料（一部有料）</span>
+          <div class="app-desc">バーコードスキャンで賞味期限管理に特化。クックパッドとの連携でレシピ検索も可。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-section">
+      <div class="source-label">出典</div>
+      <ul class="source-list">
+        <li>マイネ王「冷蔵庫管理アプリで食材を整理すれば無駄にしない？」 https://king.mineo.jp/staff_blogs/1450</li>
+        <li>pecco公式サイト https://pecco.app/</li>
+        <li>アプリブ「冷蔵庫管理アプリおすすめ7選【2026年】」 https://app-liv.jp/foods/cooking/1654/</li>
+        <li>Wonder Fridge - Google Play https://play.google.com/store/apps/details?id=com.meolly.fridge</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━ カテゴリ4 ━━━━━━━━━ -->
+<div class="category c4" id="cat4">
+  <div class="cat-header">
+    <div class="cat-icon">💰</div>
+    <div class="cat-header-text">
+      <div class="cat-num">CATEGORY 04</div>
+      <div class="cat-title">食費節約・家計管理</div>
+      <div class="cat-tagline">お金の見える化で「気づいたら底をついた」を防ぐ</div>
+    </div>
+  </div>
+  <div class="cat-body">
+    <div class="summary-box">
+      仕送り・バイト代・奨学金を賢く管理するには、お金の流れを「見える化」することが最初の一歩。家計簿アプリはレシートを撮影するだけで自動記録してくれるものが多く、三日坊主でも続けやすい。食費だけ管理するだけでも毎月数千円の節約効果が出る。
+    </div>
+
+    <div class="section-title">詳細ポイント</div>
+    <ul class="detail-list">
+      <li>マネーフォワードMEは家計簿アプリ利用率No.1（2025年10月時点）。銀行口座・クレジットカード・電子マネーなど約2,500機関と連携し、支出を自動で食費・交際費などに分類してくれる。</li>
+      <li>食費の節約で重要な「献立力」を鍛えるには、レシピアプリで冷蔵庫の残り物を使ったレシピを探す習慣が効果的。食材を腐らせて廃棄→買い直す悪循環が断ち切れる。</li>
+      <li>スーパーの夕方タイムセール（弁当・総菜の割引）や、スーパーアプリのクーポン・チラシを活用するだけで月数百〜千円単位の節約になる。</li>
+      <li>「空腹時に買い物に行かない」というシンプルなルールが、衝動買いを大きく減らす。食後に買い物する習慣をつけよう。</li>
+      <li>月予算を食費・交際費ごとにカテゴリ別に設定しておくと、予算オーバー時に即アラートが出るアプリが多く、リアルタイムで調整できる。</li>
+    </ul>
+
+    <div class="section-title">使い方と応用</div>
+    <div class="usage-grid">
+      <div class="usage-card">
+        <strong>📷 レシート即撮影ルール</strong>
+        買い物後すぐにレシートを撮影して家計簿アプリに記録。その場で撮ればレシートを財布にためなくて済む。
+      </div>
+      <div class="usage-card">
+        <strong>🔗 口座連携で自動記録</strong>
+        銀行口座・クレカをアプリに連携すれば、記録自体がほぼ不要になる。月1回グラフを見るだけでOK。
+      </div>
+      <div class="usage-card">
+        <strong>🗓 月末に食費を振り返る</strong>
+        先月の食費合計を見て、今月の予算を設定する。これを繰り返すだけで1〜2ヶ月で使いすぎのクセがわかる。
+      </div>
+      <div class="usage-card">
+        <strong>🏷 スーパーアプリを活用</strong>
+        よく行くスーパーのアプリを入れると、特売情報・クーポンが自動で届く。積み重ねで年間6,000円以上の節約も。
+      </div>
+    </div>
+
+    <div class="app-section">
+      <div class="section-title">おすすめアプリ・サービス</div>
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🏦</span>マネーフォワードME</div>
+          <span class="app-type">無料（一部有料）</span>
+          <div class="app-desc">利用率No.1の家計簿アプリ。2,500機関と連携、自動入力・AI分類対応。iOS/Android対応。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">📊</span>家計簿くふうZaim</div>
+          <span class="app-type">無料（一部有料）</span>
+          <div class="app-desc">レシート撮影で自動入力。予算設定・残高表示が見やすい。グラフで収支を可視化。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">💳</span>Moneytree</div>
+          <span class="app-type">無料（広告なし）</span>
+          <div class="app-desc">無料版でも広告なし。複数金融サービスを一元管理。AIカテゴリ自動分類が優秀。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">📝</span>らくな家計簿</div>
+          <span class="app-type">完全無料</span>
+          <div class="app-desc">シンプルすぎるくらいシンプル。家計簿初体験の人に最適。円グラフで視覚的に把握できる。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-section">
+      <div class="source-label">出典</div>
+      <ul class="source-list">
+        <li>マイナビ学生の窓口「大学生のみんなが使っている家計簿アプリ5選」 https://gakumado.mynavi.jp/gmd/articles/57708</li>
+        <li>セレクト「大学生向け家計簿アプリおすすめランキング21選【2026最新】」 https://smartlog.jp/301715</li>
+        <li>UVoice「大学生必見！一人暮らしでも無理なく続けられる食費や生活費の節約術」 https://u-voice.net/articles/202411-02/</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━ カテゴリ5 ━━━━━━━━━ -->
+<div class="category c5" id="cat5">
+  <div class="cat-header">
+    <div class="cat-icon">⏱</div>
+    <div class="cat-header-text">
+      <div class="cat-num">CATEGORY 05</div>
+      <div class="cat-title">時短・作り置きテクニック</div>
+      <div class="cat-tagline">忙しい日でも「今日はコンビニでいいや」を防ぐ</div>
+    </div>
+  </div>
+  <div class="cat-body">
+    <div class="summary-box">
+      授業・サークル・バイトで忙しい大学生にとって、毎食1時間かけた料理は現実的ではない。週末に作り置きしておけば平日は「レンジでチン」だけで食事が完成する。料理時間を週2〜3時間に圧縮できれば、自炊は確実に続く。
+    </div>
+
+    <div class="section-title">詳細ポイント</div>
+    <ul class="detail-list">
+      <li>週末に作り置きすれば、平日の調理時間はゼロに近くなる。冷蔵で3〜4日保存できるおかずを2〜3品作っておくと、月〜木はほぼ全食カバーできる。</li>
+      <li>電子レンジだけで作れるレシピなら、包丁不要・コンロ不要・洗い物も大幅減少。「火を使うのが怖い」という初心者にも最適な自炊の入口になる。</li>
+      <li>フライパン1枚で作れるレシピや炊飯器を使った料理（スイッチを押すだけ）を活用すると、調理器具を増やさずに料理のレパートリーが広がる。</li>
+      <li>カレーやシチューなどの煮込み料理は、1回作れば2〜3日分になるうえ、材料費も安くコスパが高い。ただし翌日以降に食べるときは再加熱を徹底すること（食中毒対策）。</li>
+      <li>ワンプレートで完結する食事スタイルを取り入れると洗い物が最少限になり、「片付けが面倒で自炊が続かない」という問題が解消される。</li>
+    </ul>
+
+    <div class="section-title">使い方と応用</div>
+    <div class="usage-grid">
+      <div class="usage-card">
+        <strong>🗓 日曜2時間の集中調理</strong>
+        日曜午後に2時間集中して3〜4品を作り置き。平日5日間の夕食がほぼカバーできる。弁当にも使い回せる。
+      </div>
+      <div class="usage-card">
+        <strong>🥡 食材を使い回す設計</strong>
+        鶏むね肉1枚を「蒸し鶏→サラダのトッピング→チャーハンの具」に3回使うと食材費が3分の1になる。
+      </div>
+      <div class="usage-card">
+        <strong>🧊 冷凍ストックを常備</strong>
+        炊いたご飯・揚げていないから揚げ下味済み肉・カット野菜を冷凍しておくと、帰宅直後でも15分で食事が完成。
+      </div>
+      <div class="usage-card">
+        <strong>💡 「今日は無気力」への備え</strong>
+        疲れてやる気ゼロの日のために、冷凍ご飯＋納豆＋インスタント味噌汁セットをストックしておくと安心感が違う。
+      </div>
+    </div>
+
+    <div class="app-section">
+      <div class="section-title">おすすめアプリ・サービス</div>
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🍱</span>つくりおき.jp</div>
+          <span class="app-type">無料（Web）</span>
+          <div class="app-desc">作り置きレシピ専門サイト。日持ち日数も明記されており、週末まとめ調理の計画が立てやすい。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">📹</span>DELISH KITCHEN</div>
+          <span class="app-type">無料</span>
+          <div class="app-desc">「10分以内」「レンジのみ」で絞れるフィルター機能が時短レシピ探しに最適。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">⏰</span>クックパッド</div>
+          <span class="app-type">無料（一部有料）</span>
+          <div class="app-desc">「時短」「作り置き」「冷凍保存」でタグ検索可能。「ワンパン」レシピも豊富。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-section">
+      <div class="source-label">出典</div>
+      <ul class="source-list">
+        <li>ドーミーラボ「大学生が自炊を継続するカギは「作り置き」にアリ！」 https://labo.dormy-ac.com/daigakusei-zisui-recipe/</li>
+        <li>sunnysunny「大学生で自炊がめんどくさい人必見！3ステップ時短方法」 https://sunnysunny.jp/cooking-3steps/</li>
+        <li>学生会館ドーミー「大学生のための簡単レシピ30選」 https://dormy-hokkaido.com/pickup/daigakuseinotamenokanntannresipi/</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━━━━━━━ カテゴリ6 ━━━━━━━━━ -->
+<div class="category c6" id="cat6">
+  <div class="cat-header">
+    <div class="cat-icon">🔪</div>
+    <div class="cat-header-text">
+      <div class="cat-num">CATEGORY 06</div>
+      <div class="cat-title">調理の基礎知識・道具・調味料</div>
+      <div class="cat-tagline">最低限これだけ揃えれば、たいていの料理は作れる</div>
+    </div>
+  </div>
+  <div class="cat-body">
+    <div class="summary-box">
+      最初から完璧な道具を揃える必要はない。「必要になってから買う」精神が正解。まずは最低限の道具と調味料から始め、1品ずつレパートリーを増やしていく。自炊に必要なのはスキルよりも「毎日ちょっと頑張る習慣」。
+    </div>
+
+    <div class="section-title">最低限の道具リスト</div>
+    <ul class="detail-list">
+      <li><strong>絶対必要（最優先）</strong>：フライパン（26cm）・鍋（片手鍋1つ）・包丁・まな板・炊飯器・おたま・菜箸・フライ返し</li>
+      <li><strong>あると便利</strong>：キッチンペーパー・ラップ・タッパー（保存容器）・ピーラー・耐熱ボウル</li>
+      <li><strong>後回しでOK</strong>：ハンドミキサー・電子計量器・オーブントースター（料理に慣れてから）</li>
+      <li>100円ショップでもフライ返し・菜箸・計量スプーンなど基本的な調理器具はほぼ揃う。最初はダイソー・セリアを活用して出費を抑えよう。</li>
+    </ul>
+
+    <div class="section-title">基本調味料リスト</div>
+    <ul class="detail-list">
+      <li><strong>最初に買う5つ（さしすせそ）</strong>：砂糖・塩・酢・しょうゆ・みそ</li>
+      <li><strong>次に買う</strong>：みりん・料理酒・塩コショウ・顆粒だし（鶏ガラ・和風）・サラダ油またはごま油</li>
+      <li><strong>あると幅が広がる</strong>：酢・オリーブオイル・ケチャップ・めんつゆ・コンソメ</li>
+      <li>調味料は使い切れずに余りやすいため、最初は「作りたい料理に必要な調味料だけ買う」方針が無駄を防げる。</li>
+    </ul>
+
+    <div class="section-title">使い方と応用</div>
+    <div class="usage-grid">
+      <div class="usage-card">
+        <strong>🍚 まずは炊飯器を買う</strong>
+        迷ったらまず炊飯器を買うべき。ご飯が自分で炊けるだけで食費と栄養が劇的に改善する。5,000円程度の安いものでOK。
+      </div>
+      <div class="usage-card">
+        <strong>📦 調理器具は100均から</strong>
+        最初はダイソーで基本セットを1,000〜1,500円で揃える。「続くかどうかわからない」段階で高価な器具は不要。
+      </div>
+      <div class="usage-card">
+        <strong>🧂 めんつゆは「万能調味料」</strong>
+        めんつゆは一本あるだけでそば・うどん・煮物・炒め物・浸し物すべてに使える。初心者の強い味方。
+      </div>
+      <div class="usage-card">
+        <strong>🔥 最初は「中火以下」の法則</strong>
+        焦げる・失敗するほとんどの原因は「火が強すぎること」。料理に慣れるまでは中火以下で時間をかけて調理する。
+      </div>
+    </div>
+
+    <div class="app-section">
+      <div class="section-title">参考になるサービス</div>
+      <div class="app-grid">
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🎥</span>YouTube「料理 初心者」</div>
+          <span class="app-type">無料</span>
+          <div class="app-desc">「包丁の持ち方」「火加減の見方」「玉ねぎの切り方」など動画で視覚的に学べる。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">🏪</span>ダイソー・セリア</div>
+          <span class="app-type">現地購入</span>
+          <div class="app-desc">フライ返し・菜箸・計量スプーン・保存容器など調理器具の多くが100円で揃う。</div>
+        </div>
+        <div class="app-card">
+          <div class="app-name"><span class="app-icon">📚</span>白ごはん.com</div>
+          <span class="app-type">無料（Web）</span>
+          <div class="app-desc">日本料理の基礎がとても丁寧に解説されている。「出汁の取り方」「煮物の基本」など信頼性が高い。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="source-section">
+      <div class="source-label">出典</div>
+      <ul class="source-list">
+        <li>学生お部屋探しナビ「自炊の心得7か条とは？」 https://www.chinmasa-campus.jp/blog/entry-236842/</li>
+        <li>ウカルメ「一人暮らし、自炊のはじめかた完全ガイド」 https://ukaru.me/note/life/23782/</li>
+        <li>西村不動産「自炊は難しい？初心者向け簡単レシピをご紹介」 https://www.nishimura-fudosan.jp/blog/entry-613603/</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<footer>
+  <strong>大学生の自炊サバイバルハンドブック</strong><br>
+  調査・編集：2026年4月 ／ 情報は各公式サービス・サイトを出典としています
+</footer>
+
+</body>
+</html>
