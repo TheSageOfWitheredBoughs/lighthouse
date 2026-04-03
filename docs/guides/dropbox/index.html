@@ -1263,15 +1263,165 @@ YYYYMMDD_科目名_第N回.pdf
         </div>
       </div>
 
-      <div class="pending-section reveal">
-        <div class="pending-icon">🔍</div>
-        <div class="pending-title">この章は確認待ちです</div>
-        <div class="pending-desc">
-          計画書に記載のとおり、「Antigravity」が何を指すかの確認が必要です。<br><br>
-          <strong>候補A：</strong>antigravity.codes（AIコーディングアシスタントツール）<br>
-          <strong>候補B：</strong>あなた独自のGemini CLI + Dockerエージェントシステム<br><br>
-          どちらを解説すべきか教えてください。確認後すぐに実装します。
+      <div class="callout note reveal">
+        <div class="callout-icon">🤖</div>
+        <div class="callout-body">
+          <strong>Antigravityとは？</strong>
+          GoogleのGemini AIを搭載した<strong>AIエージェントIDE</strong>です。「ワークフロー」と呼ばれるMarkdownファイルに手順を書いておくと、AIが自動でコードの生成・ファイル整理・繰り返し作業を実行してくれます。Dropboxと組み合わせると、授業資料の自動整理やレポートのバックアップを自動化できます。
         </div>
+      </div>
+
+      <div class="sub-head reveal">
+        <span class="sub-badge">インストール</span>
+        <span class="sub-title">Antigravityのセットアップ</span>
+      </div>
+
+      <div class="accordion-list">
+
+        <details class="acc-item reveal d1">
+          <summary class="acc-summary">
+            <span class="acc-num">1</span>
+            <span class="acc-label">前提条件の確認（Node.js または Python）</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <p>Antigravityのインストールには<strong>Node.js</strong>または<strong>Python</strong>が必要です。インストール済みか確認します：</p>
+                <div class="code-wrap">
+                  <pre class="code-block"># バージョン確認（どちらか一方でOK）
+node --version   # v18以上推奨
+python --version # Python 3.8以上推奨</pre>
+                  <button class="copy-btn" data-copy="node --version" aria-label="コピー">コピー</button>
+                </div>
+                <div class="callout note">
+                  <div class="callout-icon">💡</div>
+                  <div class="callout-body">Node.jsが入っていない場合は <code>nodejs.org</code> からLTS版をダウンロードしてインストールしてください。Pythonは <code>python.org</code> から。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="acc-item reveal d2">
+          <summary class="acc-summary">
+            <span class="acc-num">2</span>
+            <span class="acc-label">Antigravityをインストールする</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <p>コマンドプロンプト（Windows）またはターミナル（Mac）を開き、以下を実行します：</p>
+                <div class="code-wrap">
+                  <pre class="code-block"># Node.js（npx）でインストール
+npx antigravity-ide my-project
+
+# または Pythonのpipでインストール
+pip install git+https://github.com/study8677/antigravity-workspace-template.git#subdirectory=cli
+ag init my-project</pre>
+                  <button class="copy-btn" data-copy="npx antigravity-ide my-project" aria-label="コピー">コピー</button>
+                </div>
+                <p>インストールが完了すると、プロジェクトフォルダ内に <code>.agent/</code> ディレクトリが作成されます。これがAntigravityの「脳」です。</p>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="acc-item reveal d3">
+          <summary class="acc-summary">
+            <span class="acc-num">3</span>
+            <span class="acc-label">ディレクトリ構造を理解する</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <p>インストール後、プロジェクトフォルダは以下の構成になります：</p>
+                <div class="code-wrap">
+                  <pre class="code-block">my-project/
+└── .agent/
+    ├── workflows/   ← 自動化の手順書を置く場所
+    ├── skills/      ← AIが学習したスキル
+    ├── memory/      ← AIの長期記憶
+    └── rules/       ← プロジェクトのルール定義</pre>
+                  <button class="copy-btn" data-copy=".agent/workflows/" aria-label="コピー">コピー</button>
+                </div>
+                <p><strong>workflows/ フォルダ</strong>が最も重要です。ここにMarkdownファイルを置くことで、AIへの指示（ワークフロー）を定義します。</p>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="acc-item reveal d4">
+          <summary class="acc-summary">
+            <span class="acc-num">4</span>
+            <span class="acc-label">はじめてのワークフローを作る</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <p>ワークフローは<strong>YAMLフロントマター付きのMarkdownファイル</strong>です。<code>.agent/workflows/hello.md</code> を作成して試してみましょう：</p>
+                <div class="code-wrap">
+                  <pre class="code-block">---
+description: テスト用のワークフロー
+---
+
+## 手順
+
+1. 現在の日時を確認する
+2. "Hello, Antigravity!" というテキストファイルを作成する
+3. 完了を報告する</pre>
+                  <button class="copy-btn" data-copy="---&#10;description: テスト用のワークフロー&#10;---&#10;&#10;## 手順&#10;&#10;1. 現在の日時を確認する&#10;2. &quot;Hello, Antigravity!&quot; というテキストファイルを作成する&#10;3. 完了を報告する" aria-label="コピー">コピー</button>
+                </div>
+                <p>AIに「<code>hello</code>ワークフローを実行して」と指示すると、手順通りに自動実行されます。</p>
+                <div class="callout tip">
+                  <div class="callout-icon">💡</div>
+                  <div class="callout-body">
+                    <strong>ワークフローの便利なオプション</strong><br>
+                    <code>// turbo</code> — そのステップを自動実行（確認なし）<br>
+                    <code>// turbo-all</code> — 全ステップを自動実行<br>
+                    <code>// parallel</code> — 複数ステップを同時実行
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="acc-item reveal d5">
+          <summary class="acc-summary">
+            <span class="acc-num">5</span>
+            <span class="acc-label">基本的なCLI操作</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <div class="code-wrap">
+                  <pre class="code-block"># プロジェクトの初期化
+ag init my-project
+
+# ワークフローの一覧表示
+ag workflows list
+
+# ワークフローの実行
+ag run [ワークフロー名]
+
+# AIエージェントとの対話モード
+ag chat</pre>
+                  <button class="copy-btn" data-copy="ag workflows list" aria-label="コピー">コピー</button>
+                </div>
+                <div class="callout note">
+                  <div class="callout-icon">💡</div>
+                  <div class="callout-body">AntigravityはCursor・Claude Code・VS Code + Copilot・Gemini CLIなど主要なAI IDEと連携できます。すでに使っているAI開発環境にそのまま組み込めます。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
       </div>
     </section>
 
@@ -1289,20 +1439,153 @@ YYYYMMDD_科目名_第N回.pdf
         </div>
       </div>
 
-      <div class="pending-section reveal">
-        <div class="pending-icon">⚙️</div>
-        <div class="pending-title">Ch6の確認後に実装します</div>
-        <div class="pending-desc">
-          計画書に記載の自動化レシピ（授業資料の自動整理・レポートバックアップ・フォルダ構造自動生成・Dropbox API連携）は、Ch6のAntigravityの種別確認後に実装します。
+      <div class="callout note reveal">
+        <div class="callout-icon">🔗</div>
+        <div class="callout-body">
+          <strong>この章でやること</strong>
+          AntigravityのワークフローからDropboxを操作するレシピを実装します。Dropboxはファイルを同期するフォルダとして扱うため、APIなしでもワークフローからファイル操作が可能です。
         </div>
       </div>
 
-      <div class="callout tip reveal">
-        <div class="callout-icon">📋</div>
-        <div class="callout-body">
-          <strong>実装予定のレシピ（Ch6確認後）</strong>
-          授業資料の自動整理 / レポートの自動バックアップ / フォルダ構造の自動生成 / Dropbox APIとの連携設定 / GitHub Actions によるCI/CD化（Sub-B）
+      <div class="sub-head reveal">
+        <span class="sub-badge">レシピ 1</span>
+        <span class="sub-title">授業資料の自動整理ワークフロー</span>
+      </div>
+
+      <div class="card reveal">
+        <p>「ダウンロードフォルダ」に溜まった授業PDFを、科目別・日付別に自動でDropboxへ整理するワークフローです。</p>
+        <p style="margin-top:10px;"><code>.agent/workflows/organize-lecture.md</code> として保存してください：</p>
+        <div class="code-wrap" style="margin-top:14px;">
+          <pre class="code-block">---
+description: ダウンロードフォルダの授業資料をDropboxの科目フォルダへ整理する
+---
+
+## 手順 // turbo-all
+
+1. ~/Downloads フォルダ内の .pdf, .pptx, .docx ファイルを一覧表示する
+2. ファイル名から科目名と日付を判定する（例: "第3回_経済学概論" → 科目: 経済学概論）
+3. ~/Dropbox/授業資料/[科目名]/YYYY-MM/ フォルダが存在しない場合は作成する
+4. 各ファイルを対応するフォルダに移動する（移動前にコンソールで確認を表示）
+5. 整理したファイルの件数と移動先を一覧で報告する</pre>
+          <button class="copy-btn" data-copy="---&#10;description: ダウンロードフォルダの授業資料をDropboxの科目フォルダへ整理する&#10;---" aria-label="コピー">コピー</button>
         </div>
+        <div class="callout tip" style="margin-top:14px;">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">AIに「organize-lectureワークフローを実行して」と言うだけで自動整理が走ります。週1回実行する習慣をつけると効果的です。</div>
+        </div>
+      </div>
+
+      <div class="sub-head reveal" style="margin-top:32px;">
+        <span class="sub-badge">レシピ 2</span>
+        <span class="sub-title">レポート自動バックアップワークフロー</span>
+      </div>
+
+      <div class="card reveal">
+        <p>作業中のレポートを定期的にDropboxの「バックアップ」フォルダへコピーし、日付付きのバージョンとして保存します。</p>
+        <div class="code-wrap" style="margin-top:14px;">
+          <pre class="code-block">---
+description: 作業中レポートのバックアップをDropboxに作成する
+---
+
+## 手順
+
+1. ~/Dropbox/自分のレポート/作成中/ フォルダのファイルを一覧表示する
+2. 各ファイルをコピーし、ファイル名に今日の日付（YYYYMMDD）を付加する
+   例: レポート.docx → レポート_backup_20260520.docx
+3. ~/Dropbox/自分のレポート/バックアップ/ フォルダに保存する  // turbo
+4. 7日以上前のバックアップが5件を超えている場合は古い順に削除を提案する
+5. バックアップ完了を報告する</pre>
+          <button class="copy-btn" data-copy="---&#10;description: 作業中レポートのバックアップをDropboxに作成する&#10;---" aria-label="コピー">コピー</button>
+        </div>
+      </div>
+
+      <div class="sub-head reveal" style="margin-top:32px;">
+        <span class="sub-badge">レシピ 3</span>
+        <span class="sub-title">学期初め：フォルダ構造の自動生成</span>
+      </div>
+
+      <div class="card reveal">
+        <p>学期が始まるたびに手動でフォルダを作るのは面倒です。履修科目を渡すだけでDropboxの全フォルダを一括作成します。</p>
+        <div class="code-wrap" style="margin-top:14px;">
+          <pre class="code-block">---
+description: 新学期の履修科目フォルダをDropboxに一括作成する
+---
+
+## 手順
+
+1. ユーザーに学期名（例: 2026年度前期）と履修科目のリストを入力してもらう
+2. ~/Dropbox/授業資料/[学期名]/ フォルダを作成する  // turbo
+3. 各科目について以下のサブフォルダを作成する:
+   - [科目名]/授業スライド/
+   - [科目名]/自分のノート/
+   - [科目名]/レポート/
+4. ~/Dropbox/自分のレポート/[学期名]/ フォルダも同様に作成する  // turbo
+5. 作成したフォルダ構造をツリー形式で表示して完了を報告する</pre>
+          <button class="copy-btn" data-copy="---&#10;description: 新学期の履修科目フォルダをDropboxに一括作成する&#10;---" aria-label="コピー">コピー</button>
+        </div>
+        <div class="callout tip" style="margin-top:14px;">
+          <div class="callout-icon">🎯</div>
+          <div class="callout-body">「新学期フォルダ作成ワークフローを実行して。科目は経済学概論・経営学・英語・情報処理です」と一言伝えるだけで、全フォルダが自動生成されます。</div>
+        </div>
+      </div>
+
+      <div class="sub-head reveal" style="margin-top:32px;">
+        <span class="sub-badge">レシピ 4</span>
+        <span class="sub-title">Dropbox API連携（上級者向け）</span>
+      </div>
+
+      <div class="accordion-list">
+        <details class="acc-item reveal d1">
+          <summary class="acc-summary">
+            <span class="acc-num">1</span>
+            <span class="acc-label">Dropbox APIトークンの取得</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <p>DropboxフォルダへのアクセスではなくAPIでファイルを操作したい場合（例：自動アップロードスクリプト）は、アクセストークンが必要です。</p>
+                <p><strong>取得手順：</strong><br>
+                1. <code>www.dropbox.com/developers/apps</code> にアクセス<br>
+                2.「アプリを作成」→「Scoped access」→「Full Dropbox」を選択<br>
+                3. アプリ名を入力して作成<br>
+                4.「Generate access token」でトークンを取得</p>
+                <div class="callout critical">
+                  <div class="callout-icon">🔐</div>
+                  <div class="callout-body">取得したトークンは絶対にGitHubなどに公開しないこと。<code>.env</code>ファイルに保存し、<code>.gitignore</code>に追加してください。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+        <details class="acc-item reveal d2">
+          <summary class="acc-summary">
+            <span class="acc-num">2</span>
+            <span class="acc-label">AntigravityからAPIを呼び出すワークフロー</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <div class="code-wrap">
+                  <pre class="code-block">---
+description: Dropbox APIを使ってファイルをアップロードする
+---
+
+## 手順
+
+1. .env ファイルから DROPBOX_TOKEN を読み込む
+2. アップロードするファイルパスをユーザーに確認する
+3. curl または Python dropbox SDKを使ってAPIリクエストを実行する:
+   POST https://content.dropboxapi.com/2/files/upload
+   Authorization: Bearer [DROPBOX_TOKEN]
+4. アップロード結果（ファイルパス・サイズ）を表示する</pre>
+                  <button class="copy-btn" data-copy="---&#10;description: Dropbox APIを使ってファイルをアップロードする&#10;---" aria-label="コピー">コピー</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -1320,12 +1603,149 @@ YYYYMMDD_科目名_第N回.pdf
         </div>
       </div>
 
-      <div class="pending-section reveal">
-        <div class="pending-icon">🔧</div>
-        <div class="pending-title">Ch6・Ch7の確認後に実装します</div>
-        <div class="pending-desc">
-          この章はオプション（任意スキップ可）です。Ch6のAntigravity確認後に実装します。
+      <div class="callout note reveal">
+        <div class="callout-icon">⚡</div>
+        <div class="callout-body">
+          <strong>この章はオプションです（任意スキップ可）</strong>
+          GitHub Actionsを使うと、AntigravityのワークフローをPCを起動しなくても<strong>自動・定期実行</strong>できます。「毎日深夜にバックアップを自動実行」「毎週月曜にフォルダ整理」といった定期タスクを設定できます。
         </div>
+      </div>
+
+      <div class="sub-head reveal">
+        <span class="sub-badge">前提</span>
+        <span class="sub-title">GitHubリポジトリの準備</span>
+      </div>
+
+      <div class="card reveal">
+        <p>AntigravityプロジェクトフォルダをGitHubリポジトリとして管理している必要があります。まだの場合：</p>
+        <div class="code-wrap" style="margin-top:12px;">
+          <pre class="code-block">cd my-project
+git init
+git add .
+git commit -m "initial: Antigravity project setup"
+# GitHubでリポジトリを作成してからpush
+git remote add origin https://github.com/[ユーザー名]/[リポジトリ名].git
+git push -u origin main</pre>
+          <button class="copy-btn" data-copy="git init && git add . && git commit -m 'initial: Antigravity project setup'" aria-label="コピー">コピー</button>
+        </div>
+      </div>
+
+      <div class="sub-head reveal" style="margin-top:28px;">
+        <span class="sub-badge">設定</span>
+        <span class="sub-title">GitHub Actionsワークフローファイルの作成</span>
+      </div>
+
+      <div class="accordion-list">
+
+        <details class="acc-item reveal d1">
+          <summary class="acc-summary">
+            <span class="acc-num">1</span>
+            <span class="acc-label">Dropboxトークンをシークレットに登録する</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <p>GitHubリポジトリの Settings → Secrets and variables → Actions → 「New repository secret」をクリック。</p>
+                <p>名前: <code>DROPBOX_TOKEN</code>、値: Ch7で取得したDropbox APIトークンを貼り付けて保存します。</p>
+                <div class="callout tip">
+                  <div class="callout-icon">🔐</div>
+                  <div class="callout-body">シークレットに登録した値はGitHubのログに表示されません。安全にトークンを管理できます。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="acc-item reveal d2">
+          <summary class="acc-summary">
+            <span class="acc-num">2</span>
+            <span class="acc-label">定期バックアップのActionsファイルを作成する</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <p>リポジトリ内に <code>.github/workflows/dropbox-backup.yml</code> を作成します：</p>
+                <div class="code-wrap">
+                  <pre class="code-block">name: Dropbox 定期バックアップ
+
+on:
+  schedule:
+    # 毎週月曜の午前2時（JST = UTC+15:00）に実行
+    - cron: '0 17 * * 0'
+  workflow_dispatch:  # 手動実行も可能にする
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Python セットアップ
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Dropbox SDK インストール
+        run: pip install dropbox
+
+      - name: バックアップスクリプトを実行
+        env:
+          DROPBOX_TOKEN: ${{ secrets.DROPBOX_TOKEN }}
+        run: python scripts/backup.py</pre>
+                  <button class="copy-btn" data-copy="name: Dropbox 定期バックアップ" aria-label="コピー">コピー</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="acc-item reveal d3">
+          <summary class="acc-summary">
+            <span class="acc-num">3</span>
+            <span class="acc-label">バックアップスクリプト本体を作成する</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap">
+            <div class="acc-body-inner">
+              <div class="acc-body">
+                <p><code>scripts/backup.py</code> を作成します：</p>
+                <div class="code-wrap">
+                  <pre class="code-block">import dropbox
+import os
+from datetime import datetime
+
+TOKEN = os.environ['DROPBOX_TOKEN']
+dbx = dropbox.Dropbox(TOKEN)
+
+# バックアップ対象フォルダ（Dropbox内のパス）
+SOURCE = '/自分のレポート/作成中'
+DEST   = '/自分のレポート/バックアップ'
+today  = datetime.now().strftime('%Y%m%d')
+
+# ファイル一覧を取得してコピー
+result = dbx.files_list_folder(SOURCE)
+for entry in result.entries:
+    if isinstance(entry, dropbox.files.FileMetadata):
+        name, ext = os.path.splitext(entry.name)
+        dest_path = f"{DEST}/{name}_backup_{today}{ext}"
+        dbx.files_copy_v2(entry.path_display, dest_path)
+        print(f"✅ バックアップ完了: {dest_path}")
+
+print("🎉 全バックアップ完了")</pre>
+                  <button class="copy-btn" data-copy="import dropbox" aria-label="コピー">コピー</button>
+                </div>
+                <div class="callout tip" style="margin-top:12px;">
+                  <div class="callout-icon">🚀</div>
+                  <div class="callout-body">GitHubの Actions タブから「Run workflow」ボタンで手動実行もできます。設定後すぐに動作確認してみましょう。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+
       </div>
     </section>
 
