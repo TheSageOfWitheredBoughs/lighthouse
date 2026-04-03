@@ -20,13 +20,14 @@
       --teal-lt:   #14a085;
       --teal-dim:  #0a5559;
       --rust:      #c0392b;
+      --rust-lt:   #e74c3c;
       --muted:     #888070;
       --border:    #d4cfc4;
-      --shadow:    rgba(26,26,46,0.12);
+      --shadow:    rgba(26,26,46,0.10);
+      --shadow-lg: rgba(26,26,46,0.18);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
 
     body {
@@ -37,478 +38,367 @@
       overflow-x: hidden;
     }
 
+    /* ── PROGRESS BAR ── */
+    .progress-bar {
+      position: fixed; top: 0; left: 0;
+      height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--amber), var(--teal-lt));
+      z-index: 1000;
+      transition: width .08s linear;
+    }
+
     /* ── HEADER ── */
     .site-header {
       background: var(--ink);
       color: #fff;
-      padding: 0;
       position: relative;
       overflow: hidden;
     }
-    .header-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 56px 32px 48px;
-      position: relative;
-      z-index: 1;
-    }
-    .header-eyebrow {
-      display: inline-block;
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--amber);
-      border: 1px solid var(--amber-dim);
-      padding: 4px 12px;
-      border-radius: 2px;
-      margin-bottom: 20px;
-      opacity: 0;
-      animation: fadeUp .5s .1s ease forwards;
-    }
-    .header-title {
-      font-size: clamp(2rem, 5vw, 3.2rem);
-      font-weight: 900;
-      line-height: 1.15;
-      letter-spacing: -.02em;
-      opacity: 0;
-      animation: fadeUp .55s .2s ease forwards;
-    }
-    .header-title em {
-      font-style: normal;
-      color: var(--amber);
-    }
-    .header-sub {
-      margin-top: 16px;
-      font-size: 1rem;
-      color: rgba(255,255,255,.65);
-      max-width: 520px;
-      opacity: 0;
-      animation: fadeUp .55s .35s ease forwards;
-    }
-    .header-meta {
-      margin-top: 28px;
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fadeUp .5s .45s ease forwards;
-    }
-    .meta-tag {
-      font-size: 12px;
-      color: rgba(255,255,255,.5);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .meta-tag svg { opacity: .7; }
-
-    /* decorative grid lines */
     .header-deco {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background-image:
         linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
       background-size: 40px 40px;
     }
-    /* amber accent bar */
     .header-accent {
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 4px;
+      position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
       background: linear-gradient(to bottom, var(--amber), var(--teal));
     }
+    .header-inner {
+      max-width: 900px; margin: 0 auto;
+      padding: 56px 32px 48px;
+      position: relative; z-index: 1;
+    }
+    .header-eyebrow {
+      display: inline-block;
+      font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--amber); border: 1px solid var(--amber-dim);
+      padding: 4px 12px; border-radius: 2px; margin-bottom: 20px;
+    }
+    .header-title {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900; line-height: 1.15; letter-spacing: -.02em;
+    }
+    .header-title em { font-style: normal; color: var(--amber); }
+    .header-sub {
+      margin-top: 16px; font-size: 1rem;
+      color: rgba(255,255,255,.65); max-width: 520px;
+    }
+    .header-meta {
+      margin-top: 28px; display: flex; gap: 20px; flex-wrap: wrap;
+    }
+    .meta-tag {
+      font-size: 12px; color: rgba(255,255,255,.5);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .meta-tag svg { opacity: .7; flex-shrink: 0; }
 
-    /* ── NAV BAR ── */
+    /* header entrance animations — only on load, separate from scroll-reveal */
+    @media (prefers-reduced-motion: no-preference) {
+      .header-eyebrow { animation: hdrFade .5s .05s ease both; }
+      .header-title   { animation: hdrFade .5s .15s ease both; }
+      .header-sub     { animation: hdrFade .5s .28s ease both; }
+      .header-meta    { animation: hdrFade .5s .38s ease both; }
+    }
+    @keyframes hdrFade {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: none; }
+    }
+
+    /* ── STICKY NAV ── */
     .toc-bar {
       background: var(--ink-soft);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 100;
       border-bottom: 2px solid var(--amber-dim);
     }
     .toc-inner {
-      max-width: 900px;
-      margin: 0 auto;
+      max-width: 900px; margin: 0 auto;
       padding: 0 32px;
-      display: flex;
-      gap: 0;
-      overflow-x: auto;
-      scrollbar-width: none;
+      display: flex; gap: 0; overflow-x: auto; scrollbar-width: none;
     }
     .toc-inner::-webkit-scrollbar { display: none; }
     .toc-link {
-      display: block;
-      padding: 12px 16px;
-      color: rgba(255,255,255,.6);
-      text-decoration: none;
-      font-size: 13px;
-      white-space: nowrap;
+      display: block; padding: 12px 16px;
+      color: rgba(255,255,255,.55); text-decoration: none;
+      font-size: 13px; white-space: nowrap;
       border-bottom: 3px solid transparent;
       transition: color .2s, border-color .2s;
     }
-    .toc-link:hover {
-      color: var(--amber-lt);
-      border-bottom-color: var(--amber-lt);
-    }
+    .toc-link:hover { color: rgba(255,255,255,.85); border-bottom-color: rgba(255,255,255,.3); }
+    .toc-link.is-active { color: var(--amber-lt); border-bottom-color: var(--amber-lt); }
 
     /* ── MAIN ── */
-    main {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 56px 32px 80px;
+    main { max-width: 900px; margin: 0 auto; padding: 56px 32px 80px; }
+
+    section { margin-bottom: 64px; }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity .55s ease, transform .55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal.d1 { transition-delay: .05s; }
+    .reveal.d2 { transition-delay: .12s; }
+    .reveal.d3 { transition-delay: .19s; }
+    .reveal.d4 { transition-delay: .26s; }
+    .reveal.d5 { transition-delay: .33s; }
+    .reveal.d6 { transition-delay: .40s; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
     }
 
-    /* ── SECTION TITLE ── */
+    /* ── SECTION LABEL ── */
     .section-label {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 28px;
-      opacity: 0;
-      animation: fadeUp .5s ease forwards;
+      display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
     }
     .section-num {
       width: 36px; height: 36px;
-      background: var(--ink);
-      color: var(--amber);
-      font-size: 14px;
-      font-weight: 800;
-      border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+      background: var(--ink); color: var(--amber);
+      font-size: 14px; font-weight: 800; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .section-title {
-      font-size: 1.45rem;
-      font-weight: 800;
-      letter-spacing: -.01em;
-      color: var(--ink);
+    .section-title { font-size: 1.45rem; font-weight: 800; letter-spacing: -.01em; }
+
+    /* ── INTRO BOX ── */
+    .intro-box {
+      background: linear-gradient(135deg, var(--teal-dim) 0%, var(--teal) 100%);
+      color: #fff; border-radius: 10px; padding: 32px 36px;
+      margin-bottom: 40px;
+      display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: center;
+    }
+    @media (max-width: 560px) { .intro-box { grid-template-columns: 1fr; } }
+    .intro-box p { font-size: 1rem; line-height: 1.85; }
+    .intro-box strong { color: var(--amber-lt); }
+    .intro-big {
+      font-size: clamp(2.8rem, 7vw, 4.5rem); font-weight: 900;
+      color: rgba(255,255,255,.1); line-height: 1; text-align: right; letter-spacing: -.04em;
+      user-select: none;
     }
 
-    /* ── CARDS ── */
-    .card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 28px 32px;
-      margin-bottom: 16px;
-      box-shadow: 0 2px 8px var(--shadow);
-      opacity: 0;
-      animation: fadeUp .5s ease forwards;
+    /* ── STORAGE VIZ ── */
+    .storage-bar-wrap {
+      background: var(--paper-alt); border-radius: 6px;
+      padding: 18px 22px; margin: 16px 0;
     }
+    .storage-label { font-size: .85rem; color: var(--ink-soft); margin-bottom: 10px; font-weight: 600; }
+    .storage-track {
+      height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; margin-bottom: 8px;
+    }
+    .storage-fill {
+      height: 100%; border-radius: 5px;
+      background: linear-gradient(90deg, var(--teal), var(--amber));
+      width: 0;
+      transition: width 1.4s cubic-bezier(.4,0,.2,1);
+    }
+    .storage-legend {
+      display: flex; gap: 16px; font-size: .8rem; color: var(--muted); flex-wrap: wrap;
+    }
+    .storage-legend span { display: flex; align-items: center; gap: 5px; }
+    .leg-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+    .leg-used  { background: var(--teal); }
+    .leg-free  { background: var(--border); }
+
+    /* ── REASON CARDS ── */
     .card-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 40px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px;
     }
-    @media (max-width: 640px) { .card-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .card-grid { grid-template-columns: 1fr; } }
 
     .reason-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 24px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 2px 8px var(--shadow);
-      opacity: 0;
-      animation: fadeUp .5s ease forwards;
+      background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 24px;
+      position: relative; overflow: hidden; box-shadow: 0 2px 8px var(--shadow);
       transition: transform .2s, box-shadow .2s;
     }
-    .reason-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 20px var(--shadow);
-    }
+    .reason-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px var(--shadow-lg); }
     .reason-card::before {
-      content: "";
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 4px;
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
       background: var(--teal);
     }
     .reason-card.amber::before { background: var(--amber); }
-    .reason-card h3 {
-      font-size: 1rem;
-      font-weight: 800;
-      margin-bottom: 8px;
-      padding-left: 8px;
-    }
-    .reason-card p {
-      font-size: .9rem;
-      color: var(--ink-soft);
-      padding-left: 8px;
-      line-height: 1.65;
-    }
-    .reason-icon {
-      font-size: 1.8rem;
-      padding-left: 8px;
-      margin-bottom: 10px;
-      display: block;
-    }
+    .reason-icon { font-size: 1.8rem; padding-left: 8px; margin-bottom: 10px; display: block; }
+    .reason-card h3 { font-size: 1rem; font-weight: 800; margin-bottom: 8px; padding-left: 8px; }
+    .reason-card p { font-size: .9rem; color: var(--ink-soft); padding-left: 8px; line-height: 1.65; }
 
-    /* ── STEPS (ACCORDION) ── */
+    /* ── ACCORDION (STEPS) ── */
     .steps-list { margin-bottom: 40px; }
 
     .step-item {
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      margin-bottom: 10px;
-      overflow: hidden;
-      background: #fff;
-      box-shadow: 0 1px 4px var(--shadow);
-      opacity: 0;
-      animation: fadeUp .5s ease forwards;
+      border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px;
+      background: #fff; box-shadow: 0 1px 4px var(--shadow); overflow: hidden;
     }
 
     .step-header {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 18px 24px;
-      cursor: pointer;
-      user-select: none;
-      transition: background .15s;
-      list-style: none;
+      display: flex; align-items: center; gap: 16px;
+      padding: 18px 24px; cursor: pointer; user-select: none;
+      transition: background .15s; list-style: none;
     }
     .step-header::-webkit-details-marker { display: none; }
     .step-header:hover { background: var(--paper-alt); }
 
-    details[open] > .step-header {
-      background: var(--ink);
-      color: #fff;
-    }
+    details[open] > .step-header { background: var(--ink); color: #fff; }
     details[open] > .step-header .step-badge { background: var(--amber); color: var(--ink); }
     details[open] > .step-header .step-arrow { transform: rotate(90deg); color: var(--amber); }
 
     .step-badge {
-      min-width: 32px; height: 32px;
-      background: var(--ink);
-      color: var(--amber);
-      font-weight: 800;
-      font-size: 13px;
-      border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
+      min-width: 32px; height: 32px; background: var(--ink); color: var(--amber);
+      font-weight: 800; font-size: 13px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
       transition: background .15s, color .15s;
     }
-    .step-label {
-      font-size: 1rem;
-      font-weight: 700;
-      flex: 1;
-    }
+    .step-label { font-size: 1rem; font-weight: 700; flex: 1; }
     .step-arrow {
-      font-size: 18px;
-      color: var(--muted);
-      transition: transform .25s, color .15s;
-      flex-shrink: 0;
+      font-size: 18px; color: var(--muted); flex-shrink: 0;
+      transition: transform .28s cubic-bezier(.4,0,.2,1), color .15s;
     }
 
+    /* smooth accordion */
+    .step-body-wrap {
+      display: grid; grid-template-rows: 0fr;
+      transition: grid-template-rows .3s cubic-bezier(.4,0,.2,1);
+    }
+    details[open] .step-body-wrap { grid-template-rows: 1fr; }
+    .step-body-inner { overflow: hidden; }
     .step-body {
-      padding: 0 24px 22px 72px;
-      font-size: .95rem;
-      color: var(--ink-soft);
-      line-height: 1.75;
+      padding: 6px 24px 22px 72px;
+      font-size: .95rem; color: var(--ink-soft); line-height: 1.75;
     }
     @media (max-width: 520px) { .step-body { padding-left: 24px; } }
 
     .step-body p { margin-bottom: 10px; }
     .step-body p:last-child { margin-bottom: 0; }
 
-    .step-body .note {
-      background: #fffbef;
-      border-left: 3px solid var(--amber);
-      padding: 10px 14px;
-      border-radius: 0 4px 4px 0;
-      font-size: .88rem;
-      margin-top: 12px;
-      color: var(--ink);
+    .note {
+      background: #fffbef; border-left: 3px solid var(--amber);
+      padding: 10px 14px; border-radius: 0 4px 4px 0;
+      font-size: .88rem; margin-top: 12px; color: var(--ink);
     }
-    .step-body .warn {
-      background: #fff5f5;
-      border-left: 3px solid var(--rust);
-      padding: 10px 14px;
-      border-radius: 0 4px 4px 0;
-      font-size: .88rem;
-      margin-top: 12px;
+    .warn {
+      background: #fff5f5; border-left: 3px solid var(--rust);
+      padding: 10px 14px; border-radius: 0 4px 4px 0;
+      font-size: .88rem; margin-top: 12px; color: var(--ink);
     }
-    .step-body code {
-      background: var(--paper-alt);
-      padding: 2px 7px;
-      border-radius: 3px;
-      font-family: "Courier New", "Osaka-Mono", monospace;
-      font-size: .88em;
+
+    /* code with copy button */
+    .code-wrap { position: relative; margin: 10px 0; }
+    .code-block {
+      background: #1e1e2e; color: #cdd6f4;
+      padding: 14px 16px; border-radius: 6px; overflow-x: auto;
+      font-family: "Courier New", "Osaka-Mono", Consolas, monospace;
+      font-size: .85rem; line-height: 1.6; white-space: pre;
+    }
+    .copy-btn {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.6); font-size: 11px; padding: 4px 10px;
+      border-radius: 4px; cursor: pointer; font-family: inherit;
+      transition: background .2s, color .2s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.2); color: #fff; }
+    .copy-btn.copied { color: var(--amber-lt); border-color: var(--amber-dim); }
+
+    code {
+      background: var(--paper-alt); padding: 2px 7px; border-radius: 3px;
+      font-family: "Courier New", "Osaka-Mono", monospace; font-size: .88em;
       color: var(--teal-dim);
     }
 
     /* ── TIPS GRID ── */
     .tips-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 40px;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 40px;
     }
-    @media (max-width: 700px) { .tips-grid { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 440px) { .tips-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 680px) { .tips-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 420px) { .tips-grid { grid-template-columns: 1fr; } }
 
     .tip-card {
-      background: var(--ink);
-      color: #fff;
-      border-radius: 8px;
-      padding: 22px 20px;
-      opacity: 0;
-      animation: fadeUp .5s ease forwards;
-      transition: transform .2s;
+      background: var(--ink); color: #fff; border-radius: 8px; padding: 22px 20px;
+      transition: transform .2s, box-shadow .2s;
     }
-    .tip-card:hover { transform: translateY(-3px); }
+    .tip-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px var(--shadow-lg); }
     .tip-icon { font-size: 1.6rem; margin-bottom: 10px; }
     .tip-title { font-size: .95rem; font-weight: 800; margin-bottom: 6px; color: var(--amber-lt); }
     .tip-body { font-size: .85rem; color: rgba(255,255,255,.7); line-height: 1.65; }
 
     /* ── FAQ ── */
     .faq-list { margin-bottom: 40px; }
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-      opacity: 0;
-      animation: fadeUp .5s ease forwards;
-    }
+
+    .faq-item { border-bottom: 1px solid var(--border); }
+
     .faq-header {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 18px 4px;
-      cursor: pointer;
-      user-select: none;
-      list-style: none;
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 18px 4px; cursor: pointer; user-select: none; list-style: none;
     }
     .faq-header::-webkit-details-marker { display: none; }
-    .faq-q {
-      font-weight: 700;
-      font-size: .98rem;
-      flex: 1;
-      color: var(--ink);
-    }
+    .faq-header:hover .faq-q { color: var(--teal); }
+
     .faq-qlabel {
-      color: var(--teal);
-      font-weight: 900;
-      font-size: 1.1rem;
+      color: var(--teal); font-weight: 900; font-size: 1.1rem; flex-shrink: 0; min-width: 18px;
+    }
+    .faq-q { font-weight: 700; font-size: .98rem; flex: 1; transition: color .2s; }
+    .faq-arrow {
+      color: var(--muted); font-size: 14px; margin-top: 4px;
+      transition: transform .28s cubic-bezier(.4,0,.2,1);
       flex-shrink: 0;
     }
-    .faq-arrow {
-      color: var(--muted);
-      font-size: 16px;
-      margin-top: 3px;
-      transition: transform .25s;
-    }
     details.faq[open] .faq-arrow { transform: rotate(180deg); }
+
+    .faq-body-wrap {
+      display: grid; grid-template-rows: 0fr;
+      transition: grid-template-rows .3s cubic-bezier(.4,0,.2,1);
+    }
+    details.faq[open] .faq-body-wrap { grid-template-rows: 1fr; }
+    .faq-body-inner { overflow: hidden; }
     .faq-body {
-      padding: 0 4px 18px 30px;
-      font-size: .92rem;
-      color: var(--ink-soft);
-      line-height: 1.75;
+      padding: 2px 4px 18px 30px;
+      font-size: .92rem; color: var(--ink-soft); line-height: 1.75;
     }
+    .faq-answer-row {
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .faq-alabel {
+      color: var(--amber-dim); font-weight: 900; font-size: 1.1rem; flex-shrink: 0; min-width: 18px;
+    }
+    .faq-answer-text { flex: 1; }
 
-    /* ── SECTION ── */
-    section { margin-bottom: 56px; }
+    /* ── BACK TO TOP ── */
+    .back-top {
+      position: fixed; bottom: 28px; right: 28px; z-index: 200;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--ink); color: var(--amber);
+      border: none; cursor: pointer; font-size: 18px;
+      box-shadow: 0 4px 16px var(--shadow-lg);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translateY(12px);
+      transition: opacity .3s, transform .3s, background .2s;
+    }
+    .back-top.visible { opacity: 1; transform: none; }
+    .back-top:hover { background: var(--teal); color: #fff; }
 
-    /* ── INTRO BOX ── */
-    .intro-box {
-      background: linear-gradient(135deg, var(--teal-dim), var(--teal));
-      color: #fff;
-      border-radius: 10px;
-      padding: 32px 36px;
-      margin-bottom: 40px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 24px;
-      align-items: center;
-      opacity: 0;
-      animation: fadeUp .55s .1s ease forwards;
+    /* ── CARD (generic) ── */
+    .card {
+      background: #fff; border: 1px solid var(--border); border-radius: 8px;
+      padding: 28px 32px; margin-bottom: 16px; box-shadow: 0 2px 8px var(--shadow);
     }
-    @media (max-width: 560px) { .intro-box { grid-template-columns: 1fr; } }
-    .intro-box p { font-size: 1rem; line-height: 1.8; }
-    .intro-box strong { color: var(--amber-lt); }
-    .intro-big {
-      font-size: clamp(3rem, 8vw, 5rem);
-      font-weight: 900;
-      color: rgba(255,255,255,.12);
-      line-height: 1;
-      text-align: right;
-      letter-spacing: -.04em;
-    }
-
-    /* ── STORAGE VIZ ── */
-    .storage-bar-wrap {
-      background: var(--paper-alt);
-      border-radius: 6px;
-      padding: 20px 24px;
-      margin: 16px 0;
-    }
-    .storage-label { font-size: .88rem; color: var(--ink-soft); margin-bottom: 8px; }
-    .storage-bar {
-      height: 12px;
-      background: var(--border);
-      border-radius: 6px;
-      overflow: hidden;
-      margin-bottom: 4px;
-    }
-    .storage-fill {
-      height: 100%;
-      border-radius: 6px;
-      background: linear-gradient(90deg, var(--teal), var(--amber));
-      width: 0;
-      animation: fillBar 1.2s 1s cubic-bezier(.4,0,.2,1) forwards;
-    }
-    @keyframes fillBar { to { width: var(--fill-pct); } }
-    .storage-info { font-size: .82rem; color: var(--muted); }
+    .card p + p { margin-top: 10px; }
 
     /* ── FOOTER ── */
     footer {
-      background: var(--ink);
-      color: rgba(255,255,255,.4);
-      text-align: center;
-      padding: 32px 24px;
-      font-size: .82rem;
+      background: var(--ink); color: rgba(255,255,255,.35);
+      text-align: center; padding: 32px 24px; font-size: .82rem;
     }
     footer strong { color: var(--amber); }
+    footer a { color: rgba(255,255,255,.4); text-decoration: none; }
+    footer a:hover { color: var(--amber-lt); }
 
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* stagger delays */
-    .d1 { animation-delay: .05s; }
-    .d2 { animation-delay: .12s; }
-    .d3 { animation-delay: .19s; }
-    .d4 { animation-delay: .26s; }
-    .d5 { animation-delay: .33s; }
-    .d6 { animation-delay: .40s; }
-
-    /* ── SCROLL REVEAL ── */
-    .reveal { opacity: 0; transform: translateY(20px); transition: opacity .55s ease, transform .55s ease; }
-    .reveal.visible { opacity: 1; transform: none; }
-
-    /* ── UTILITY ── */
-    .mb24 { margin-bottom: 24px; }
-    .mb40 { margin-bottom: 40px; }
-    .mt8  { margin-top: 8px; }
-
-    a { color: var(--teal); }
-    a:hover { color: var(--teal-lt); }
-
-    strong { color: var(--ink); }
-
-    /* ── PROGRESS BAR ── */
-    .progress-bar {
-      position: fixed;
-      top: 0; left: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--amber), var(--teal-lt));
-      width: 0%;
-      z-index: 999;
-      transition: width .1s;
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .header-inner { padding: 40px 20px 36px; }
+      main { padding: 40px 20px 64px; }
+      .toc-inner { padding: 0 20px; }
+      .back-top { bottom: 20px; right: 20px; }
     }
   </style>
 </head>
@@ -530,66 +420,70 @@
     </p>
     <div class="header-meta">
       <span class="meta-tag">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
         2026-04-03
       </span>
       <span class="meta-tag">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        所要時間 約10分
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        セットアップ 約10分
       </span>
       <span class="meta-tag">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         デジタルツール
       </span>
     </div>
   </div>
 </header>
 
-<!-- NAV -->
-<nav class="toc-bar">
+<!-- STICKY NAV -->
+<nav class="toc-bar" aria-label="ページ内ナビゲーション">
   <div class="toc-inner">
-    <a href="#what" class="toc-link">Dropboxとは</a>
-    <a href="#why" class="toc-link">使う理由</a>
-    <a href="#install" class="toc-link">導入手順</a>
-    <a href="#usage" class="toc-link">活用法</a>
-    <a href="#faq" class="toc-link">よくある質問</a>
+    <a href="#what"    class="toc-link" data-section="what">Dropboxとは</a>
+    <a href="#why"     class="toc-link" data-section="why">使う理由</a>
+    <a href="#install" class="toc-link" data-section="install">導入手順</a>
+    <a href="#usage"   class="toc-link" data-section="usage">活用法</a>
+    <a href="#faq"     class="toc-link" data-section="faq">よくある質問</a>
   </div>
 </nav>
 
 <main>
 
   <!-- INTRO -->
-  <div class="intro-box">
+  <div class="intro-box reveal">
     <p>
       レポートのファイルが見つからない、USBを忘れた、PCが壊れてデータが消えた——<br>
       <strong>Dropboxを使えばこれらの悩みがすべて解消します。</strong><br>
       無料プランで2GBのクラウドストレージが使え、スマートフォン・PC・タブレット間でファイルを自動同期。関大生の定番ツールのひとつです。
     </p>
-    <div class="intro-big" aria-hidden="true">DB</div>
+    <div class="intro-big" aria-hidden="true">2GB<br>無料</div>
   </div>
 
   <!-- SECTION 1: WHAT -->
   <section id="what">
     <div class="section-label reveal">
-      <div class="section-num">1</div>
+      <div class="section-num" aria-hidden="true">1</div>
       <h2 class="section-title">Dropboxとは何か</h2>
     </div>
 
     <div class="card reveal d1">
       <p>
         <strong>Dropbox</strong>はクラウドストレージサービスです。
-        インターネット上の「箱（Box）」にファイルを保存し、インターネットに繋がるどの端末からでもアクセスできます。
+        インターネット上の「箱（Box）」にファイルを保存し、どの端末からでもアクセスできます。
       </p>
-      <p class="mt8">
-        PC・スマホ・タブレットに専用アプリをインストールすると、
-        指定したフォルダが自動的にクラウドと同期されます。
+      <p>
+        PC・スマホ・タブレットに専用アプリをインストールすると、指定したフォルダが自動でクラウドと同期されます。
         一台で保存すれば、他の端末でも即座に反映されます。
       </p>
 
-      <div class="storage-bar-wrap mt8">
-        <div class="storage-label">無料プランのストレージ容量</div>
-        <div class="storage-bar"><div class="storage-fill" style="--fill-pct: 100%"></div></div>
-        <div class="storage-info">2 GB（無料）— レポートのWordファイルは平均0.5MB程度なので、約4,000ファイル分</div>
+      <div class="storage-bar-wrap" style="margin-top:18px;">
+        <div class="storage-label">無料プラン 2GB の容量感（1年生の一般的な使用例）</div>
+        <div class="storage-track">
+          <div class="storage-fill" data-width="18%" style="--fill-pct:18%"></div>
+        </div>
+        <div class="storage-legend">
+          <span><span class="leg-dot leg-used"></span>使用中 約360MB（レポート・資料・ノート写真）</span>
+          <span><span class="leg-dot leg-free"></span>残り 約1.64GB</span>
+        </div>
       </div>
     </div>
   </section>
@@ -597,30 +491,30 @@
   <!-- SECTION 2: WHY -->
   <section id="why">
     <div class="section-label reveal">
-      <div class="section-num">2</div>
+      <div class="section-num" aria-hidden="true">2</div>
       <h2 class="section-title">関大生がDropboxを使う理由</h2>
     </div>
 
     <div class="card-grid">
       <div class="reason-card reveal d1">
-        <span class="reason-icon">💾</span>
+        <span class="reason-icon" aria-hidden="true">💾</span>
         <h3>バックアップが自動化される</h3>
         <p>PCが故障・紛失してもクラウドにデータが残る。レポート提出直前の「消えた」を防ぐ。</p>
       </div>
       <div class="reason-card amber reveal d2">
-        <span class="reason-icon">📱</span>
+        <span class="reason-icon" aria-hidden="true">📱</span>
         <h3>端末を選ばない</h3>
         <p>自宅PC・大学PC・スマホのどれからでも同じファイルを開ける。USBメモリ不要。</p>
       </div>
       <div class="reason-card reveal d3">
-        <span class="reason-icon">👥</span>
+        <span class="reason-icon" aria-hidden="true">👥</span>
         <h3>グループワークがラクになる</h3>
         <p>共有フォルダでメンバーとリアルタイムに共同編集。「最新版どれ？」問題が消える。</p>
       </div>
       <div class="reason-card amber reveal d4">
-        <span class="reason-icon">↩️</span>
+        <span class="reason-icon" aria-hidden="true">↩️</span>
         <h3>ファイルの履歴が残る</h3>
-        <p>誤って上書きや削除しても、無料プランで30日間・180バージョンまで復元できる。</p>
+        <p>誤って上書き・削除しても、無料プランで30日間・180バージョンまで復元できる。</p>
       </div>
     </div>
   </section>
@@ -628,7 +522,7 @@
   <!-- SECTION 3: INSTALL -->
   <section id="install">
     <div class="section-label reveal">
-      <div class="section-num">3</div>
+      <div class="section-num" aria-hidden="true">3</div>
       <h2 class="section-title">導入手順（約10分）</h2>
     </div>
 
@@ -636,87 +530,105 @@
 
       <details class="step-item reveal d1">
         <summary class="step-header">
-          <span class="step-badge">1</span>
+          <span class="step-badge" aria-hidden="true">1</span>
           <span class="step-label">Dropboxアカウントを作成する</span>
-          <span class="step-arrow">›</span>
+          <span class="step-arrow" aria-hidden="true">›</span>
         </summary>
-        <div class="step-body">
-          <p>ブラウザで <strong>dropbox.com</strong> を開き、「登録する」をクリックします。</p>
-          <p>メールアドレスとパスワードを入力して登録。Googleアカウントでのサインアップも可能です。</p>
-          <p>プラン選択では <strong>「Basicプラン（無料）」</strong> を選んでください。有料プランへの誘導画面が出ることがありますが、スキップして問題ありません。</p>
-          <div class="note">
-            💡 大学のメールアドレス（<code>〇〇@kansai-u.ac.jp</code>）でも登録できます。ただし卒業後にアカウントへのアクセスが難しくなる可能性があるため、個人のGmailなど長期利用できるアドレスの使用を推奨します。
+        <div class="step-body-wrap">
+          <div class="step-body-inner">
+            <div class="step-body">
+              <p>ブラウザで <strong>dropbox.com</strong> を開き、「登録する」をクリックします。</p>
+              <p>メールアドレスとパスワードを入力して登録。Googleアカウントでのサインアップも可能です。</p>
+              <p>プラン選択では <strong>「Basicプラン（無料）」</strong> を選んでください。有料プランへの誘導画面が出ることがありますが、スキップして問題ありません。</p>
+              <div class="note">
+                💡 大学のメールアドレス（<code>〇〇@kansai-u.ac.jp</code>）でも登録できます。ただし卒業後にアクセスが難しくなる可能性があるため、個人のGmailなど長期利用できるアドレスを推奨します。
+              </div>
+            </div>
           </div>
         </div>
       </details>
 
       <details class="step-item reveal d2">
         <summary class="step-header">
-          <span class="step-badge">2</span>
+          <span class="step-badge" aria-hidden="true">2</span>
           <span class="step-label">PCにDropboxアプリをインストールする</span>
-          <span class="step-arrow">›</span>
+          <span class="step-arrow" aria-hidden="true">›</span>
         </summary>
-        <div class="step-body">
-          <p>登録後、<strong>dropbox.com/install</strong> からOSに対応したインストーラをダウンロードします。</p>
-          <p><strong>Windows の場合：</strong>ダウンロードした <code>.exe</code> ファイルを実行し、画面の指示に従います。インストール完了後、タスクバーに青いDropboxアイコンが表示されます。</p>
-          <p><strong>Mac の場合：</strong><code>.dmg</code> ファイルを開き、Applicationフォルダにドラッグします。初回起動時にシステム環境設定の許可が必要です。</p>
-          <div class="note">
-            💡 大学の共用PCにはインストールできません。共用PCではブラウザ版（dropbox.com）を使いましょう。ログインしてファイルを閲覧・ダウンロードできます。
+        <div class="step-body-wrap">
+          <div class="step-body-inner">
+            <div class="step-body">
+              <p>登録後、<strong>dropbox.com/install</strong> からOSに対応したインストーラをダウンロードします。</p>
+              <p><strong>Windows の場合：</strong>ダウンロードした <code>.exe</code> ファイルを実行し、画面の指示に従います。インストール完了後、タスクバーに青いDropboxアイコンが表示されます。</p>
+              <p><strong>Mac の場合：</strong><code>.dmg</code> ファイルを開き、Applicationフォルダにドラッグします。初回起動時にシステム環境設定の許可が必要です。</p>
+              <div class="note">
+                💡 大学の共用PCにはインストールできません。共用PCではブラウザ版（dropbox.com）を使いましょう。ログインしてファイルを閲覧・ダウンロードできます。
+              </div>
+            </div>
           </div>
         </div>
       </details>
 
       <details class="step-item reveal d3">
         <summary class="step-header">
-          <span class="step-badge">3</span>
+          <span class="step-badge" aria-hidden="true">3</span>
           <span class="step-label">スマホにDropboxアプリをインストールする</span>
-          <span class="step-arrow">›</span>
+          <span class="step-arrow" aria-hidden="true">›</span>
         </summary>
-        <div class="step-body">
-          <p>App Store（iOS）または Google Play（Android）で「Dropbox」を検索してインストールします。</p>
-          <p>アプリを起動し、PCで登録したメールアドレスとパスワードでログインします。</p>
-          <p>これで、PCで保存したファイルをスマホから確認できるようになります。</p>
-          <div class="note">
-            💡 スマホのストレージを節約するには、アプリ内の設定で「ファイルをオフラインで利用可能にする」をオフにしておきましょう。クラウド上にだけ保存され、スマホには都度ダウンロードして確認する形になります。
+        <div class="step-body-wrap">
+          <div class="step-body-inner">
+            <div class="step-body">
+              <p>App Store（iOS）または Google Play（Android）で「Dropbox」を検索してインストールします。</p>
+              <p>アプリを起動し、PCで登録したメールアドレスとパスワードでログインします。これで、PCで保存したファイルをスマホから確認できるようになります。</p>
+              <div class="note">
+                💡 スマホのストレージを節約するには、アプリ内の設定で「ファイルをオフラインで利用可能にする」をオフにしておきましょう。クラウド上にだけ保存され、スマホには都度ダウンロードして確認する形になります。
+              </div>
+            </div>
           </div>
         </div>
       </details>
 
       <details class="step-item reveal d4">
         <summary class="step-header">
-          <span class="step-badge">4</span>
+          <span class="step-badge" aria-hidden="true">4</span>
           <span class="step-label">同期フォルダを確認・整理する</span>
-          <span class="step-arrow">›</span>
+          <span class="step-arrow" aria-hidden="true">›</span>
         </summary>
-        <div class="step-body">
-          <p>PCにアプリをインストールすると、自動的に <code>ホームフォルダ/Dropbox</code> というフォルダが作成されます。</p>
-          <p>このフォルダ内に保存したファイルはすべて自動的にクラウドへアップロードされます。エクスプローラー（Windows）またはFinder（Mac）から通常のフォルダとして操作できます。</p>
-          <p>最初にフォルダ構成を決めておくと便利です。例：</p>
-          <p>
-            <code>Dropbox/<br>
-            　├── 授業ノート/<br>
-            　│　├── 1年前期/<br>
-            　│　└── 1年後期/<br>
-            　├── レポート/<br>
-            　├── グループワーク/<br>
-            　└── 就活/</code>
-          </p>
-          <div class="warn">
-            ⚠️ 無料プランは2GB。動画ファイルや大容量の画像は同期させず、DropboxにはWord・PDF・PowerPointなどの文書ファイルを優先的に保存しましょう。
+        <div class="step-body-wrap">
+          <div class="step-body-inner">
+            <div class="step-body">
+              <p>PCにアプリをインストールすると、自動的に <code>ホームフォルダ/Dropbox</code> というフォルダが作成されます。このフォルダ内に保存したファイルはすべて自動的にクラウドへアップロードされます。</p>
+              <p>最初にフォルダ構成を決めておくと管理しやすくなります。例：</p>
+              <div class="code-wrap">
+                <pre class="code-block">Dropbox/
+├── 授業ノート/
+│   ├── 1年前期/
+│   └── 1年後期/
+├── レポート/
+├── グループワーク/
+└── 就活/</pre>
+                <button class="copy-btn" data-copy="Dropbox/\n├── 授業ノート/\n│   ├── 1年前期/\n│   └── 1年後期/\n├── レポート/\n├── グループワーク/\n└── 就活/" aria-label="コードをコピー">コピー</button>
+              </div>
+              <div class="warn">
+                ⚠️ 無料プランは2GB。動画ファイルや大容量の画像は同期させず、Word・PDF・PowerPointなどの文書ファイルを優先的に保存しましょう。
+              </div>
+            </div>
           </div>
         </div>
       </details>
 
       <details class="step-item reveal d5">
         <summary class="step-header">
-          <span class="step-badge">5</span>
+          <span class="step-badge" aria-hidden="true">5</span>
           <span class="step-label">選択同期で容量を管理する</span>
-          <span class="step-arrow">›</span>
+          <span class="step-arrow" aria-hidden="true">›</span>
         </summary>
-        <div class="step-body">
-          <p>PCのDropboxアイコンをクリック →「設定（歯車アイコン）」→「環境設定」→「同期」タブを開きます。</p>
-          <p><strong>「選択型同期」</strong>または<strong>「スマートシンク」</strong>を使うと、PC上にダウンロードするフォルダを選択できます。</p>
-          <p>PCのストレージが少ない場合は、古いフォルダのチェックを外してクラウドのみに保存する設定にしましょう。クラウドには残り、ブラウザ版からは引き続きアクセスできます。</p>
+        <div class="step-body-wrap">
+          <div class="step-body-inner">
+            <div class="step-body">
+              <p>PCのDropboxアイコンをクリック →「設定（歯車アイコン）」→「環境設定」→「同期」タブを開きます。</p>
+              <p><strong>「選択型同期」</strong>または<strong>「スマートシンク」</strong>を使うと、PC上にダウンロードするフォルダを選択できます。PCのストレージが少ない場合は、古いフォルダのチェックを外してクラウドのみに保存する設定にしましょう。クラウドには残り、ブラウザ版からは引き続きアクセスできます。</p>
+            </div>
+          </div>
         </div>
       </details>
 
@@ -726,82 +638,93 @@
   <!-- SECTION 4: USAGE -->
   <section id="usage">
     <div class="section-label reveal">
-      <div class="section-num">4</div>
+      <div class="section-num" aria-hidden="true">4</div>
       <h2 class="section-title">こんな使い方がおすすめ</h2>
     </div>
 
     <div class="tips-grid">
       <div class="tip-card reveal d1">
-        <div class="tip-icon">📝</div>
+        <div class="tip-icon" aria-hidden="true">📝</div>
         <div class="tip-title">レポート管理</div>
         <div class="tip-body">提出済み・作成中・下書きのフォルダに分けて管理。どのPCからでも作業を続けられる。</div>
       </div>
       <div class="tip-card reveal d2">
-        <div class="tip-icon">🤝</div>
+        <div class="tip-icon" aria-hidden="true">🤝</div>
         <div class="tip-title">グループワーク</div>
         <div class="tip-body">フォルダを共有するだけで全員が最新版を閲覧・編集できる。メールで送り合う手間がなくなる。</div>
       </div>
       <div class="tip-card reveal d3">
-        <div class="tip-icon">📷</div>
+        <div class="tip-icon" aria-hidden="true">📷</div>
         <div class="tip-title">授業ノートの写真</div>
         <div class="tip-body">スマホで撮った板書写真をDropboxに自動アップロード設定。PCで見返すのがラクになる。</div>
       </div>
       <div class="tip-card reveal d4">
-        <div class="tip-icon">🔗</div>
+        <div class="tip-icon" aria-hidden="true">🔗</div>
         <div class="tip-title">リンク共有</div>
         <div class="tip-body">ファイルを右クリック→「Dropboxリンクをコピー」で、LINEやメールで大きいファイルを送れる。</div>
       </div>
       <div class="tip-card reveal d5">
-        <div class="tip-icon">🗂</div>
+        <div class="tip-icon" aria-hidden="true">🗂</div>
         <div class="tip-title">就活資料の管理</div>
         <div class="tip-body">ES・履歴書・自己PRをDropboxに。外出先からでもスマホで確認・提出できる。</div>
       </div>
       <div class="tip-card reveal d6">
-        <div class="tip-icon">⏪</div>
+        <div class="tip-icon" aria-hidden="true">⏪</div>
         <div class="tip-title">バージョン復元</div>
         <div class="tip-body">ファイルを右クリック→「バージョン履歴」で過去30日分の状態に戻せる。誤削除も安心。</div>
       </div>
     </div>
 
-    <!-- SHARE FOLDER GUIDE -->
+    <!-- SHARE FOLDER -->
     <div class="section-label reveal">
-      <div class="section-num" style="background:var(--teal); color:#fff;">+</div>
+      <div class="section-num" style="background:var(--teal); color:#fff;" aria-hidden="true">+</div>
       <h2 class="section-title" style="font-size:1.15rem;">共有フォルダの作り方（グループワーク向け）</h2>
     </div>
 
     <div class="steps-list">
       <details class="step-item reveal d1">
         <summary class="step-header">
-          <span class="step-badge" style="background:var(--teal); color:#fff;">①</span>
+          <span class="step-badge" style="background:var(--teal); color:#fff;" aria-hidden="true">①</span>
           <span class="step-label">共有したいフォルダを右クリック →「共有」を選ぶ</span>
-          <span class="step-arrow">›</span>
+          <span class="step-arrow" aria-hidden="true">›</span>
         </summary>
-        <div class="step-body">
-          <p>PC上のDropboxフォルダを右クリックすると「Dropboxで共有」メニューが表示されます。</p>
-          <p>ブラウザ版の場合：フォルダにマウスを重ねて「共有」ボタンをクリックします。</p>
+        <div class="step-body-wrap">
+          <div class="step-body-inner">
+            <div class="step-body">
+              <p>PC上のDropboxフォルダを右クリックすると「Dropboxで共有」メニューが表示されます。</p>
+              <p>ブラウザ版の場合：フォルダにマウスを重ねて「共有」ボタンをクリックします。</p>
+            </div>
+          </div>
         </div>
       </details>
       <details class="step-item reveal d2">
         <summary class="step-header">
-          <span class="step-badge" style="background:var(--teal); color:#fff;">②</span>
+          <span class="step-badge" style="background:var(--teal); color:#fff;" aria-hidden="true">②</span>
           <span class="step-label">メンバーのメールアドレスを入力して招待する</span>
-          <span class="step-arrow">›</span>
+          <span class="step-arrow" aria-hidden="true">›</span>
         </summary>
-        <div class="step-body">
-          <p>招待したいメンバーのメールアドレスを入力します。権限は「編集可能」または「閲覧のみ」から選択します。</p>
-          <p>招待されたメンバーが承認すると、同じフォルダが自動同期されます。</p>
-          <div class="note">💡 招待されるメンバーもDropboxアカウントが必要です。持っていない場合は先に登録してもらいましょう。</div>
+        <div class="step-body-wrap">
+          <div class="step-body-inner">
+            <div class="step-body">
+              <p>招待したいメンバーのメールアドレスを入力します。権限は「編集可能」または「閲覧のみ」から選択します。招待されたメンバーが承認すると、同じフォルダが自動同期されます。</p>
+              <div class="note">💡 招待されるメンバーもDropboxアカウントが必要です。持っていない場合は先に登録してもらいましょう。</div>
+            </div>
+          </div>
         </div>
       </details>
       <details class="step-item reveal d3">
         <summary class="step-header">
-          <span class="step-badge" style="background:var(--teal); color:#fff;">③</span>
+          <span class="step-badge" style="background:var(--teal); color:#fff;" aria-hidden="true">③</span>
           <span class="step-label">ファイルの競合に注意する</span>
-          <span class="step-arrow">›</span>
+          <span class="step-arrow" aria-hidden="true">›</span>
         </summary>
-        <div class="step-body">
-          <p>複数人が同じファイルを同時に編集すると「競合コピー」が作成されます。</p>
-          <p>これを防ぐには、<strong>同時編集が必要な場合はGoogle ドキュメント/スプレッドシートのリンクをDropboxに置く</strong>方法が便利です。WordファイルをDropboxで共有すると競合しやすいので注意しましょう。</p>
+        <div class="step-body-wrap">
+          <div class="step-body-inner">
+            <div class="step-body">
+              <p>複数人が同じファイルを同時に編集すると「競合コピー」が作成されます。</p>
+              <p>これを防ぐには、<strong>同時編集が必要な場合はGoogle ドキュメント/スプレッドシートのリンクをDropboxに置く</strong>方法が便利です。WordファイルをDropboxで共有すると競合しやすいので注意しましょう。</p>
+            </div>
+          </div>
         </div>
       </details>
     </div>
@@ -810,7 +733,7 @@
   <!-- SECTION 5: FAQ -->
   <section id="faq">
     <div class="section-label reveal">
-      <div class="section-num">5</div>
+      <div class="section-num" aria-hidden="true">5</div>
       <h2 class="section-title">よくある質問</h2>
     </div>
 
@@ -818,67 +741,109 @@
 
       <details class="faq reveal d1">
         <summary class="faq-header">
-          <span class="faq-qlabel">Q</span>
+          <span class="faq-qlabel" aria-hidden="true">Q</span>
           <span class="faq-q">無料で使えますか？容量は足りますか？</span>
-          <span class="faq-arrow">▾</span>
+          <span class="faq-arrow" aria-hidden="true">▾</span>
         </summary>
-        <div class="faq-body">
-          無料プランで2GBまで使えます。Wordファイル（平均0.5MB）換算で約4,000ファイル分。レポートや授業資料のみであれば数年は十分使えます。動画や大量の写真は入れないようにしましょう。
+        <div class="faq-body-wrap">
+          <div class="faq-body-inner">
+            <div class="faq-body">
+              <div class="faq-answer-row">
+                <span class="faq-alabel" aria-hidden="true">A</span>
+                <span class="faq-answer-text">無料プランで2GBまで使えます。Wordファイル（平均0.5MB）換算で約4,000ファイル分。レポートや授業資料のみであれば数年は十分使えます。動画や大量の写真は入れないようにしましょう。</span>
+              </div>
+            </div>
+          </div>
         </div>
       </details>
 
       <details class="faq reveal d2">
         <summary class="faq-header">
-          <span class="faq-qlabel">Q</span>
+          <span class="faq-qlabel" aria-hidden="true">Q</span>
           <span class="faq-q">インターネットに繋がっていないときはどうなりますか？</span>
-          <span class="faq-arrow">▾</span>
+          <span class="faq-arrow" aria-hidden="true">▾</span>
         </summary>
-        <div class="faq-body">
-          PCのDropboxフォルダに保存されているファイルはオフラインでも開けます。編集した内容は次にインターネットに繋がったときに自動で同期されます。ただし、スマホの「オフライン利用」はファイルごとに設定が必要です。
+        <div class="faq-body-wrap">
+          <div class="faq-body-inner">
+            <div class="faq-body">
+              <div class="faq-answer-row">
+                <span class="faq-alabel" aria-hidden="true">A</span>
+                <span class="faq-answer-text">PCのDropboxフォルダに保存されているファイルはオフラインでも開けます。編集した内容は次にインターネットに繋がったときに自動で同期されます。ただし、スマホの「オフライン利用」はファイルごとに設定が必要です。</span>
+              </div>
+            </div>
+          </div>
         </div>
       </details>
 
       <details class="faq reveal d3">
         <summary class="faq-header">
-          <span class="faq-qlabel">Q</span>
+          <span class="faq-qlabel" aria-hidden="true">Q</span>
           <span class="faq-q">誤ってファイルを削除してしまいました</span>
-          <span class="faq-arrow">▾</span>
+          <span class="faq-arrow" aria-hidden="true">▾</span>
         </summary>
-        <div class="faq-body">
-          無料プランでも削除後30日以内であれば復元できます。ブラウザでdropbox.comにログイン →「削除されたファイル」を開いて対象ファイルを選択 →「復元」をクリックしてください。
+        <div class="faq-body-wrap">
+          <div class="faq-body-inner">
+            <div class="faq-body">
+              <div class="faq-answer-row">
+                <span class="faq-alabel" aria-hidden="true">A</span>
+                <span class="faq-answer-text">無料プランでも削除後30日以内であれば復元できます。ブラウザでdropbox.comにログイン →「削除されたファイル」を開いて対象ファイルを選択 →「復元」をクリックしてください。</span>
+              </div>
+            </div>
+          </div>
         </div>
       </details>
 
       <details class="faq reveal d4">
         <summary class="faq-header">
-          <span class="faq-qlabel">Q</span>
+          <span class="faq-qlabel" aria-hidden="true">Q</span>
           <span class="faq-q">Googleドライブと何が違うのですか？</span>
-          <span class="faq-arrow">▾</span>
+          <span class="faq-arrow" aria-hidden="true">▾</span>
         </summary>
-        <div class="faq-body">
-          どちらもクラウドストレージですが、Dropboxはローカルフォルダへのリアルタイム同期が安定しており、ファイルの操作感がPCのフォルダと変わりません。GoogleドライブはGoogleドキュメントとの連携が強く、容量も15GBと多いです。両方使い分けるのもOKです（例：文書はGoogle、大きいPDFはDropbox）。
+        <div class="faq-body-wrap">
+          <div class="faq-body-inner">
+            <div class="faq-body">
+              <div class="faq-answer-row">
+                <span class="faq-alabel" aria-hidden="true">A</span>
+                <span class="faq-answer-text">どちらもクラウドストレージですが、Dropboxはローカルフォルダへのリアルタイム同期が安定しており、ファイルの操作感がPCのフォルダと変わりません。GoogleドライブはGoogleドキュメントとの連携が強く、容量も15GBと多いです。両方使い分けるのもOKです（例：文書はGoogle、大きいPDFはDropbox）。</span>
+              </div>
+            </div>
+          </div>
         </div>
       </details>
 
       <details class="faq reveal d5">
         <summary class="faq-header">
-          <span class="faq-qlabel">Q</span>
+          <span class="faq-qlabel" aria-hidden="true">Q</span>
           <span class="faq-q">2GBを超えたらどうなりますか？</span>
-          <span class="faq-arrow">▾</span>
+          <span class="faq-arrow" aria-hidden="true">▾</span>
         </summary>
-        <div class="faq-body">
-          新しいファイルの同期ができなくなります。有料プランへのアップグレード（2TB〜）か、不要なファイルの削除が必要です。まずは古い授業のフォルダを整理して容量を確保しましょう。Dropboxアプリの設定画面で現在の使用容量を確認できます。
+        <div class="faq-body-wrap">
+          <div class="faq-body-inner">
+            <div class="faq-body">
+              <div class="faq-answer-row">
+                <span class="faq-alabel" aria-hidden="true">A</span>
+                <span class="faq-answer-text">新しいファイルの同期ができなくなります。有料プランへのアップグレード（2TB〜）か、不要なファイルの削除が必要です。まずは古い授業のフォルダを整理して容量を確保しましょう。Dropboxアプリの設定画面で現在の使用容量を確認できます。</span>
+              </div>
+            </div>
+          </div>
         </div>
       </details>
 
       <details class="faq reveal d6">
         <summary class="faq-header">
-          <span class="faq-qlabel">Q</span>
+          <span class="faq-qlabel" aria-hidden="true">Q</span>
           <span class="faq-q">セキュリティは大丈夫ですか？</span>
-          <span class="faq-arrow">▾</span>
+          <span class="faq-arrow" aria-hidden="true">▾</span>
         </summary>
-        <div class="faq-body">
-          通信・保存ともに暗号化されており、一般的な利用において安全性は高いです。ただし、個人情報が含まれるレポートや、研究上の機密データは大学が指定するシステムを優先して使いましょう。パスワードは他サービスと使い回さず、二段階認証を有効にすることを推奨します。
+        <div class="faq-body-wrap">
+          <div class="faq-body-inner">
+            <div class="faq-body">
+              <div class="faq-answer-row">
+                <span class="faq-alabel" aria-hidden="true">A</span>
+                <span class="faq-answer-text">通信・保存ともに暗号化されており、一般的な利用において安全性は高いです。ただし、個人情報が含まれるレポートや研究上の機密データは大学が指定するシステムを優先して使いましょう。パスワードは他サービスと使い回さず、二段階認証を有効にすることを推奨します。</span>
+              </div>
+            </div>
+          </div>
         </div>
       </details>
 
@@ -888,27 +853,102 @@
 </main>
 
 <footer>
-  <strong>lighthouse</strong> — 大学生活ガイド集 &nbsp;|&nbsp; 2026-04-03
+  <strong>lighthouse</strong> — 大学生活ガイド集 &nbsp;|&nbsp; <a href="../../">目次へ戻る</a>
 </footer>
 
+<!-- BACK TO TOP -->
+<button class="back-top" id="backTop" aria-label="ページ上部に戻る">↑</button>
+
 <script>
-  // スクロール進捗バー
+  /* ── スクロール進捗バー ── */
+  const progressBar = document.getElementById('progressBar');
+  function updateProgress() {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+  }
+
+  /* ── スクロールスパイ（ナビのアクティブ表示） ── */
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const sections = document.querySelectorAll('main section[id]');
+
+  function updateActiveNav() {
+    const scrollY = window.scrollY + 80;
+    let current = '';
+    sections.forEach(sec => {
+      if (sec.offsetTop <= scrollY) current = sec.id;
+    });
+    tocLinks.forEach(link => {
+      link.classList.toggle('is-active', link.dataset.section === current);
+    });
+  }
+
+  /* ── 上に戻るボタン ── */
+  const backTop = document.getElementById('backTop');
+  backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  function updateBackTop() {
+    backTop.classList.toggle('visible', window.scrollY > 400);
+  }
+
+  /* ── スクロールイベント（まとめて処理） ── */
   window.addEventListener('scroll', () => {
-    const scrolled = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
-    document.getElementById('progressBar').style.width = scrolled + '%';
+    updateProgress();
+    updateActiveNav();
+    updateBackTop();
+  }, { passive: true });
+
+  /* ── スクロールリビール（IntersectionObserver） ── */
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(el => io.observe(el));
+  } else {
+    // フォールバック: ObserverなしのブラウザではすべてすぐVisible
+    revealEls.forEach(el => el.classList.add('visible'));
+  }
+
+  /* ── ストレージバー（画面内に入ったらアニメーション） ── */
+  const storageFill = document.querySelector('.storage-fill');
+  if (storageFill && 'IntersectionObserver' in window) {
+    const sio = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          storageFill.style.width = storageFill.dataset.width;
+          sio.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    sio.observe(storageFill);
+  }
+
+  /* ── コピーボタン ── */
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const text = btn.dataset.copy.replace(/\\n/g, '\n');
+      navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = '✓ コピー済み';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'コピー';
+          btn.classList.remove('copied');
+        }, 2000);
+      }).catch(() => {
+        btn.textContent = '失敗';
+        setTimeout(() => { btn.textContent = 'コピー'; }, 2000);
+      });
+    });
   });
 
-  // スクロール時のリビール
-  const revealEls = document.querySelectorAll('.reveal');
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        io.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.12 });
-  revealEls.forEach(el => io.observe(el));
+  /* ── 初期状態を更新 ── */
+  updateProgress();
+  updateActiveNav();
 </script>
 
 </body>
