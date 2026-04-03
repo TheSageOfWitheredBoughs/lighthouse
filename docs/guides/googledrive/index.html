@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Drive 活用ガイド｜関西大学生向け</title>
+  <meta name="description" content="関西大学生のためのGoogle Drive活用ガイド。基本操作からDropbox・OneDriveとの使い分け、フォルダ整理術まで丁寧に解説します。">
+  <meta name="date" content="2026-04-04">
+  <meta name="category" content="デジタルツール">
+  <style>
+    /* ═══════════════════════════════
+       CSS VARIABLES — Forest × Cream
+    ═══════════════════════════════ */
+    :root {
+      --bg:         #f4f1eb;
+      --bg-alt:     #ebe7de;
+      --bg-card:    #ffffff;
+      --ink:        #1c2b1a;
+      --ink-soft:   #3a4f38;
+      --muted:      #7a8c78;
+      --border:     #cec9be;
+      --shadow:     rgba(28,43,26,.08);
+      --shadow-lg:  rgba(28,43,26,.15);
+
+      --forest:     #2d6a4f;
+      --forest-lt:  #40916c;
+      --forest-dim: #1b4332;
+      --forest-bg:  #f0faf5;
+      --gold:       #b5870c;
+      --gold-lt:    #d4a017;
+      --gold-bg:    #fef9ec;
+      --rust:       #b5341a;
+      --rust-bg:    #fff3f0;
+      --sky:        #1a6ba8;
+      --sky-bg:     #f0f6fc;
+
+      --hdr-bg:     #1c2b1a;
+      --sidebar-w:  220px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Meiryo",sans-serif;
+      background: var(--bg); color: var(--ink);
+      line-height: 1.78; overflow-x: hidden;
+    }
+
+    /* ── PROGRESS BAR ── */
+    .prog {
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: linear-gradient(90deg, var(--forest-lt), var(--gold-lt));
+      z-index: 1000; transition: width .1s linear;
+    }
+
+    /* ── HEADER ── */
+    .site-header {
+      background: var(--hdr-bg); color: #fff;
+      position: relative; overflow: hidden;
+    }
+    .hdr-mesh {
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(64,145,108,.18) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(181,135,12,.12) 0%, transparent 50%);
+    }
+    .hdr-stripe {
+      position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: linear-gradient(to bottom, var(--forest-lt), var(--gold-lt));
+    }
+    .hdr-inner {
+      max-width: 1100px; margin: 0 auto;
+      padding: 48px 36px 44px calc(var(--sidebar-w) + 44px);
+      position: relative; z-index: 1;
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+    }
+    @media (max-width: 820px) { .hdr-inner { padding: 40px 20px 36px; } }
+    .hdr-left { flex: 1; min-width: 0; }
+    .hdr-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--forest-lt); border: 1px solid rgba(64,145,108,.4);
+      padding: 4px 12px; border-radius: 2px; margin-bottom: 18px;
+    }
+    .ku-chip {
+      background: var(--forest-dim); color: #fff;
+      font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 2px;
+    }
+    .hdr-title {
+      font-size: clamp(1.6rem, 4vw, 2.8rem);
+      font-weight: 900; line-height: 1.15; letter-spacing: -.025em;
+    }
+    .hdr-title em { font-style: normal; color: var(--forest-lt); }
+    .hdr-sub {
+      margin-top: 12px; font-size: .96rem;
+      color: rgba(255,255,255,.6); max-width: 480px; line-height: 1.7;
+    }
+    .hdr-pills {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px;
+    }
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; color: rgba(255,255,255,.5);
+      background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+      padding: 5px 12px; border-radius: 20px;
+    }
+
+    /* ── MOBILE NAV ── */
+    .mobile-nav {
+      display: none; background: #253423;
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 2px solid var(--forest-dim);
+    }
+    @media (max-width: 820px) { .mobile-nav { display: block; } }
+    .mobile-nav-inner {
+      overflow-x: auto; scrollbar-width: none;
+      display: flex; padding: 0 16px;
+    }
+    .mobile-nav-inner::-webkit-scrollbar { display: none; }
+    .mobile-nav-link {
+      display: block; padding: 11px 13px;
+      color: rgba(255,255,255,.5); text-decoration: none;
+      font-size: 12px; white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: color .2s, border-color .2s;
+    }
+    .mobile-nav-link.active { color: var(--forest-lt); border-bottom-color: var(--forest-lt); }
+
+    /* ── LAYOUT ── */
+    .layout {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: var(--sidebar-w) 1fr;
+      align-items: start;
+    }
+    @media (max-width: 820px) { .layout { grid-template-columns: 1fr; } }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      position: sticky; top: 0; height: 100vh; overflow-y: auto;
+      background: var(--bg-card); border-right: 1px solid var(--border);
+      padding: 24px 0 40px; scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+    }
+    @media (max-width: 820px) { .sidebar { display: none; } }
+    .sb-label {
+      font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+      color: var(--muted); padding: 0 16px; margin: 10px 0 6px;
+    }
+    .sb-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 16px; text-decoration: none;
+      color: var(--ink-soft); font-size: 13px;
+      border-left: 3px solid transparent;
+      transition: color .15s, border-color .15s, background .15s;
+    }
+    .sb-link:hover { color: var(--ink); background: var(--bg-alt); }
+    .sb-link.active {
+      color: var(--forest); border-left-color: var(--forest);
+      background: var(--forest-bg); font-weight: 700;
+    }
+    .sb-num {
+      min-width: 22px; height: 22px; border-radius: 4px;
+      background: var(--forest-dim); color: #fff;
+      font-size: 10px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .sb-divider { height: 1px; background: var(--border); margin: 8px 16px; }
+
+    /* ── MAIN ── */
+    main { padding: 48px 40px 80px; min-width: 0; }
+    @media (max-width: 820px) { main { padding: 32px 18px 64px; } }
+
+    section.ch { margin-bottom: 68px; scroll-margin-top: 80px; }
+
+    /* ── CHAPTER HEADING ── */
+    .ch-head {
+      display: flex; align-items: flex-start; gap: 14px; margin-bottom: 28px;
+    }
+    .ch-badge {
+      min-width: 42px; height: 42px; border-radius: 8px;
+      background: var(--forest-dim); color: #fff;
+      font-size: 11px; font-weight: 900; letter-spacing: .04em;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .ch-badge.gold { background: var(--gold); color: #fff; }
+    .ch-badge.sky  { background: var(--sky);  color: #fff; }
+    .ch-title { font-size: 1.45rem; font-weight: 900; letter-spacing: -.02em; line-height: 1.2; }
+    .ch-desc  { font-size: .9rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── CALLOUT ── */
+    .callout {
+      display: flex; gap: 13px; align-items: flex-start;
+      border-radius: 8px; padding: 15px 18px; margin: 18px 0;
+      font-size: .92rem; line-height: 1.72;
+    }
+    .callout-icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 1px; }
+    .callout-body strong { display: block; font-weight: 800; margin-bottom: 3px; }
+    .callout.warn  { background: var(--rust-bg);   border: 1.5px solid var(--rust);       }
+    .callout.tip   { background: var(--forest-bg);  border: 1.5px solid var(--forest-lt);  }
+    .callout.note  { background: var(--gold-bg);    border: 1.5px solid var(--gold-lt);    }
+    .callout.sky   { background: var(--sky-bg);     border: 1.5px solid var(--sky);        }
+
+    /* ── ACCORDION ── */
+    .acc-list { margin-bottom: 28px; }
+    .acc-item {
+      border: 1px solid var(--border); border-radius: 8px;
+      margin-bottom: 8px; background: var(--bg-card);
+      box-shadow: 0 1px 4px var(--shadow); overflow: hidden;
+    }
+    .acc-summary {
+      display: flex; align-items: center; gap: 13px;
+      padding: 15px 18px; cursor: pointer; user-select: none;
+      list-style: none; transition: background .15s;
+    }
+    .acc-summary::-webkit-details-marker { display: none; }
+    .acc-summary:hover { background: var(--bg-alt); }
+    details[open] > .acc-summary {
+      background: var(--forest-dim); color: #fff;
+    }
+    details[open] > .acc-summary .acc-num {
+      background: var(--forest-lt); color: #fff;
+    }
+    details[open] > .acc-summary .acc-arrow { transform: rotate(90deg); }
+    .acc-num {
+      min-width: 30px; height: 30px; border-radius: 4px;
+      background: var(--forest-dim); color: #fff;
+      font-weight: 900; font-size: 12px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: background .15s;
+    }
+    .acc-label { font-size: .97rem; font-weight: 700; flex: 1; line-height: 1.3; }
+    .acc-arrow { font-size: 16px; color: var(--muted); flex-shrink: 0; transition: transform .28s cubic-bezier(.4,0,.2,1); }
+    .acc-body-wrap { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s cubic-bezier(.4,0,.2,1); }
+    details[open] .acc-body-wrap { grid-template-rows: 1fr; }
+    .acc-body-inner { overflow: hidden; }
+    .acc-body { padding: 8px 18px 22px 61px; font-size: .92rem; color: var(--ink-soft); line-height: 1.78; }
+    @media (max-width: 520px) { .acc-body { padding-left: 18px; } }
+    .acc-body p + p { margin-top: 10px; }
+
+    /* ── COMPARISON TABLE ── */
+    .cmp-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: .9rem; }
+    .cmp-table th {
+      background: var(--forest-dim); color: #fff;
+      padding: 10px 14px; text-align: left; font-size: .82rem; letter-spacing: .05em;
+    }
+    .cmp-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .cmp-table tr:last-child td { border-bottom: none; }
+    .cmp-table tr:nth-child(even) td { background: var(--bg-alt); }
+    .cmp-table .good  { color: var(--forest-lt); font-weight: 700; }
+    .cmp-table .caution { color: var(--gold);    font-weight: 700; }
+    .cmp-table .bad   { color: var(--rust);      font-weight: 700; }
+    .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid var(--border); margin: 16px 0; }
+    .table-caption {
+      font-size: .82rem; color: var(--muted); margin-top: 6px; text-align: right;
+    }
+
+    /* ── FEATURE GRID ── */
+    .feat-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
+    }
+    @media (max-width: 560px) { .feat-grid { grid-template-columns: 1fr; } }
+    .feat-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px;
+      padding: 20px 20px 18px 22px; position: relative; overflow: hidden;
+      box-shadow: 0 1px 4px var(--shadow);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .feat-card:hover { transform: translateY(-3px); box-shadow: 0 6px 18px var(--shadow-lg); }
+    .feat-card::before {
+      content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+      background: var(--forest-lt);
+    }
+    .feat-card.gold::before { background: var(--gold-lt); }
+    .feat-card.sky::before  { background: var(--sky); }
+    .feat-card.rust::before { background: var(--rust); }
+    .feat-icon  { font-size: 1.6rem; margin-bottom: 8px; }
+    .feat-title { font-size: .97rem; font-weight: 800; margin-bottom: 6px; }
+    .feat-text  { font-size: .86rem; color: var(--ink-soft); line-height: 1.65; }
+
+    /* ── USE CASE CARDS (3-column) ── */
+    .uc-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 24px;
+    }
+    @media (max-width: 680px) { .uc-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 420px) { .uc-grid { grid-template-columns: 1fr; } }
+    .uc-card {
+      background: var(--ink); color: #fff; border-radius: 8px; padding: 20px 16px;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .uc-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px var(--shadow-lg); }
+    .uc-icon  { font-size: 1.5rem; margin-bottom: 8px; }
+    .uc-title { font-size: .92rem; font-weight: 800; color: var(--forest-lt); margin-bottom: 6px; }
+    .uc-text  { font-size: .82rem; color: rgba(255,255,255,.7); line-height: 1.65; }
+
+    /* ── DECISION FLOWCHART ── */
+    .flow-wrap { margin: 20px 0; }
+    .flow-row {
+      display: flex; align-items: stretch; gap: 0; margin-bottom: 0;
+    }
+    .flow-node {
+      flex: 1; background: var(--bg-card); border: 2px solid var(--border);
+      border-radius: 8px; padding: 16px 18px; text-align: center;
+      font-size: .88rem; position: relative;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .flow-node:hover { border-color: var(--forest-lt); box-shadow: 0 4px 12px var(--shadow); }
+    .flow-node.active { border-color: var(--forest); background: var(--forest-bg); }
+    .flow-node.gold   { border-color: var(--gold); background: var(--gold-bg); }
+    .flow-node.sky    { border-color: var(--sky);  background: var(--sky-bg); }
+    .flow-node-title { font-weight: 800; font-size: .95rem; margin-bottom: 4px; }
+    .flow-node-sub   { font-size: .8rem; color: var(--muted); line-height: 1.5; }
+    .flow-arrow {
+      display: flex; align-items: center; padding: 0 8px;
+      font-size: 1.3rem; color: var(--muted); flex-shrink: 0;
+    }
+    @media (max-width: 600px) {
+      .flow-row { flex-direction: column; }
+      .flow-arrow { transform: rotate(90deg); padding: 4px 0; justify-content: center; }
+    }
+
+    /* ── STORAGE BAR ── */
+    .stor-wrap {
+      background: var(--bg-alt); border-radius: 8px; padding: 18px 22px; margin: 18px 0;
+    }
+    .stor-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    .stor-label { font-size: .88rem; font-weight: 700; color: var(--ink-soft); }
+    .stor-total { font-size: 1.3rem; font-weight: 900; color: var(--forest-lt); }
+    .stor-track { height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+    .stor-fill {
+      height: 100%; border-radius: 5px;
+      background: linear-gradient(90deg, var(--forest-lt), var(--gold-lt));
+      width: 0; transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ── CODE ── */
+    .code-wrap { position: relative; margin: 12px 0; }
+    .code-block {
+      background: #1e2d1c; color: #c8e6c9;
+      padding: 14px 16px; border-radius: 6px; overflow-x: auto;
+      font-family: "Courier New","Osaka-Mono",Consolas,monospace;
+      font-size: .84rem; line-height: 1.65; white-space: pre;
+    }
+    .copy-btn {
+      position: absolute; top: 8px; right: 8px;
+      background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+      color: rgba(255,255,255,.55); font-size: 11px; padding: 4px 10px;
+      border-radius: 4px; cursor: pointer; font-family: inherit;
+      transition: background .2s, color .2s;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,.22); color: #fff; }
+    .copy-btn.copied { color: var(--forest-lt); }
+    code {
+      background: var(--bg-alt); padding: 2px 6px; border-radius: 3px;
+      font-family: "Courier New",monospace; font-size: .87em; color: var(--forest-dim);
+    }
+
+    /* ── DIVIDER ── */
+    .sec-div { height: 1px; background: var(--border); margin: 52px 0; }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .5s ease, transform .5s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal.d1 { transition-delay: .06s; }
+    .reveal.d2 { transition-delay: .13s; }
+    .reveal.d3 { transition-delay: .20s; }
+    .reveal.d4 { transition-delay: .27s; }
+    @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } }
+
+    /* ── BACK TO TOP ── */
+    .back-top {
+      position: fixed; bottom: 24px; right: 24px; z-index: 500;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: var(--forest-dim); color: #fff; border: none;
+      font-size: 17px; cursor: pointer;
+      box-shadow: 0 4px 16px var(--shadow-lg);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transform: translateY(10px);
+      transition: opacity .3s, transform .3s, background .2s;
+    }
+    .back-top.visible { opacity: 1; transform: none; }
+    .back-top:hover { background: var(--forest-lt); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--hdr-bg); color: rgba(255,255,255,.35);
+      padding: 32px 24px; font-size: .82rem;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 12px;
+    }
+    footer strong { color: var(--forest-lt); }
+    footer a { color: rgba(255,255,255,.4); text-decoration: none; }
+    footer a:hover { color: var(--forest-lt); }
+
+    /* ── UTILITY ── */
+    strong { color: var(--ink); }
+    .sub-head { display: flex; align-items: center; gap: 10px; margin: 30px 0 16px; }
+    .sub-badge { font-size: 10px; font-weight: 900; letter-spacing: .06em; padding: 3px 10px; border-radius: 3px; background: var(--forest-lt); color: #fff; }
+    .sub-title { font-size: 1.1rem; font-weight: 800; }
+  </style>
+</head>
+<body>
+
+<div class="prog" id="prog"></div>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="hdr-mesh"></div>
+  <div class="hdr-stripe"></div>
+  <div class="hdr-inner">
+    <div class="hdr-left">
+      <div class="hdr-eyebrow">
+        <span class="ku-chip">KU</span>
+        関西大学生向け クラウドストレージ活用
+      </div>
+      <h1 class="hdr-title">
+        <em>Google Drive</em> 活用ガイド<br>
+        <span style="font-size:clamp(1rem,2.5vw,1.7rem);color:rgba(255,255,255,.75);">Dropbox・OneDrive との使い分けまで</span>
+      </h1>
+      <p class="hdr-sub">
+        基本操作から共有・フォルダ整理術、関大のDropbox・Microsoft 365（OneDrive）との三択戦略まで、1年生が迷わず使えるよう解説します。
+      </p>
+      <div class="hdr-pills">
+        <span class="pill">📅 2026-04-04</span>
+        <span class="pill">⏱ 目安 15〜25分</span>
+        <span class="pill">☁️ 個人用 15GB 無料</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" aria-label="章ナビゲーション">
+  <div class="mobile-nav-inner">
+    <a href="#ch1" class="mobile-nav-link" data-sec="ch1">Ch1 基本操作</a>
+    <a href="#ch2" class="mobile-nav-link" data-sec="ch2">Ch2 共有</a>
+    <a href="#ch3" class="mobile-nav-link" data-sec="ch3">Ch3 フォルダ整理</a>
+    <a href="#ch4" class="mobile-nav-link" data-sec="ch4">Ch4 Dropboxとの比較</a>
+    <a href="#ch5" class="mobile-nav-link" data-sec="ch5">Ch5 OneDriveとの比較</a>
+    <a href="#ch6" class="mobile-nav-link" data-sec="ch6">Ch6 使い分け戦略</a>
+  </div>
+</nav>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" aria-label="目次">
+    <p class="sb-label" style="margin-top:8px;">Google Drive 基礎</p>
+    <a href="#ch1" class="sb-link" data-sec="ch1">
+      <span class="sb-num">1</span>基本操作
+    </a>
+    <a href="#ch2" class="sb-link" data-sec="ch2">
+      <span class="sb-num">2</span>共有・共同編集
+    </a>
+    <a href="#ch3" class="sb-link" data-sec="ch3">
+      <span class="sb-num">3</span>フォルダ整理術
+    </a>
+    <div class="sb-divider"></div>
+    <p class="sb-label">比較・使い分け</p>
+    <a href="#ch4" class="sb-link" data-sec="ch4">
+      <span class="sb-num" style="background:var(--gold);">4</span>vs Dropbox
+    </a>
+    <a href="#ch5" class="sb-link" data-sec="ch5">
+      <span class="sb-num" style="background:var(--sky);">5</span>vs OneDrive
+    </a>
+    <a href="#ch6" class="sb-link" data-sec="ch6">
+      <span class="sb-num">6</span>三択戦略まとめ
+    </a>
+    <div class="sb-divider"></div>
+    <a href="../../" class="sb-link" style="font-size:12px;color:var(--muted);">
+      ← ガイド一覧に戻る
+    </a>
+  </aside>
+
+  <!-- MAIN -->
+  <main>
+
+    <!-- ══════════ Ch1 基本操作 ══════════ -->
+    <section class="ch" id="ch1">
+      <div class="ch-head reveal">
+        <div class="ch-badge">Ch1</div>
+        <div>
+          <h2 class="ch-title">基本操作</h2>
+          <p class="ch-desc">アップロード・フォルダ作成・ファイル管理の基礎</p>
+        </div>
+      </div>
+
+      <div class="callout note reveal">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>Googleアカウントがあればすぐ使える</strong>
+          drive.google.com にアクセスしてGoogleアカウントでログインするだけで利用開始。学校のメールとは別に個人用Gmailアカウントを用意しておくと便利です。
+        </div>
+      </div>
+
+      <div class="feat-grid reveal">
+        <div class="feat-card">
+          <div class="feat-icon">📤</div>
+          <div class="feat-title">アップロード</div>
+          <div class="feat-text">ファイルをブラウザ画面にドラッグ＆ドロップ、または「+ 新規」ボタンから選択。フォルダごとアップロードも可能です。</div>
+        </div>
+        <div class="feat-card gold">
+          <div class="feat-icon">📁</div>
+          <div class="feat-title">フォルダ作成</div>
+          <div class="feat-text">「+ 新規」→「フォルダ」で作成。ドラッグ操作でフォルダ間を移動できます。色分けで視覚的に整理できます。</div>
+        </div>
+        <div class="feat-card sky">
+          <div class="feat-icon">✏️</div>
+          <div class="feat-title">オンライン編集</div>
+          <div class="feat-text">Googleドキュメント・スプレッドシート・スライドはブラウザ上でそのまま編集。Officeファイルも変換なしで開けます。</div>
+        </div>
+        <div class="feat-card rust">
+          <div class="feat-icon">📱</div>
+          <div class="feat-title">モバイルアプリ</div>
+          <div class="feat-text">iOS・Android対応の公式アプリで外出先からもアクセス。オフライン設定したファイルはネット不要で閲覧できます。</div>
+        </div>
+      </div>
+
+      <div class="acc-list">
+        <details class="acc-item reveal d1">
+          <summary class="acc-summary">
+            <span class="acc-num">1</span>
+            <span class="acc-label">ファイルをアップロードする</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap"><div class="acc-body-inner"><div class="acc-body">
+            <p><strong>方法1：ドラッグ＆ドロップ</strong><br>ブラウザの画面中央にファイルをドラッグするだけで自動的にアップロードが始まります。</p>
+            <p><strong>方法2：ボタンから選択</strong><br>左上の「+ 新規」ボタン →「ファイルのアップロード」または「フォルダのアップロード」を選択します。</p>
+            <div class="callout tip" style="margin-top:12px;">
+              <div class="callout-icon">✅</div>
+              <div class="callout-body">Googleドキュメント形式に変換せずにアップロードしたい場合は、変換ダイアログが出た際に「そのままアップロード」を選択してください。</div>
+            </div>
+          </div></div></div>
+        </details>
+
+        <details class="acc-item reveal d2">
+          <summary class="acc-summary">
+            <span class="acc-num">2</span>
+            <span class="acc-label">Googleドキュメント・スライドで共同作業する</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap"><div class="acc-body-inner"><div class="acc-body">
+            <p>Googleドキュメント（Wordの代替）やスライド（PowerPointの代替）を使うと、<strong>複数人が同時にリアルタイム編集</strong>できます。</p>
+            <p>「+ 新規」→「Googleドキュメント」で新規作成。右上の「共有」ボタンから相手のGmailアドレスを追加して招待します。</p>
+            <div class="callout note" style="margin-top:12px;">
+              <div class="callout-icon">💡</div>
+              <div class="callout-body">Officeファイル（.docx / .pptx）は直接Driveに上げると、そのまま編集可能。ただし高度な書式は崩れることがあるため、提出前には必ず確認しましょう。</div>
+            </div>
+          </div></div></div>
+        </details>
+
+        <details class="acc-item reveal d3">
+          <summary class="acc-summary">
+            <span class="acc-num">3</span>
+            <span class="acc-label">モバイルアプリでオフラインアクセスを設定する</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap"><div class="acc-body-inner"><div class="acc-body">
+            <p>スマホアプリでファイルを長押し →「オフラインで使用可能にする」をタップ。次回以降はWi-Fiなしでもそのファイルを閲覧・編集できます。</p>
+            <p><strong>用途例：</strong>通学中に授業スライドをチェック。電車でノート整理。図書館でデータを参照しながらレポート執筆。</p>
+          </div></div></div>
+        </details>
+      </div>
+
+      <div class="stor-wrap reveal">
+        <div class="stor-head">
+          <span class="stor-label">個人用 Google Drive の無料容量</span>
+          <span class="stor-total">15 GB</span>
+        </div>
+        <div class="stor-track"><div class="stor-fill" id="storFill" style="width:0%" data-target="45"></div></div>
+        <p style="font-size:.8rem;color:var(--muted);margin-top:8px;">※ Gmail・Google フォトとの共有容量です。Googleドキュメント・スプレッドシート・スライド自体はストレージを消費しません。</p>
+      </div>
+    </section>
+
+    <div class="sec-div"></div>
+
+    <!-- ══════════ Ch2 共有・共同編集 ══════════ -->
+    <section class="ch" id="ch2">
+      <div class="ch-head reveal">
+        <div class="ch-badge gold">Ch2</div>
+        <div>
+          <h2 class="ch-title">共有・共同編集</h2>
+          <p class="ch-desc">グループワーク・授業提出で使う共有設定を完全理解</p>
+        </div>
+      </div>
+
+      <div class="callout warn reveal">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>共有設定を誤ると成績や個人情報が漏れる</strong>
+          「リンクを知っている全員」に編集権限を与えると、ネット上の誰でも書き換えられる状態になります。基本は「閲覧のみ」または「特定の相手のみ」を使いましょう。
+        </div>
+      </div>
+
+      <div class="sub-head reveal">
+        <span class="sub-badge">共有の種類</span>
+        <span class="sub-title">3つの共有レベルを使い分ける</span>
+      </div>
+
+      <div class="uc-grid reveal">
+        <div class="uc-card">
+          <div class="uc-icon">🔒</div>
+          <div class="uc-title">制限付き（デフォルト）</div>
+          <div class="uc-text">招待した相手のみアクセス可。成績・個人ファイルはこれを使うこと。</div>
+        </div>
+        <div class="uc-card">
+          <div class="uc-icon">🔗</div>
+          <div class="uc-title">リンクを知っている閲覧者</div>
+          <div class="uc-text">URLを共有するだけでアクセス可。授業提出・グループ配布に便利。編集は渡さない。</div>
+        </div>
+        <div class="uc-card">
+          <div class="uc-icon">✏️</div>
+          <div class="uc-title">リンクを知っている編集者</div>
+          <div class="uc-text">グループ全員が自由に編集できる状態。グループワーク用ドキュメントで使う。資料ファイルには使わない。</div>
+        </div>
+      </div>
+
+      <div class="acc-list">
+        <details class="acc-item reveal d1">
+          <summary class="acc-summary">
+            <span class="acc-num">1</span>
+            <span class="acc-label">共有リンクを作成してグループに配る</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap"><div class="acc-body-inner"><div class="acc-body">
+            <p>ファイルを右クリック（またはファイル開いて右上の「共有」ボタン）→「リンクをコピー」を選択。</p>
+            <p>ダイアログで「リンクを知っている全員」に変更し、権限を「閲覧者」または「編集者」から選んでコピーしたURLをLINEなどで共有します。</p>
+            <div class="callout tip" style="margin-top:12px;">
+              <div class="callout-icon">✅</div>
+              <div class="callout-body">フォルダごとに共有すると、フォルダ内のすべてのファイルが一括で共有されます。グループワーク用のフォルダを1つ作ってそこに集約するのがおすすめです。</div>
+            </div>
+          </div></div></div>
+        </details>
+
+        <details class="acc-item reveal d2">
+          <summary class="acc-summary">
+            <span class="acc-num">2</span>
+            <span class="acc-label">コメント機能でレビューしあう</span>
+            <span class="acc-arrow" aria-hidden="true">›</span>
+          </summary>
+          <div class="acc-body-wrap"><div class="acc-body-inner"><div class="acc-body">
+            <p>テキストを選択 → 右クリック「コメントを追加」（またはCtrl+Alt+M）でコメントを付けられます。</p>
+            <p>相手は「返信」して議論でき、解決したら「解決済み」に。まるでGitHubのPRレビューのように使えます。提出前のグループ相互チェックに最適です。</p>
+          </div></div></div>
+        </details>
+      </div>
+    </section>
+
+    <div class="sec-div"></div>
+
+    <!-- ══════════ Ch3 フォルダ整理術 ══════════ -->
+    <section class="ch" id="ch3">
+      <div class="ch-head reveal">
+        <div class="ch-badge">Ch3</div>
+        <div>
+          <h2 class="ch-title">フォルダ整理術</h2>
+          <p class="ch-desc">4年間使えるフォルダ構成の作り方</p>
+        </div>
+      </div>
+
+      <p class="reveal" style="margin-bottom:16px;color:var(--ink-soft);">
+        Driveは検索が強力なので「なんとなく放り込む」でも使えますが、フォルダ構成を最初に作っておくと長期間快適に使えます。
+      </p>
+
+      <div class="code-wrap reveal">
+        <pre class="code-block">GoogleDrive/
+├── 📚 学年別/
+│   ├── 1年前期/           ← 履修科目ごとにサブフォルダ
+│   ├── 1年後期/
+│   └── 2年以降/
+├── 📝 レポート・課題/
+│   ├── 作成中/
+│   └── 提出済み/
+├── 🤝 グループワーク/      ← 授業・プロジェクトごと
+├── 📖 就活・自己分析/
+└── 🗂 その他（私的メモ等）</pre>
+        <button class="copy-btn" data-copy="GoogleDrive/フォルダ構成" aria-label="コピー">コピー</button>
+      </div>
+
+      <div class="callout sky reveal">
+        <div class="callout-icon">💡</div>
+        <div class="callout-body">
+          <strong>フォルダに色をつける</strong>
+          フォルダを右クリック →「フォルダの色を変更」で見た目を変えられます。科目ごとに色を決めると一目で識別できます。
+        </div>
+      </div>
+
+      <div class="sub-head reveal">
+        <span class="sub-badge">検索テク</span>
+        <span class="sub-title">Driveの強力な検索機能を活用する</span>
+      </div>
+
+      <div class="feat-grid reveal">
+        <div class="feat-card">
+          <div class="feat-icon">🔍</div>
+          <div class="feat-title">ファイル種別フィルタ</div>
+          <div class="feat-text">検索バー右の▼から「ドキュメント」「スプレッドシート」「PDF」で絞り込み。ファイル名を覚えていなくても見つかります。</div>
+        </div>
+        <div class="feat-card gold">
+          <div class="feat-icon">📅</div>
+          <div class="feat-title">更新日で検索</div>
+          <div class="feat-text">「先週」「今月」などの期間フィルタで絞り込み可。「最近使用したファイル」はサイドバーの「最近使用したアイテム」から即アクセス。</div>
+        </div>
+      </div>
+    </section>
+
+    <div class="sec-div"></div>
+
+    <!-- ══════════ Ch4 vs Dropbox ══════════ -->
+    <section class="ch" id="ch4">
+      <div class="ch-head reveal">
+        <div class="ch-badge gold">Ch4</div>
+        <div>
+          <h2 class="ch-title">Google Drive vs Dropbox</h2>
+          <p class="ch-desc">関大のDropboxとGoogleDriveを場面で使い分ける</p>
+        </div>
+      </div>
+
+      <div class="callout note reveal">
+        <div class="callout-icon">📌</div>
+        <div class="callout-body">
+          <strong>関西大学のDropbox（KU Dropbox）は学生に15GB無料配布</strong>
+          卒業まで使える公式クラウドですが、<strong>卒業年の4月1日からログイン不可</strong>になります。詳細は<a href="../dropbox/" style="color:var(--forest);">Dropboxガイド</a>を参照。
+        </div>
+      </div>
+
+      <div class="table-wrap reveal">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>比較項目</th>
+              <th>Google Drive（個人）</th>
+              <th>Dropbox（関大）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>無料容量</td>
+              <td class="good">15GB（永続）</td>
+              <td class="caution">15GB（在学中のみ）</td>
+            </tr>
+            <tr>
+              <td>ログイン方法</td>
+              <td>Googleアカウント</td>
+              <td>大学SSO（学籍番号）</td>
+            </tr>
+            <tr>
+              <td>共同編集</td>
+              <td class="good">Googleドキュメントで強力</td>
+              <td>Paper機能（シンプル）</td>
+            </tr>
+            <tr>
+              <td>デスクトップ同期</td>
+              <td class="caution">Googleドライブアプリ必要</td>
+              <td class="good">アプリが非常にスムーズ</td>
+            </tr>
+            <tr>
+              <td>Officeとの連携</td>
+              <td class="caution">変換が必要な場合あり</td>
+              <td class="good">Officeファイルそのまま同期</td>
+            </tr>
+            <tr>
+              <td>卒業後</td>
+              <td class="good">そのまま使い続けられる</td>
+              <td class="bad">アクセス不可（要移行）</td>
+            </tr>
+            <tr>
+              <td>向いている用途</td>
+              <td>共同編集・グループワーク・個人スライド</td>
+              <td>PCフォルダ自動同期・ファイル管理</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption reveal">※ 2026年4月時点の情報をもとに作成</p>
+
+      <div class="callout tip reveal">
+        <div class="callout-icon">✅</div>
+        <div class="callout-body">
+          <strong>おすすめの使い分け</strong>
+          グループワークや共同編集 → Google Drive（Googleドキュメント・スライド）<br>
+          個人PCのファイル自動バックアップ → Dropbox（デスクトップ同期が優秀）
+        </div>
+      </div>
+    </section>
+
+    <div class="sec-div"></div>
+
+    <!-- ══════════ Ch5 vs OneDrive ══════════ -->
+    <section class="ch" id="ch5">
+      <div class="ch-head reveal">
+        <div class="ch-badge sky">Ch5</div>
+        <div>
+          <h2 class="ch-title">Google Drive vs OneDrive（関大 M365）</h2>
+          <p class="ch-desc">Microsoft 365 付属のOneDriveをどう使う？</p>
+        </div>
+      </div>
+
+      <div class="callout sky reveal">
+        <div class="callout-icon">🎓</div>
+        <div class="callout-body">
+          <strong>関西大学の Microsoft 365 で OneDrive 1TB が無料</strong>
+          在学中は Microsoft 365（Word・Excel・PowerPoint・Teams等）が無料で使えます。OneDriveには1TBの大容量が付いてきます。
+        </div>
+      </div>
+
+      <div class="table-wrap reveal">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>比較項目</th>
+              <th>Google Drive（個人）</th>
+              <th>OneDrive（関大 M365）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>無料容量</td>
+              <td>15GB（永続）</td>
+              <td class="good">1TB（在学中）</td>
+            </tr>
+            <tr>
+              <td>OfficeとのMS製品連携</td>
+              <td class="caution">変換が必要な場合あり</td>
+              <td class="good">Word/Excel/PPTと完全統合</td>
+            </tr>
+            <tr>
+              <td>共同編集</td>
+              <td class="good">Googleドキュメントが直感的</td>
+              <td>Office Online で可能</td>
+            </tr>
+            <tr>
+              <td>卒業後</td>
+              <td class="good">そのまま使い続けられる</td>
+              <td class="bad">アクセス不可（要移行）</td>
+            </tr>
+            <tr>
+              <td>向いている用途</td>
+              <td>共同編集・Googleサービス連携</td>
+              <td>大容量バックアップ・Teams添付ファイル</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="table-caption reveal">※ 関大の M365 利用条件は在籍期間中に限ります</p>
+    </section>
+
+    <div class="sec-div"></div>
+
+    <!-- ══════════ Ch6 三択戦略まとめ ══════════ -->
+    <section class="ch" id="ch6">
+      <div class="ch-head reveal">
+        <div class="ch-badge">Ch6</div>
+        <div>
+          <h2 class="ch-title">三択戦略まとめ</h2>
+          <p class="ch-desc">Google Drive・Dropbox・OneDrive を状況別に使い分ける</p>
+        </div>
+      </div>
+
+      <p class="reveal" style="color:var(--ink-soft);margin-bottom:20px;">
+        3つを「全部使う」のが正解です。それぞれの強みが異なるため、用途で使い分けることで相互補完できます。
+      </p>
+
+      <div class="flow-wrap reveal">
+        <div class="flow-row">
+          <div class="flow-node active">
+            <div class="flow-node-title">🗂 Google Drive</div>
+            <div class="flow-node-sub">共同編集・グループワーク・スライド作成<br>Googleフォームでのアンケート集計</div>
+          </div>
+          <div class="flow-arrow">＋</div>
+          <div class="flow-node gold">
+            <div class="flow-node-title">📦 Dropbox (KU)</div>
+            <div class="flow-node-sub">PCフォルダの自動同期バックアップ<br>OfficeファイルをそのままPC管理</div>
+          </div>
+          <div class="flow-arrow">＋</div>
+          <div class="flow-node sky">
+            <div class="flow-node-title">💾 OneDrive (M365)</div>
+            <div class="flow-node-sub">大容量バックアップ（写真・動画等）<br>Teams連携・学内共有ファイル</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-head reveal" style="margin-top:28px;">
+        <span class="sub-badge">シーン別ガイド</span>
+        <span class="sub-title">迷ったときはここを見る</span>
+      </div>
+
+      <div class="table-wrap reveal">
+        <table class="cmp-table">
+          <thead>
+            <tr>
+              <th>シーン</th>
+              <th>おすすめ</th>
+              <th>理由</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>グループでレポートを共同執筆</td>
+              <td class="good">Google Drive</td>
+              <td>リアルタイム共同編集が最も直感的</td>
+            </tr>
+            <tr>
+              <td>先生から配布されたPDFを整理</td>
+              <td class="good">Dropbox (KU)</td>
+              <td>PCフォルダと自動同期で管理が楽</td>
+            </tr>
+            <tr>
+              <td>卒論・ゼミ用のWordファイル管理</td>
+              <td class="caution">OneDrive</td>
+              <td>Word/Excelとの統合が最も滑らか。Dropboxでも可</td>
+            </tr>
+            <tr>
+              <td>授業で使うスライドをスマホでスキャン</td>
+              <td class="good">Google Drive</td>
+              <td>スマホカメラ→自動OCRで検索可能に</td>
+            </tr>
+            <tr>
+              <td>大容量の動画・写真をまとめてバックアップ</td>
+              <td class="good">OneDrive</td>
+              <td>1TBの大容量が使える（卒業前に移行を忘れずに）</td>
+            </tr>
+            <tr>
+              <td>卒業後もずっと使いたいファイル</td>
+              <td class="good">Google Drive</td>
+              <td>個人のGoogleアカウントに紐付いており卒業後も継続</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout warn reveal">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body">
+          <strong>卒業前に必ず移行作業を！</strong>
+          Dropbox（KU）とOneDrive（M365）は<strong>卒業年の早い段階でアクセス不能</strong>になります。4年生になったら早めに個人のGoogle DriveやHDD等へ移行しておきましょう。
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div><!-- /layout -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div><strong>lighthouse</strong> — 大学生活ガイド集</div>
+    <div><a href="../../">← ガイド一覧に戻る</a></div>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" aria-label="ページトップへ戻る">↑</button>
+
+<script>
+  /* ── スクロールプログレスバー ── */
+  const prog = document.getElementById('prog');
+  function updateProg() {
+    const h = document.documentElement;
+    const pct = h.scrollTop / (h.scrollHeight - h.clientHeight) * 100;
+    prog.style.width = pct + '%';
+  }
+
+  /* ── スクロールリビール ── */
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+
+  /* ── ストレージバー ── */
+  const storFill = document.getElementById('storFill');
+  const storObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { storFill.style.width = storFill.dataset.target + '%'; storObs.unobserve(e.target); } });
+  }, { threshold: 0.3 });
+  storObs.observe(storFill);
+
+  /* ── サイドバー・モバイルナビのアクティブ ── */
+  const sections = document.querySelectorAll('section.ch');
+  const sbLinks  = document.querySelectorAll('.sb-link[data-sec]');
+  const mnLinks  = document.querySelectorAll('.mobile-nav-link[data-sec]');
+  function setActive() {
+    let current = '';
+    sections.forEach(sec => { if (window.scrollY + 120 >= sec.offsetTop) current = sec.id; });
+    sbLinks.forEach(l => l.classList.toggle('active', l.dataset.sec === current));
+    mnLinks.forEach(l => l.classList.toggle('active', l.dataset.sec === current));
+  }
+
+  /* ── Back to top ── */
+  const backTop = document.getElementById('backTop');
+  function onScroll() {
+    updateProg();
+    setActive();
+    backTop.classList.toggle('visible', window.scrollY > 300);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  backTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  /* ── コピーボタン ── */
+  document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      navigator.clipboard.writeText(btn.dataset.copy || '').then(() => {
+        btn.textContent = '✓ コピー済み'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'コピー'; btn.classList.remove('copied'); }, 2000);
+      });
+    });
+  });
+</script>
+</body>
+</html>
