@@ -1,0 +1,35 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash setup.sh)",
+      "Bash(git init:*)",
+      "Bash(gh repo:*)",
+      "Bash(curl -s https://api.github.com/repos/TheSageOfWitheredBoughs/lighthouse/git/trees/main?recursive=1)",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(x[''''path'''']\\) for x in data.get\\(''''tree'''',[]\\)]\")",
+      "Bash(git remote:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(grep -nE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}' /c/Users/korei/Documents/lighthouse/CLAUDE.md /c/Users/korei/Documents/lighthouse/setup.sh)",
+      "Bash(grep -nE '0[0-9]{1,4}-[0-9]{2,4}-[0-9]{4}|0[0-9]{9,10}' /c/Users/korei/Documents/lighthouse/CLAUDE.md /c/Users/korei/Documents/lighthouse/setup.sh)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git config:*)",
+      "Bash(git push:*)",
+      "Bash(git rm:*)",
+      "Bash(grep -nE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}' /c/Users/korei/Documents/lighthouse/docs/guides/dropbox/index.html)",
+      "Bash(grep -nE '0[0-9]{1,4}-[0-9]{2,4}-[0-9]{4}|0[0-9]{9,10}' /c/Users/korei/Documents/lighthouse/docs/guides/dropbox/index.html)",
+      "WebFetch(domain:antigravity.codes)",
+      "WebFetch(domain:docs.antigravity.codes)",
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "WebFetch(domain:codelabs.developers.google.com)",
+      "Bash(grep -nE \"0[0-9]{1,4}-[0-9]{2,4}-[0-9]{4}|0[0-9]{9,10}\" /c/Users/korei/Documents/lighthouse/docs/guides/dropbox/index.html)",
+      "Bash(grep -nE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}' /c/Users/korei/Documents/lighthouse/docs/guides/jisui/daigakusei_jisui_guide.html)",
+      "Bash(grep -nE '0[0-9]{1,4}-[0-9]{2,4}-[0-9]{4}|0[0-9]{9,10}' /c/Users/korei/Documents/lighthouse/docs/guides/jisui/daigakusei_jisui_guide.html)",
+      "Bash(grep -nE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}' /c/Users/korei/Documents/lighthouse/docs/guides/obsidian/obsidian_beginner_guide.html)",
+      "Bash(grep -nE '0[0-9]{1,4}-[0-9]{2,4}-[0-9]{4}|0[0-9]{9,10}' /c/Users/korei/Documents/lighthouse/docs/guides/obsidian/obsidian_beginner_guide.html)",
+      "Bash(grep -nE '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}' /c/Users/korei/Documents/lighthouse/docs/guides/jisui/index.html /c/Users/korei/Documents/lighthouse/docs/guides/obsidian/index.html)",
+      "Bash(grep -nE '0[0-9]{1,4}-[0-9]{2,4}-[0-9]{4}|0[0-9]{9,10}' /c/Users/korei/Documents/lighthouse/docs/guides/jisui/index.html /c/Users/korei/Documents/lighthouse/docs/guides/obsidian/index.html)"
+    ]
+  }
+}

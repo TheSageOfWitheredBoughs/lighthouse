@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>エネルギー戦略：中東依存脱却と君たちのキャリア 2026-2050 | lighthouse</title>
+  <meta name="description" content="日本のエネルギー転換（脱・石油）が、大学生の就職・生活・将来設計にどう影響するか。2つのシナリオから読み解く未来。">
+  <meta name="date" content="2026-04-07">
+  <meta name="category" content="生活">
+  <style>
+    :root {
+      --bg: #0b0e14;
+      --card-bg: rgba(26, 32, 44, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+      --accent-blue: #3b82f6;
+      --accent-red: #ef4444;
+      --accent-green: #10b981;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --font: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── LAYOUT ── */
+    .wrap { max-width: 900px; margin: 0 auto; padding: 80px 24px; }
+    
+    .back-btn {
+      position: fixed; top: 20px; left: 20px;
+      padding: 8px 16px; background: rgba(0,0,0,0.5);
+      border: 1px solid var(--border); border-radius: 20px;
+      color: var(--text-muted); text-decoration: none; font-size: 13px;
+      backdrop-filter: blur(8px); z-index: 100;
+    }
+
+    /* ── HERO ── */
+    .hero { text-align: center; margin-bottom: 60px; }
+    .eyebrow { 
+      display: inline-block; padding: 4px 12px; background: var(--accent-blue);
+      color: #fff; font-size: 11px; font-weight: 900; border-radius: 4px;
+      margin-bottom: 20px; letter-spacing: 0.1em;
+    }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; font-weight: 900; margin-bottom: 20px; letter-spacing: -0.02em; }
+    .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 17px; }
+
+    /* ── SCENARIO SWITCH ── */
+    .switch-wrap { display: flex; justify-content: center; margin-bottom: 40px; gap: 8px; }
+    .btn-s {
+      padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border);
+      background: var(--card-bg); color: var(--text-muted); cursor: pointer;
+      font-weight: 700; transition: all 0.3s;
+    }
+    .btn-s.active-peace { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
+    .btn-s.active-war { background: var(--accent-red); color: #fff; border-color: var(--accent-red); }
+
+    /* ── CONTENT CARDS ── */
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 40px; margin-bottom: 24px; backdrop-filter: blur(12px); }
+    .card h2 { font-size: 24px; margin-bottom: 24px; border-left: 4px solid var(--accent-blue); padding-left: 16px; }
+
+    /* ── CHART SVG ── */
+    .chart-box { width: 100%; height: 300px; margin-top: 20px; position: relative; }
+    .chart-svg { width: 100%; height: 100%; overflow: visible; }
+    .chart-line { fill: none; stroke-width: 3; stroke-linecap: round; transition: d 0.5s ease-in-out; }
+    .axis { stroke: rgba(255,255,255,0.1); stroke-width: 1; }
+    .label-text { font-size: 10px; fill: var(--text-muted); }
+
+    /* ── TIMELINE ── */
+    .tl-item { display: flex; gap: 24px; margin-bottom: 32px; align-items: flex-start; }
+    .tl-year { font-weight: 900; color: var(--accent-blue); font-size: 18px; width: 60px; flex-shrink: 0; }
+    .tl-body h3 { font-size: 18px; margin-bottom: 8px; }
+    .tl-body p { font-size: 14px; color: var(--text-muted); }
+
+    /* ── ADVICE ── */
+    .advice { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1)); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 32px; padding: 40px; text-align: center; }
+    .advice h3 { font-size: 24px; margin-bottom: 16px; color: var(--accent-green); }
+    .advice p { font-size: 15px; color: var(--text-main); }
+
+    /* ── ANIMATIONS ── */
+    [data-animate] { opacity: 0; transform: translateY(20px); transition: 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+    .visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 600px) {
+      .wrap { padding: 60px 20px; }
+      .tl-item { flex-direction: column; gap: 4px; }
+      .card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="../../" class="back-btn">← ガイド一覧へ戻る</a>
+
+  <div class="wrap">
+    <header class="hero" data-animate>
+      <span class="eyebrow">Strategic Report for Students</span>
+      <h1>エネルギー戦略と<br>君たちの将来 2026-2050</h1>
+      <p>中東依存から脱却する日本。君たちが社会人として活躍する20年間、エネルギー環境はどう激変し、ライフスタイルやキャリアにどう影響するか。</p>
+    </header>
+
+    <div class="switch-wrap" data-animate>
+      <button id="pBtn" class="btn-s active-peace">シナリオA：緩やかな転換</button>
+      <button id="wBtn" class="btn-s">シナリオB：強制的な切断</button>
+    </div>
+
+    <div class="card" data-animate>
+      <h2 id="cardTitle">エネルギー源構成の予測推移</h2>
+      <div class="chart-box">
+        <svg id="chart" class="chart-svg" viewBox="0 0 800 300">
+          <line x1="50" y1="250" x2="750" y2="250" class="axis" />
+          <line x1="50" y1="50" x2="50" y2="250" class="axis" />
+          <!-- Labels -->
+          <text x="50" y="270" class="label-text">2023</text>
+          <text x="283" y="270" class="label-text">2030</text>
+          <text x="516" y="270" class="label-text">2040</text>
+          <text x="750" y="270" class="label-text">2050</text>
+          <!-- Lines will be drawn by JS -->
+          <path id="oilLine" class="chart-line" stroke="#ef4444" />
+          <path id="greenLine" class="chart-line" stroke="#10b981" />
+          <path id="nucLine" class="chart-line" stroke="#3b82f6" />
+        </svg>
+      </div>
+      <div style="display:flex; justify-content:center; gap:20px; margin-top:20px; font-size:12px;">
+        <span style="color:#ef4444">■ 中東原油/LNG</span>
+        <span style="color:#10b981">■ 再エネ/水素</span>
+        <span style="color:#3b82f6">■ 原子力</span>
+      </div>
+    </div>
+
+    <div class="card" data-animate>
+      <h2>学生のためのライフ・タイムライン</h2>
+      <div id="timeline"></div>
+    </div>
+
+    <div class="advice" data-animate>
+      <h3>大学生へのサバイバル提言</h3>
+      <p id="adviceText">
+        日本の中東依存脱却は、君たちが社会人として生きる「これからの30年」の前提条件です。石油中心の古いビジネスモデルではなく、GX（グリーントランスフォーメーション）を成長エンジンとする企業選びや、場所を選ばないエネルギー自律型のスキルを身につけることが、君たち自身の「強み」になります。
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const data = {
+      peace: {
+        oil: [[50, 40], [283, 100], [516, 180], [750, 230]], // SVG coords (higher Y = lower value)
+        green: [[50, 210], [283, 180], [516, 120], [750, 70]],
+        nuc: [[50, 230], [283, 200], [516, 190], [750, 200]],
+        tl: [
+          { y: "2026", t: "就活における「GX」企業の台頭", d: "大企業の多くがGX（脱炭素）戦略を経営の柱に。就活生は企業のエネルギー戦略を読み解く力が求められる時代。" },
+          { y: "2028", t: "生活コストの構造的上昇", d: "化石燃料賦課金の本格導入。一人暮らしの光熱費が月額数千円アップ。省エネ家電・断熱賃貸の選択が節約の鍵に。" },
+          { y: "2030", t: "エネルギー投資のピーク", d: "君たちが中堅に入る頃、水素・アンモニア発電が主流化。新興のエネルギーテック企業でのキャリアチャンス。" },
+          { y: "2035", t: "モビリティの完全電化", d: "ガソリン新車が消え、カーシェアや所有が100%電動化へ。ライフスタイルが「充電」中心に再構築。" }
+        ]
+      },
+      war: {
+        oil: [[50, 40], [283, 240], [516, 245], [750, 250]],
+        green: [[50, 210], [283, 130], [516, 80], [750, 50]],
+        nuc: [[50, 230], [283, 80], [516, 130], [750, 160]],
+        tl: [
+          { y: "2026", t: "エネルギー最後通牒と就職氷河期の予兆", d: "原油即時遮断リスクにより景気が激動。供給網の混乱により、多くの産業で緊急の構造修正が発生。" },
+          { y: "2027", t: "ライフスタイルの「強制アップデート」", d: "ガソリン代が数倍に跳ね上がり、物流が混乱。君たちの世代は「石油に頼らない生活」を20代で強制的に経験する。" },
+          { y: "2030", t: "超速のエネルギー独立達成", d: "日本が世界で最も早く脱石油を完了。この激変期を生き抜いた君たちは、世界に輸出可能な「変革スキル」を持つことに。" }
+        ]
+      }
+    };
+
+    function drawLine(id, coords) {
+      let d = "M " + coords[0][0] + " " + coords[0][1];
+      for (let i = 1; i < coords.length; i++) {
+        d += " L " + coords[i][0] + " " + coords[i][1];
+      }
+      document.getElementById(id).setAttribute("d", d);
+    }
+
+    function update(scenario) {
+      drawLine("oilLine", data[scenario].oil);
+      drawLine("greenLine", data[scenario].green);
+      drawLine("nucLine", data[scenario].nuc);
+
+      const tl = document.getElementById("timeline");
+      tl.innerHTML = data[scenario].tl.map(i => `
+        <div class="tl-item">
+          <div class="tl-year">${i.y}</div>
+          <div class="tl-body">
+            <h3>${i.t}</h3>
+            <p>${i.d}</p>
+          </div>
+        </div>
+      `).join("");
+
+      document.getElementById("pBtn").className = "btn-s " + (scenario === "peace" ? "active-peace" : "");
+      document.getElementById("wBtn").className = "btn-s " + (scenario === "war" ? "active-war" : "");
+    }
+
+    document.getElementById("pBtn").onclick = () => update("peace");
+    document.getElementById("wBtn").onclick = () => update("war");
+
+    update("peace");
+
+    // Scroll Animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll("[data-animate]").forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
