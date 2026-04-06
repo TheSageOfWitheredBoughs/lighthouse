@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>エネルギー戦略：中東依存脱却と君たちのキャリア 2026-2050 | lighthouse</title>
-  <meta name="description" content="日本のエネルギー転換（脱・石油）が、大学生の就職・生活・将来設計にどう影響するか。2つのシナリオから読み解く未来。">
+  <title>大学生活サバイバル・ガイド 2026-2030：エネルギー編 | lighthouse</title>
+  <meta name="description" content="2026年から2030年の4年間、運賃改定や炭素税導入がもたらすインフレとキャンパス環境の変化を乗り切るためのサバイバル戦略。">
   <meta name="date" content="2026-04-07">
   <meta name="category" content="生活">
   <style>
@@ -15,6 +15,7 @@
       --accent-blue: #3b82f6;
       --accent-red: #ef4444;
       --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
       --text-main: #e2e8f0;
       --text-muted: #94a3b8;
       --font: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
@@ -25,11 +26,10 @@
       font-family: var(--font);
       background-color: var(--bg);
       color: var(--text-main);
-      line-height: 1.6;
+      line-height: 1.7;
       overflow-x: hidden;
     }
 
-    /* ── LAYOUT ── */
     .wrap { max-width: 900px; margin: 0 auto; padding: 80px 24px; }
     
     .back-btn {
@@ -40,47 +40,42 @@
       backdrop-filter: blur(8px); z-index: 100;
     }
 
-    /* ── HERO ── */
     .hero { text-align: center; margin-bottom: 60px; }
     .eyebrow { 
-      display: inline-block; padding: 4px 12px; background: var(--accent-blue);
+      display: inline-block; padding: 4px 12px; background: var(--accent-red);
       color: #fff; font-size: 11px; font-weight: 900; border-radius: 4px;
       margin-bottom: 20px; letter-spacing: 0.1em;
     }
-    .hero h1 { font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.1; font-weight: 900; margin-bottom: 20px; letter-spacing: -0.02em; }
-    .hero p { color: var(--text-muted); max-width: 600px; margin: 0 auto; font-size: 17px; }
+    .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.2; font-weight: 900; margin-bottom: 20px; letter-spacing: -0.02em; }
+    .hero p { color: var(--text-muted); max-width: 650px; margin: 0 auto; font-size: 16px; }
 
-    /* ── SCENARIO SWITCH ── */
-    .switch-wrap { display: flex; justify-content: center; margin-bottom: 40px; gap: 8px; }
-    .btn-s {
-      padding: 12px 24px; border-radius: 12px; border: 1px solid var(--border);
-      background: var(--card-bg); color: var(--text-muted); cursor: pointer;
-      font-weight: 700; transition: all 0.3s;
-    }
-    .btn-s.active-peace { background: var(--accent-blue); color: #fff; border-color: var(--accent-blue); }
-    .btn-s.active-war { background: var(--accent-red); color: #fff; border-color: var(--accent-red); }
-
-    /* ── CONTENT CARDS ── */
     .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 40px; margin-bottom: 24px; backdrop-filter: blur(12px); }
-    .card h2 { font-size: 24px; margin-bottom: 24px; border-left: 4px solid var(--accent-blue); padding-left: 16px; }
+    .card h2 { font-size: 22px; margin-bottom: 24px; border-left: 4px solid var(--accent-yellow); padding-left: 16px; color: #fff;}
 
-    /* ── CHART SVG ── */
-    .chart-box { width: 100%; height: 300px; margin-top: 20px; position: relative; }
-    .chart-svg { width: 100%; height: 100%; overflow: visible; }
-    .chart-line { fill: none; stroke-width: 3; stroke-linecap: round; transition: d 0.5s ease-in-out; }
-    .axis { stroke: rgba(255,255,255,0.1); stroke-width: 1; }
-    .label-text { font-size: 10px; fill: var(--text-muted); }
-
+    /* ── CHART ── */
+    .chart-box { width: 100%; height: 320px; position: relative; margin-top: 10px; }
+    .chart-svg { width: 100%; height: 100%; overflow: visible; font-family: monospace; }
+    .chart-line { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; transition: d 0.5s ease; }
+    .axis { stroke: rgba(255,255,255,0.15); stroke-width: 1; }
+    .label-text { font-size: 12px; fill: var(--text-muted); }
+    
     /* ── TIMELINE ── */
-    .tl-item { display: flex; gap: 24px; margin-bottom: 32px; align-items: flex-start; }
-    .tl-year { font-weight: 900; color: var(--accent-blue); font-size: 18px; width: 60px; flex-shrink: 0; }
-    .tl-body h3 { font-size: 18px; margin-bottom: 8px; }
-    .tl-body p { font-size: 14px; color: var(--text-muted); }
+    .tl-item { display: flex; gap: 20px; margin-bottom: 32px; position: relative; }
+    .tl-item::before { content:''; position:absolute; left:23px; top:30px; bottom:-32px; width:2px; background:var(--border); }
+    .tl-item:last-child::before { display:none; }
+    .tl-year { font-weight: 900; color: #fff; background: var(--accent-blue); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; z-index: 2; box-shadow: 0 0 15px rgba(59,130,246,0.4); }
+    .tl-body { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 20px; flex: 1; }
+    .tl-body h3 { font-size: 18px; margin-bottom: 8px; color: var(--accent-green); }
+    .tl-body p { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
+    .tl-warn { font-size: 12px; background: rgba(239,68,68,0.1); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-weight: bold; border-left: 2px solid var(--accent-red); }
 
-    /* ── ADVICE ── */
-    .advice { background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1)); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 32px; padding: 40px; text-align: center; }
-    .advice h3 { font-size: 24px; margin-bottom: 16px; color: var(--accent-green); }
-    .advice p { font-size: 15px; color: var(--text-main); }
+    /* ── CHECKLIST ── */
+    .checklist { display: grid; gap: 16px; margin-top: 20px; }
+    .chk-item { display: flex; gap: 16px; align-items: flex-start; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid transparent; transition: 0.2s;}
+    .chk-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
+    .chk-icon { font-size: 24px; flex-shrink: 0; }
+    .chk-content h4 { font-size: 15px; color: #fff; margin-bottom: 4px; }
+    .chk-content p { font-size: 13px; color: var(--text-muted); }
 
     /* ── ANIMATIONS ── */
     [data-animate] { opacity: 0; transform: translateY(20px); transition: 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
@@ -88,7 +83,9 @@
 
     @media (max-width: 600px) {
       .wrap { padding: 60px 20px; }
-      .tl-item { flex-direction: column; gap: 4px; }
+      .tl-item { flex-direction: column; gap: 12px; }
+      .tl-item::before { display:none; }
+      .tl-year { width: auto; height: auto; background: transparent; color: var(--accent-blue); justify-content: flex-start; font-size: 18px; box-shadow: none; border-radius: 0; }
       .card { padding: 24px; }
     }
   </style>
@@ -99,112 +96,164 @@
 
   <div class="wrap">
     <header class="hero" data-animate>
-      <span class="eyebrow">Strategic Report for Students</span>
-      <h1>エネルギー戦略と<br>君たちの将来 2026-2050</h1>
-      <p>中東依存から脱却する日本。君たちが社会人として活躍する20年間、エネルギー環境はどう激変し、ライフスタイルやキャリアにどう影響するか。</p>
+      <span class="eyebrow">2026-2030 Survival Guide</span>
+      <h1>大学生活インフレ防衛線<br>4年間の生存戦略</h1>
+      <p>卒業後のキャリアより、まずは「目の前の4年間」を無事に完走すること。JR運賃改定、大学図書館の冷暖房制限、炭素税による物価高騰から、君の学習環境と生活を守るための具体的な行動マニュアル。</p>
     </header>
 
-    <div class="switch-wrap" data-animate>
-      <button id="pBtn" class="btn-s active-peace">シナリオA：緩やかな転換</button>
-      <button id="wBtn" class="btn-s">シナリオB：強制的な切断</button>
-    </div>
-
+    <!-- グラフセクション -->
     <div class="card" data-animate>
-      <h2 id="cardTitle">エネルギー源構成の予測推移</h2>
+      <h2>学生生活インフラ指標予測 (2026〜2030)</h2>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">基調：各種補助金の終了と2028年の化石燃料賦課金導入によるインフレ見通し (2025年比 %)</p>
       <div class="chart-box">
         <svg id="chart" class="chart-svg" viewBox="0 0 800 300">
-          <line x1="50" y1="250" x2="750" y2="250" class="axis" />
+          <!-- Grid -->
+          <line x1="50" y1="250" x2="780" y2="250" class="axis" />
           <line x1="50" y1="50" x2="50" y2="250" class="axis" />
-          <!-- Labels -->
-          <text x="50" y="270" class="label-text">2023</text>
-          <text x="283" y="270" class="label-text">2030</text>
-          <text x="516" y="270" class="label-text">2040</text>
-          <text x="750" y="270" class="label-text">2050</text>
-          <!-- Lines will be drawn by JS -->
-          <path id="oilLine" class="chart-line" stroke="#ef4444" />
-          <path id="greenLine" class="chart-line" stroke="#10b981" />
-          <path id="nucLine" class="chart-line" stroke="#3b82f6" />
+          <line x1="50" y1="150" x2="780" y2="150" class="axis" stroke-dasharray="4" />
+          <line x1="50" y1="50" x2="780" y2="50" class="axis" stroke-dasharray="4" />
+          
+          <!-- Y Labels -->
+          <text x="15" y="255" class="label-text">100%</text>
+          <text x="15" y="155" class="label-text">115%</text>
+          <text x="15" y="55" class="label-text">130%</text>
+          
+          <!-- X Labels -->
+          <text x="50" y="275" class="label-text">2026</text>
+          <text x="232" y="275" class="label-text">2027</text>
+          <text x="415" y="275" class="label-text">2028</text>
+          <text x="597" y="275" class="label-text">2029</text>
+          <text x="780" y="275" class="label-text">2030</text>
+
+          <!-- Lines (Drawn by JS) -->
+          <path id="utilLine" class="chart-line" stroke="#ef4444" />
+          <path id="transLine" class="chart-line" stroke="#3b82f6" />
+          <path id="foodLine" class="chart-line" stroke="#10b981" />
         </svg>
       </div>
-      <div style="display:flex; justify-content:center; gap:20px; margin-top:20px; font-size:12px;">
-        <span style="color:#ef4444">■ 中東原油/LNG</span>
-        <span style="color:#10b981">■ 再エネ/水素</span>
-        <span style="color:#3b82f6">■ 原子力</span>
+      <div style="display:flex; justify-content:center; gap:24px; margin-top:20px; font-size:13px; font-weight:bold;">
+        <span style="color:#ef4444">■ 光熱費（電気・ガス）</span>
+        <span style="color:#10b981">■ 食費・日用品（プラ製品）</span>
+        <span style="color:#3b82f6">■ 交通費（鉄道等）</span>
       </div>
     </div>
 
+    <!-- タイムラインセクション -->
     <div class="card" data-animate>
-      <h2>学生のためのライフ・タイムライン</h2>
-      <div id="timeline"></div>
+      <h2>サバイバル・カレンダー（学業完走への試練）</h2>
+      
+      <div class="tl-item">
+        <div class="tl-year">26年</div>
+        <div class="tl-body">
+          <h3>JR・私鉄運賃の一斉改定と生活用品値上げ</h3>
+          <p>3月にJR東日本等が運賃特例を廃止し実質値上げ。同時期に化学各社（ナフサ不足）の影響で、プラスチック容器、洗剤、ゴミ袋等が一斉高騰。</p>
+          <div class="tl-warn">対策：通学手段を「電動アシスト自転車」へ移行検討。学割定期券の購入時期の前倒し。</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">27年</div>
+        <div class="tl-body">
+          <h3>大学施設の「省エネ事態」常態化</h3>
+          <p>酷暑の継続と大学運営費の枯渇により、図書館・PCルームの「空調制限」や「開館時間短縮」が激化。夏場の大学が「涼しい避暑地」ではなくなる。</p>
+          <div class="tl-warn">対策：自室の断熱強化（窓シート）への投資。大学以外の「サードプレイス（集中できる場所）」の確保。</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">28年</div>
+        <div class="tl-body">
+          <h3>炭素税（化石燃料賦課金）の直接打撃</h3>
+          <p>政府による新たな賦課金が開始。製造・物流コストへの転嫁により、コンビニ弁当や学食の価格が一段階跳ね上がる。「買えば済む」時代の終焉。</p>
+          <div class="tl-warn">対策：生存スキルとしての「自炊技術」の習得。学食・外食への依存度を下げる。</div>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <div class="tl-year">30年</div>
+        <div class="tl-body">
+          <h3>「高エネ」スキルの就活市場での価値</h3>
+          <p>卒業と同時に、社会全体が本格的な「GX（脱炭素）経済」へと移行。エネルギーの「節約」ではなく「効率的活用と自立」を知る人材が高く評価される。</p>
+          <div class="tl-warn">対策：サバイバル生活で培った「環境適応力」と「リソース配分能力」を自己PRに変換する。</div>
+        </div>
+      </div>
     </div>
 
-    <div class="advice" data-animate>
-      <h3>大学生へのサバイバル提言</h3>
-      <p id="adviceText">
-        日本の中東依存脱却は、君たちが社会人として生きる「これからの30年」の前提条件です。石油中心の古いビジネスモデルではなく、GX（グリーントランスフォーメーション）を成長エンジンとする企業選びや、場所を選ばないエネルギー自律型のスキルを身につけることが、君たち自身の「強み」になります。
-      </p>
+    <!-- チェックリストセクション -->
+    <div class="card" data-animate>
+      <h2>今日から始める防衛策チェックリスト</h2>
+      <p style="color:var(--text-muted); font-size:14px;">仕送りやバイト代がインフレに追いつかない前提で、固定費の「聖域」を守る生存戦術。</p>
+      
+      <div class="checklist">
+        <div class="chk-item">
+          <div class="chk-icon">🍳</div>
+          <div class="chk-content">
+            <h4>脱ガス・タイパ自炊（ワンパン＆レンジ）</h4>
+            <p>ガスコンロを極力使わず、耐熱ボウルと電子レンジを駆使する。フライパン1つで完結する「ワンパンレシピ」で、光熱費・水道代・洗い物の時間を一気に削減。</p>
+          </div>
+        </div>
+
+        <div class="chk-item">
+          <div class="chk-icon">🪟</div>
+          <div class="chk-content">
+            <h4>窓の断熱強化（最強の電気代対策）</h4>
+            <p>賃貸アパートの冷暖房効率を下げる最大の原因は「窓」。断熱シート、ハニカムスクリーン、プチプチなどを張り巡らせるだけで、エアコンの電気代が劇的に変わる。</p>
+          </div>
+        </div>
+
+        <div class="chk-item">
+          <div class="chk-icon">🧠</div>
+          <div class="chk-content">
+            <h4>メンタルレジリエンスの保持</h4>
+            <p>物価高と利用制限でイライラしがちな時期。「我慢」ではなく「生活の最適化というゲーム」と捉える。SNSで同世代の節約術を取り入れ、孤独な貧困感に陥らないこと。</p>
+          </div>
+        </div>
+      </div>
     </div>
+
   </div>
 
   <script>
+    // Data definition: 2026=0, 2027=1, 2028=2, 2029=3, 2030=4
+    // Y-axis mapping: 100% = 250px, 130% = 50px
+    function calcY(percent) {
+      // ratio: (130 - 100) = 30%. pixels = 200px. 200 / 30 = 6.66 px per %.
+      return 250 - ((percent - 100) * (200 / 30));
+    }
+
     const data = {
-      peace: {
-        oil: [[50, 40], [283, 100], [516, 180], [750, 230]], // SVG coords (higher Y = lower value)
-        green: [[50, 210], [283, 180], [516, 120], [750, 70]],
-        nuc: [[50, 230], [283, 200], [516, 190], [750, 200]],
-        tl: [
-          { y: "2026", t: "就活における「GX」企業の台頭", d: "大企業の多くがGX（脱炭素）戦略を経営の柱に。就活生は企業のエネルギー戦略を読み解く力が求められる時代。" },
-          { y: "2028", t: "生活コストの構造的上昇", d: "化石燃料賦課金の本格導入。一人暮らしの光熱費が月額数千円アップ。省エネ家電・断熱賃貸の選択が節約の鍵に。" },
-          { y: "2030", t: "エネルギー投資のピーク", d: "君たちが中堅に入る頃、水素・アンモニア発電が主流化。新興のエネルギーテック企業でのキャリアチャンス。" },
-          { y: "2035", t: "モビリティの完全電化", d: "ガソリン新車が消え、カーシェアや所有が100%電動化へ。ライフスタイルが「充電」中心に再構築。" }
-        ]
-      },
-      war: {
-        oil: [[50, 40], [283, 240], [516, 245], [750, 250]],
-        green: [[50, 210], [283, 130], [516, 80], [750, 50]],
-        nuc: [[50, 230], [283, 80], [516, 130], [750, 160]],
-        tl: [
-          { y: "2026", t: "エネルギー最後通牒と就職氷河期の予兆", d: "原油即時遮断リスクにより景気が激動。供給網の混乱により、多くの産業で緊急の構造修正が発生。" },
-          { y: "2027", t: "ライフスタイルの「強制アップデート」", d: "ガソリン代が数倍に跳ね上がり、物流が混乱。君たちの世代は「石油に頼らない生活」を20代で強制的に経験する。" },
-          { y: "2030", t: "超速のエネルギー独立達成", d: "日本が世界で最も早く脱石油を完了。この激変期を生き抜いた君たちは、世界に輸出可能な「変革スキル」を持つことに。" }
-        ]
-      }
+      // Format: [2026%, 2027%, 2028%, 2029%, 2030%]
+      util:  [105, 110, 118, 122, 128], // Utilities surge with carbon tax in '28
+      trans: [108, 108, 112, 112, 115], // Step function for railway fare hikes
+      food:  [106, 112, 116, 119, 122]  // Steady inflation from naphtha & logistics
     };
 
-    function drawLine(id, coords) {
-      let d = "M " + coords[0][0] + " " + coords[0][1];
-      for (let i = 1; i < coords.length; i++) {
-        d += " L " + coords[i][0] + " " + coords[i][1];
+    const xCoords = [50, 232, 415, 597, 780];
+
+    function drawLine(id, dataset) {
+      let d = `M ${xCoords[0]} ${calcY(dataset[0])}`;
+      for (let i = 1; i < dataset.length; i++) {
+        d += ` L ${xCoords[i]} ${calcY(dataset[i])}`;
       }
       document.getElementById(id).setAttribute("d", d);
+      
+      // Animate line drawing
+      const path = document.getElementById(id);
+      const length = path.getTotalLength();
+      path.style.strokeDasharray = length;
+      path.style.strokeDashoffset = length;
+      setTimeout(() => {
+        path.style.transition = 'stroke-dashoffset 1.5s ease-in-out';
+        path.style.strokeDashoffset = '0';
+      }, 300);
     }
 
-    function update(scenario) {
-      drawLine("oilLine", data[scenario].oil);
-      drawLine("greenLine", data[scenario].green);
-      drawLine("nucLine", data[scenario].nuc);
+    window.addEventListener('DOMContentLoaded', () => {
+      drawLine("utilLine", data.util);
+      drawLine("transLine", data.trans);
+      drawLine("foodLine", data.food);
+    });
 
-      const tl = document.getElementById("timeline");
-      tl.innerHTML = data[scenario].tl.map(i => `
-        <div class="tl-item">
-          <div class="tl-year">${i.y}</div>
-          <div class="tl-body">
-            <h3>${i.t}</h3>
-            <p>${i.d}</p>
-          </div>
-        </div>
-      `).join("");
-
-      document.getElementById("pBtn").className = "btn-s " + (scenario === "peace" ? "active-peace" : "");
-      document.getElementById("wBtn").className = "btn-s " + (scenario === "war" ? "active-war" : "");
-    }
-
-    document.getElementById("pBtn").onclick = () => update("peace");
-    document.getElementById("wBtn").onclick = () => update("war");
-
-    update("peace");
-
-    // Scroll Animation
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
