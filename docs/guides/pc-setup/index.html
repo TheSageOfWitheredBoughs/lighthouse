@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PC・ネットワーク導入ガイド | LEVEL-R8B8 × Pixio PS2S × ASUS RT-BE72</title>
-  <meta name="description" content="ゲーミングBTOパソコン（LEVEL-R8B8-LCR98D-TGX）、Pixioデュアルモニターアーム、Wi-Fi 7ルーター（ASUS RT-BE72）、Steam環境の完全なセットアップガイド。">
+  <title>PC環境構築パーフェクトガイド | LEVEL-R8B8 × Pixio PS2S</title>
+  <meta name="description" content="ゲーミングPCの組み立て、モニターアーム設置、完全な配線術、Wi-Fi 7ルーター、ストレージ増設までの道標。">
   <meta name="date" content="2026-04-06">
   <meta name="category" content="デジタルツール">
   <style>
@@ -17,7 +17,6 @@
       --border2: rgba(255,255,255,0.13);
       --cyan: #00e5ff;
       --cyan10: rgba(0,229,255,0.10);
-      --cyan25: rgba(0,229,255,0.25);
       --pink: #ff2d78;
       --pink10: rgba(255,45,120,0.10);
       --amber: #ffb347;
@@ -34,199 +33,122 @@
     html{scroll-behavior:smooth}
     body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.8;overflow-x:hidden;font-size:15px}
 
-    /* Scroll Progress */
     #spb{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--cyan),var(--pink));z-index:9999;transition:width .08s linear}
+    .bgl{position:fixed;inset:0;z-index:-2;background:radial-gradient(circle at 15% 15%,rgba(0,229,255,.04) 0%,transparent 50%),radial-gradient(circle at 85% 85%,rgba(255,45,120,.04) 0%,transparent 50%),var(--bg)}
+    .bgg{position:fixed;inset:0;z-index:-1;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);background-size:48px 48px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.55) 0%,transparent 75%)}
 
-    /* Background */
-    .bgl{position:fixed;inset:0;z-index:-2;
-      background:radial-gradient(circle at 15% 15%,rgba(0,229,255,.04) 0%,transparent 50%),
-                 radial-gradient(circle at 85% 85%,rgba(255,45,120,.04) 0%,transparent 50%),
-                 var(--bg)}
-    .bgg{position:fixed;inset:0;z-index:-1;
-      background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),
-                       linear-gradient(90deg,rgba(255,255,255,.022) 1px,transparent 1px);
-      background-size:48px 48px;
-      mask-image:linear-gradient(to bottom,rgba(0,0,0,.55) 0%,transparent 75%)}
-
-    /* Animations */
     @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
     @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.65)}}
     @keyframes tabIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
 
     .rv{opacity:0;animation:fadeUp .6s var(--ease) forwards}
     .rv1{animation-delay:.08s}.rv2{animation-delay:.18s}.rv3{animation-delay:.28s}
-    .rv4{animation-delay:.38s}.rv5{animation-delay:.48s}
-
     .sr{opacity:0;transform:translateY(28px);transition:opacity .55s var(--ease),transform .55s var(--ease)}
     .sr.vis{opacity:1;transform:translateY(0)}
 
-    /* Layout */
     .wrap{max-width:1020px;margin:0 auto;padding:0 2rem 8rem}
-
-    /* Back link */
-    .back{display:inline-flex;align-items:center;gap:6px;position:fixed;top:20px;left:20px;
-      color:var(--muted);text-decoration:none;font-weight:600;font-size:.82rem;letter-spacing:.02em;
-      z-index:200;padding:7px 13px;background:rgba(7,9,15,.85);border:1px solid var(--border);
-      border-radius:20px;backdrop-filter:blur(8px);transition:color .2s,border-color .2s}
-    .back:hover{color:var(--cyan);border-color:var(--cyan25)}
+    .back{display:inline-flex;align-items:center;gap:6px;position:fixed;top:20px;left:20px;color:var(--muted);text-decoration:none;font-weight:600;font-size:.82rem;z-index:200;padding:7px 13px;background:rgba(7,9,15,.85);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(8px);transition:color .2s,border-color .2s}
+    .back:hover{color:var(--cyan);border-color:rgba(0,229,255,.25)}
     .back svg{width:15px;fill:currentColor}
 
     /* Hero */
     .hero{padding:7rem 0 2.5rem;text-align:center}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;
-      background:var(--cyan10);border:1px solid rgba(0,229,255,.2);border-radius:20px;
-      color:var(--cyan);font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 16px;background:var(--cyan10);border:1px solid rgba(0,229,255,.2);border-radius:20px;color:var(--cyan);font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:18px}
     .eyebrow::before{content:'';width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:pulse 2s ease-in-out infinite;flex-shrink:0}
-    .hero-h{font-size:clamp(2.4rem,5.5vw,4.8rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin-bottom:14px}
+    .hero-h{font-size:clamp(2.4rem,5vw,4.2rem);font-weight:900;line-height:1.1;letter-spacing:-.03em;margin-bottom:14px}
     .hero-h .l1{background:linear-gradient(to right,#fff 20%,#9ca3af);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .hero-h .l2{background:linear-gradient(to right,var(--cyan),var(--pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-    .hero-p{color:var(--muted);font-size:.95rem;max-width:540px;margin:0 auto 2.2rem;line-height:1.9}
-
-    /* Spec Grid */
-    .spec-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-      background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;
-      max-width:780px;margin:0 auto 1.8rem}
-    .spec-item{background:var(--bg-s);padding:18px 14px;text-align:center;transition:background .2s}
-    .spec-item:hover{background:var(--bg-e)}
-    .spec-icon{font-size:1.5rem;margin-bottom:7px;line-height:1}
-    .spec-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
-    .spec-val{font-size:.8rem;font-weight:700;color:var(--text)}
-
-    /* Progress tracker */
-    .prog-box{display:flex;align-items:center;gap:14px;background:var(--bg-s);
-      border:1px solid var(--border);border-radius:10px;padding:14px 18px;
-      max-width:780px;margin:0 auto 2.5rem}
-    .prog-lbl{font-size:.78rem;color:var(--muted);font-weight:600;white-space:nowrap}
-    .prog-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+    
+    .prog-box{display:flex;align-items:center;gap:14px;background:var(--bg-s);border:1px solid var(--border);border-radius:10px;padding:14px 18px;max-width:780px;margin:0 auto 2.5rem}
+    .prog-lbl{font-size:.78rem;color:var(--muted);font-weight:600}
+    .prog-track{flex:1;height:5px;background:var(--border);border-radius:3px}
     .prog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--pink));border-radius:3px;transition:width .4s var(--ease);width:0%}
-    .prog-cnt{font-size:.78rem;color:var(--cyan);font-weight:700;font-family:var(--mono);white-space:nowrap}
+    .prog-cnt{font-size:.78rem;color:var(--cyan);font-weight:700;font-family:var(--mono)}
 
     /* Tabs */
-    .tab-nav{display:flex;background:var(--bg-s);border:1px solid var(--border);border-radius:14px;
-      padding:5px;margin-bottom:2.2rem;position:sticky;top:14px;z-index:100;
-      box-shadow:0 8px 30px rgba(0,0,0,.6);backdrop-filter:blur(12px);
-      overflow-x:auto;scrollbar-width:none;gap:2px}
-    .tab-nav::-webkit-scrollbar{display:none}
-    .tab-btn{flex:1;background:transparent;border:none;padding:11px 14px;color:var(--muted);
-      font-family:var(--font);font-size:.85rem;font-weight:700;cursor:pointer;border-radius:9px;
-      transition:all .25s var(--ease);display:flex;align-items:center;justify-content:center;
-      gap:7px;min-width:max-content}
+    .tab-nav{display:flex;background:var(--bg-s);border:1px solid var(--border);border-radius:14px;padding:5px;margin-bottom:2.2rem;position:sticky;top:14px;z-index:100;box-shadow:0 8px 30px rgba(0,0,0,.6);backdrop-filter:blur(12px);flex-wrap:wrap;gap:2px}
+    @media (max-width: 800px) { .tab-nav { flex-wrap: nowrap; overflow-x: auto; justify-content: flex-start; scrollbar-width: none; } }
+    .tab-btn{flex:1;background:transparent;border:none;padding:10px 12px;color:var(--muted);font-family:var(--font);font-size:.8rem;font-weight:700;cursor:pointer;border-radius:9px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;min-width:max-content}
     .tab-btn:hover{color:#fff;background:rgba(255,255,255,.04)}
     .tab-btn.active{background:var(--bg-e);color:var(--cyan);box-shadow:0 2px 10px rgba(0,0,0,.3),inset 0 0 0 1px var(--border2)}
-    .tab-btn svg{width:17px;fill:currentColor;flex-shrink:0}
-    .tbadge{background:var(--green);color:#000;font-size:.62rem;font-weight:800;
-      padding:1px 5px;border-radius:6px;font-family:var(--mono)}
+    .tab-btn svg{width:16px;fill:currentColor}
+    .tbadge{background:var(--green);color:#000;font-size:.62rem;font-weight:800;padding:1px 5px;border-radius:6px;font-family:var(--mono)}
 
-    /* Tab panes */
     .tab-pane{display:none}
-    .tab-pane.active{display:block;animation:tabIn .38s var(--ease) forwards}
+    .tab-pane.active{display:block;animation:tabIn .3s var(--ease) forwards}
 
     /* Card */
-    .card{background:var(--bg-c);border:1px solid var(--border);border-radius:16px;padding:2.4rem;
-      margin-bottom:1.4rem;position:relative;overflow:hidden;transition:border-color .3s,box-shadow .3s}
-    .card:hover{border-color:var(--border2);box-shadow:0 0 36px rgba(0,229,255,.04)}
+    .card{background:var(--bg-c);border:1px solid var(--border);border-radius:16px;padding:2.4rem;margin-bottom:1.4rem;position:relative;overflow:hidden;}
     .ca{position:absolute;top:0;left:0;width:3px;height:100%}
     .ca-c{background:linear-gradient(to bottom,var(--cyan),transparent 70%)}
     .ca-p{background:linear-gradient(to bottom,var(--pink),transparent 70%)}
-    .ca-a{background:linear-gradient(to bottom,var(--amber),transparent 70%)}
-    .ca-g{background:linear-gradient(to bottom,var(--green),transparent 70%)}
+    
+    .card-hd{display:flex;align-items:flex-start;gap:1.1rem;margin-bottom:1.8rem;padding-bottom:1.4rem;border-bottom:1px solid var(--border)}
+    .snum{font-size:2.6rem;font-weight:900;line-height:.85;color:transparent;-webkit-text-stroke:1px var(--border2);font-family:var(--mono)}
+    .ctitle{font-size:1.4rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:4px}
+    .csub{color:var(--cyan);font-size:.78rem;font-weight:600}
 
-    /* Card header */
-    .card-hd{display:flex;align-items:flex-start;gap:1.1rem;margin-bottom:1.8rem;
-      padding-bottom:1.4rem;border-bottom:1px solid var(--border)}
-    .snum{font-size:2.6rem;font-weight:900;line-height:.85;color:transparent;
-      -webkit-text-stroke:1px var(--border2);font-family:var(--mono);flex-shrink:0}
-    .ctitle{font-size:1.45rem;font-weight:800;color:#fff;margin-bottom:4px;line-height:1.2}
-    .csub{color:var(--cyan);font-size:.78rem;font-weight:600;letter-spacing:.05em}
-
-    /* Section heading */
-    .sh{display:flex;align-items:center;gap:9px;font-size:1rem;font-weight:800;color:#fff;margin:1.8rem 0 .9rem}
+    .sh{display:flex;align-items:center;gap:9px;font-size:1.05rem;font-weight:800;color:#fff;margin:2.4rem 0 1.2rem}
     .sh::after{content:'';flex:1;height:1px;background:var(--border)}
-    .sh .dot{width:7px;height:7px;background:var(--cyan);border-radius:50%;flex-shrink:0}
+    .sh .dot{width:7px;height:7px;background:var(--cyan);border-radius:50%}
 
     /* Checklist */
     .cl{list-style:none}
-    .ci{display:flex;gap:13px;padding:1.1rem 1.3rem;background:rgba(255,255,255,.02);
-      border:1px solid var(--border);border-radius:9px;margin-bottom:7px;cursor:pointer;
-      transition:all .2s;user-select:none}
-    .ci:hover{background:rgba(255,255,255,.04);border-color:var(--border2)}
+    .ci{display:flex;gap:13px;padding:1.1rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px;margin-bottom:7px;cursor:pointer;user-select:none;transition:background 0.2s}
+    .ci:hover{background:rgba(255,255,255,.04)}
     .ci.done{background:var(--green10);border-color:rgba(34,197,94,.22)}
     .ci.done .ci-body{opacity:.62}
-    .ci-chk{width:25px;height:25px;border:2px solid var(--border2);border-radius:50%;flex-shrink:0;
-      display:flex;align-items:center;justify-content:center;margin-top:3px;transition:all .2s}
+    .ci-chk{width:22px;height:22px;border:2px solid var(--border2);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:2px}
     .ci.done .ci-chk{background:var(--green);border-color:var(--green)}
-    .ci-chk svg{width:13px;fill:#000;opacity:0;transition:opacity .2s}
+    .ci-chk svg{width:12px;fill:#000;opacity:0}
     .ci.done .ci-chk svg{opacity:1}
-    .ci-n{font-size:.68rem;font-weight:800;font-family:var(--mono);color:var(--muted);margin-bottom:3px}
-    .ci-t{font-weight:700;color:var(--text);font-size:.92rem;margin-bottom:3px}
-    .ci-d{font-size:.85rem;color:var(--muted);line-height:1.7}
+    .ci-n{font-size:.65rem;font-weight:800;font-family:var(--mono);color:var(--muted);margin-bottom:2px}
+    .ci-t{font-weight:700;color:var(--text);font-size:.9rem;margin-bottom:4px}
+    .ci-d{font-size:.85rem;color:var(--muted);line-height:1.6}
 
     /* Alerts */
-    .al{display:flex;gap:13px;padding:1.1rem 1.3rem;border-radius:9px;margin:1.4rem 0}
+    .al{display:flex;gap:13px;padding:1.1rem;border-radius:9px;margin:1.4rem 0;line-height:1.6}
     .al-d{background:var(--pink10);border:1px solid rgba(255,45,120,.22);border-left:3px solid var(--pink)}
     .al-i{background:var(--cyan10);border:1px solid rgba(0,229,255,.18);border-left:3px solid var(--cyan)}
     .al-w{background:var(--amber10);border:1px solid rgba(255,179,71,.22);border-left:3px solid var(--amber)}
-    .al-ico{font-size:1.15rem;line-height:1.5;flex-shrink:0}
-    .al-t{font-weight:800;font-size:.88rem;margin-bottom:3px}
+    .al-ico{font-size:1.1rem}
+    .al-t{font-weight:800;font-size:.85rem;margin-bottom:3px}
     .al-d .al-t{color:var(--pink)}.al-i .al-t{color:var(--cyan)}.al-w .al-t{color:var(--amber)}
-    .al p{font-size:.86rem;color:var(--text);line-height:1.8}
+    .al p{font-size:.85rem}
+    code{background:rgba(255,255,255,.07);padding:2px 5px;border-radius:4px;font-family:var(--mono);color:var(--cyan);font-size:.85em}
 
-    /* Code */
-    code{background:rgba(255,255,255,.07);border:1px solid var(--border);padding:2px 6px;
-      border-radius:4px;font-family:var(--mono);font-size:.84em;color:var(--cyan)}
-
-    /* Diagrams */
-    .diag{background:var(--bg);border:1px solid var(--border);border-radius:11px;padding:1.8rem;margin:1.4rem 0;overflow:auto}
-    .diag-cap{text-align:center;font-size:.75rem;color:var(--muted);margin-top:10px}
-
-    .port-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:14px}
-    .port-box{padding:14px;border-radius:8px;text-align:center}
-    .port-box.bad{background:var(--pink10);border:1px dashed rgba(255,45,120,.28)}
-    .port-box.good{background:var(--cyan10);border:1px solid rgba(0,229,255,.28);box-shadow:0 0 18px rgba(0,229,255,.07)}
-    .port-lbl{font-size:.75rem;font-weight:700;margin-bottom:7px}
-    .port-box.bad .port-lbl{color:var(--pink)}.port-box.good .port-lbl{color:var(--cyan)}
-    .port-box p{font-size:.8rem;color:var(--muted);line-height:1.5}
-    .vs{font-size:1.3rem;color:var(--muted);text-align:center}
-
-    /* Steam UI */
-    .steam{background:#1b2838;border:1px solid #4c617a;border-radius:6px;overflow:hidden;margin:1.4rem 0;font-family:var(--mono)}
-    .steam-tb{background:#171a21;padding:8px 14px;font-size:.78rem;color:#8f98a0;border-bottom:1px solid #4c617a}
-    .steam-body{background:#2a475e;padding:18px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .steam-card{background:rgba(0,0,0,.25);padding:13px;border-radius:4px}
-    .steam-card.pri{border:1px solid #1a9fff;box-shadow:0 0 10px rgba(26,159,255,.18)}
-    .steam-clbl{font-size:.72rem;color:#8f98a0;margin-bottom:6px}
-    .steam-ct{font-size:.8rem;color:#fff;margin-bottom:8px;display:flex;justify-content:space-between}
-    .steam-pb{height:5px;background:#171a21;border-radius:3px;overflow:hidden;margin-bottom:5px}
-    .steam-pf{height:100%;background:#1a9fff;border-radius:3px}
-    .steam-stat{font-size:.7rem;color:#8f98a0}
-    .steam-star{color:#1a9fff}
-
-    /* Accordion */
-    .acc{border:1px solid var(--border);border-radius:9px;overflow:hidden;margin:1.4rem 0}
-    .acc-item+.acc-item{border-top:1px solid var(--border)}
-    .acc-btn{width:100%;background:var(--bg-e);border:none;padding:13px 16px;text-align:left;
-      color:var(--text);font-family:var(--font);font-size:.88rem;font-weight:700;cursor:pointer;
-      display:flex;justify-content:space-between;align-items:center;transition:background .2s}
-    .acc-btn:hover{background:rgba(255,255,255,.04)}
-    .acc-btn svg{width:17px;fill:var(--muted);transition:transform .3s;flex-shrink:0}
-    .acc-btn.open svg{transform:rotate(180deg)}
-    .acc-body{background:var(--bg);max-height:0;overflow:hidden;transition:max-height .4s var(--ease)}
-    .acc-body.open{max-height:500px}
-    .acc-inner{padding:14px 16px;font-size:.86rem;color:var(--muted);line-height:1.8}
-    .acc-inner p{margin-bottom:7px}
-    .acc-inner p:last-child{margin-bottom:0}
-
-    /* Responsive */
-    @media(max-width:768px){
-      .wrap{padding:0 1rem 4rem}
-      .card{padding:1.4rem}
-      .back{top:14px;left:14px;font-size:.75rem}
-      .hero{padding:5.5rem 0 2rem}
-      .spec-grid{grid-template-columns:repeat(2,1fr)}
-      .tab-btn{padding:9px 11px;font-size:.78rem}
-      .port-grid{grid-template-columns:1fr}.vs{display:none}
-      .steam-body{grid-template-columns:1fr}
+    /* Photos / Diagrams */
+    .photo-area {
+      background: #0b0e17;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      overflow: hidden;
+      margin: 1.5rem 0;
     }
+    .photo-area img {
+      width: 100%;
+      height: auto;
+      display: block;
+      opacity: 0.9;
+      transition: opacity 0.3s;
+    }
+    .photo-area img:hover { opacity: 1; }
+    .photo-cap {
+      padding: 12px 16px;
+      background: var(--bg-e);
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Hardware Specific Tables */
+    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.86rem; }
+    th { text-align: left; background: rgba(0,229,255,0.05); padding: 10px; border-bottom: 2px solid var(--border); color: var(--text); }
+    td { padding: 10px; border-bottom: 1px solid var(--border); color: var(--muted); }
+    strong { color: var(--text); }
+
+    @media(max-width:768px){.wrap{padding:0 1rem 4rem}.card{padding:1.4rem}.back{top:14px;left:14px;font-size:.75rem}.hero{padding:5.5rem 0 2rem}}
   </style>
 </head>
 <body>
@@ -235,543 +157,189 @@
   <div class="bgg"></div>
 
   <a href="../../" class="back">
-    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-    ガイド一覧
+    <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg> ガイド一覧
   </a>
 
   <div class="wrap">
-
-    <!-- Hero -->
     <section class="hero">
-      <div class="eyebrow rv rv1">Complete Setup Guide</div>
-      <h1 class="hero-h rv rv2">
-        <span class="l1">Ultimate</span><br>
-        <span class="l2">Tech Environment</span>
-      </h1>
-      <p class="hero-p rv rv3">BTOパソコン・モニターアーム・Wi-Fi 7・Windows初期設定・Steam。<br>最高峰のPC環境をゼロから構築するための完全ガイド。</p>
-
-      <div class="spec-grid rv rv4">
-        <div class="spec-item">
-          <div class="spec-icon">🖥️</div>
-          <div class="spec-lbl">PC</div>
-          <div class="spec-val">LEVEL-R8B8</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-icon">⚡</div>
-          <div class="spec-lbl">CPU / GPU</div>
-          <div class="spec-val">9800X3D / RX 9070 XT</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-icon">🌐</div>
-          <div class="spec-lbl">Router</div>
-          <div class="spec-val">ASUS RT-BE72</div>
-        </div>
-        <div class="spec-item">
-          <div class="spec-icon">🖱️</div>
-          <div class="spec-lbl">Monitor Arm</div>
-          <div class="spec-val">Pixio PS2S Dual</div>
-        </div>
-      </div>
-
-      <div class="prog-box rv rv5">
-        <span class="prog-lbl">セットアップ進捗</span>
+      <div class="eyebrow rv rv1">Perfect Hardware Guide</div>
+      <h1 class="hero-h rv rv2"><span class="l1">Ultimate</span><br><span class="l2">Tech Environment</span></h1>
+      <p style="color:var(--muted);font-size:.9rem;" class="rv rv3">レベルインフィニティ×Pixioアームを極限まで美しく、完璧に構築するためのプロフェッショナルな組み立て・配線・増設手順書。</p>
+      
+      <div class="prog-box rv rv3" style="margin-top:2rem">
+        <span class="prog-lbl">組み立て進捗</span>
         <div class="prog-track"><div class="prog-fill" id="pfill"></div></div>
         <span class="prog-cnt" id="pcnt">0 / 0</span>
       </div>
     </section>
 
     <!-- Tab Nav -->
-    <nav class="tab-nav rv rv5">
-      <button class="tab-btn active" data-target="tab-pc">
-        <svg viewBox="0 0 24 24"><path d="M21 2H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h7v2H8v2h8v-2h-2v-2h7c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H3V4h18v12z"/></svg>
-        01. BTOパソコン
-      </button>
-      <button class="tab-btn" data-target="tab-monitor">
-        <svg viewBox="0 0 24 24"><path d="M4 6h16v10H4zm16 12H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2h16c1.1 0 2 .9 2 2v10c0 1.1-.9 2-2 2zm-7 2v2h-2v-2H4v-2h16v2z"/></svg>
-        02. モニターアーム
-      </button>
-      <button class="tab-btn" data-target="tab-net">
-        <svg viewBox="0 0 24 24"><path d="M1 9l2 2c4.97-4.97 13.03-4.97 18 0l2-2C16.93 2.93 7.08 2.93 1 9zm8 8l3 3 3-3a4.237 4.237 0 00-6 0zm-4-4l2 2a7.074 7.074 0 0110 0l2-2C15.14 9.14 8.87 9.14 5 13z"/></svg>
-        03. Wi-Fi 7
-      </button>
-      <button class="tab-btn" data-target="tab-win">
-        <svg viewBox="0 0 24 24"><path d="M3 12V6.75l6-1.32v6.33L3 12zm17-9v8.75l-10 .15V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm17 .25L10 13.4v6.57l10-1.4V13.25z"/></svg>
-        04. Windows設定
-      </button>
-      <button class="tab-btn" data-target="tab-steam">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-        05. Steam
-      </button>
+    <nav class="tab-nav rv rv3">
+      <button class="tab-btn active" data-target="t-pc">01. PC本体</button>
+      <button class="tab-btn" data-target="t-mon">02. アーム</button>
+      <button class="tab-btn" data-target="t-wire">03. 完全配線</button>
+      <button class="tab-btn" data-target="t-nvme">04. NVMe増設</button>
+      <button class="tab-btn" data-target="t-net">05. Wi-Fi</button>
+      <button class="tab-btn" data-target="t-win">06. ソフトウェア</button>
     </nav>
 
-    <!-- TAB 1: BTO PC -->
-    <div class="tab-pane active" id="tab-pc">
+    <!-- 01: PC -->
+    <div class="tab-pane active" id="t-pc">
       <div class="card sr">
         <div class="ca ca-c"></div>
         <div class="card-hd">
           <div class="snum">01</div>
-          <div>
-            <div class="ctitle">LEVEL-R8B8 の開封と設置</div>
-            <div class="csub">Ryzen 7 9800X3D + Radeon RX 9070 XT 構成</div>
-          </div>
+          <div><div class="ctitle">レベルインフィニティの開封</div><div class="csub">LEVEL-R8B8 (RX9070XTモデル)</div></div>
         </div>
-
         <div class="al al-d">
           <div class="al-ico">⚠️</div>
           <div>
-            <div class="al-t">電源を入れる前の必須作業 — 緩衝材撤去</div>
-            <p>大型グラボ（RX 9070 XT）を輸送中の脱落から守るため、ケース内部に発泡ウレタン等の緩衝材が詰められています。<strong>これを取り除かずに電源を入れると、ファンが回転できず発煙・故障の原因となります。</strong></p>
+            <div class="al-t">電源投入前の必須作業 — ガラスパネルと緩衝材</div>
+            <p>大型GPU（RX9070XT）は自重でPCIeスロットが折れるリスクがあるため、出荷時に巨大な発泡ウレタンが内部に詰められています。<strong>必ずガラスパネルを開け、すべての緩衝材を抜き取ってから電源を入れてください（発煙原因になります）。</strong></p>
           </div>
         </div>
 
-        <div class="sh"><div class="dot"></div>開封・初回起動手順</div>
         <ul class="cl">
-          <li class="ci" data-step="pc1">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 01</div>
-              <div class="ci-t">ガラスパネルの取り外し</div>
-              <div class="ci-d">本体左側面（マザーボードが見える側）のネジを手で緩めて外し、ガラスパネルを慎重に取り外します。縁を内側から押し込まないよう注意。</div>
-            </div>
+          <li class="ci" data-s="pc1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">設置場所の確保</div><div class="ci-d">PCは吸気のために床から少し浮かせた台（PCワゴン等）に置くのが理想です。直置きはホコリを極端に吸い込みます。</div></div>
           </li>
-          <li class="ci" data-step="pc2">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 02</div>
-              <div class="ci-t">緩衝材の完全除去</div>
-              <div class="ci-d">グラフィックボードの下・周辺・ファン内部の保護材・テープをすべて取り除きます。見えにくい場所も手で触れて確認してください。</div>
-            </div>
-          </li>
-          <li class="ci" data-step="pc3">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 03</div>
-              <div class="ci-t">電源ケーブル接続・電源投入</div>
-              <div class="ci-d">電源ケーブルをPC背面の電源ユニットに挿し込み、電源ユニット側面のスイッチを <code>I（オン）</code> に倒してから前面の電源ボタンを押します。</div>
-            </div>
+          <li class="ci" data-s="pc2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">ガラスパネルの取り外しと緩衝材撤去</div><div class="ci-d">背面上部のサムスクリュー（手回しネジ）を2つ外し、ガラスパネルを後方にスライドして外します。奥まで手を入れ、詰まっているクッションを全て引き抜きます。</div></div>
           </li>
         </ul>
-
-        <div class="sh"><div class="dot"></div>映像ケーブルの正しい接続先</div>
-        <p style="color:var(--muted);font-size:.88rem;margin-bottom:1rem;">最も多い初期ミスが「マザーボードのHDMIにケーブルを挿してしまう」ことです。</p>
-        <div class="diag">
-          <div class="port-grid">
-            <div class="port-box bad">
-              <div class="port-lbl">❌ マザーボード端子（縦方向）</div>
-              <p>内蔵グラフィックスが使われ RX 9070 XT の性能がまったく発揮されません。または画面が映らない場合もあります。</p>
-            </div>
-            <div class="vs">→</div>
-            <div class="port-box good">
-              <div class="port-lbl">✅ グラフィックボード端子（横方向・下部）</div>
-              <p>PCケース下部に横向きで刺さっているボードの端子へ。<strong>DisplayPort</strong>（推奨）または HDMI ケーブルを接続。</p>
-            </div>
-          </div>
-          <div class="diag-cap">モニターアームのケーブルはグラフィックボード端子へ接続</div>
-        </div>
-
-        <div class="al al-i">
-          <div class="al-ico">💡</div>
-          <div>
-            <div class="al-t">DisplayPort vs HDMI — どちらを優先すべきか</div>
-            <p>ゲーミングモニターには <strong>DisplayPort 2.1</strong> を優先してください。HDMI 2.1でも問題ありませんが、DPの方がリフレッシュレート上限が高いケースがあります。DPケーブルは通常付属していないため別途購入が必要です。</p>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- TAB 2: Monitor Arm -->
-    <div class="tab-pane" id="tab-monitor">
+    <!-- 02: Monitor Arm -->
+    <div class="tab-pane" id="t-mon">
       <div class="card sr">
         <div class="ca ca-p"></div>
         <div class="card-hd">
           <div class="snum">02</div>
-          <div>
-            <div class="ctitle">Pixio PS2S デュアルモニターアーム設置</div>
-            <div class="csub">ガススプリング式 — テンション調整がカギ</div>
-          </div>
+          <div><div class="ctitle">Pixio PS2S デュアルアーム</div><div class="csub">ガススプリングのテンション制御</div></div>
         </div>
-
-        <div class="sh"><div class="dot"></div>組み立て手順</div>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">Pixioのガス圧アームは「組み立て後の調整」が全てです。</p>
+        
         <ul class="cl">
-          <li class="ci" data-step="mon1">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 01</div>
-              <div class="ci-t">デスクへのクランプ固定</div>
-              <div class="ci-d">C字型の金具でデスク天板を挟み込み、下部のノブを手でしっかり締めます。天板が薄い（25mm未満）場合は補強板（別売）を挟むことを推奨します。ぐらつきがないか確認。</div>
-            </div>
+          <li class="ci" data-s="mon1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">クランプの固定</div><div class="ci-d">デスク天板の奥にC字クランプを挟み、下から六角レンチで締め固めます。天板裏にフレームがある机の場合は、干渉しないようオフセットするか木片を挟む必要があります。</div></div>
           </li>
-          <li class="ci" data-step="mon2">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 02</div>
-              <div class="ci-t">モニタースタンドを外してVESAプレートを装着</div>
-              <div class="ci-d">モニター背面の純正スタンドを外し、背面の4つのネジ穴（<code>100×100mm</code> または <code>75×75mm</code>）に付属のVESAプレートを対角線で均等に締めて固定します。</div>
-            </div>
+          <li class="ci" data-s="mon2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">VESAプレートの装着（100x100）</div><div class="ci-d">モニター背面のスタンドを外し、4つのネジでVESAプレート（四角い金具）を取り付けます。対角線順に少しずつ締めてください。</div></div>
           </li>
-          <li class="ci" data-step="mon3">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 03</div>
-              <div class="ci-t">アームへの装着・ロック</div>
-              <div class="ci-d">VESAプレートをアーム先端のブラケットへ上からスライドしてはめ込みます。カチッという感触を確認後、ロック用ネジを締めて脱落防止。</div>
-            </div>
+          <li class="ci" data-s="mon3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">アーム合体と落下防止ネジ</div><div class="ci-d">プレートをアーム先端に上から滑り込ませます。カチャっと鳴ったら、ブラケット上部の抜け防止ネジを締めます。</div></div>
           </li>
-          <li class="ci" data-step="mon4">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 04</div>
-              <div class="ci-t">ガススプリングのテンション調整（最重要）</div>
-              <div class="ci-d">アームを離してモニターが下がるなら関節部の調整ネジを <code>+</code> 方向、跳ね上がるなら <code>−</code> 方向へ六角レンチで調整。水平でピタリと止まるのが正常です。</div>
-            </div>
-          </li>
-          <li class="ci" data-step="mon5">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 05</div>
-              <div class="ci-t">ケーブルマネジメント</div>
-              <div class="ci-d">アームのプラスチックカバーをスライドして外し、電源ケーブルとDPケーブルをアーム内部に通します。アームが動く際の「ゆとり」分の長さを確保してください。</div>
-            </div>
+          <li class="ci" data-s="mon4"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 4</div><div class="ci-t">テンション調整（最難関）</div><div class="ci-d">モニターから手を離した時、<strong>頭が下がるなら関節のネジを「＋」方向（反時計回り）、浮き上がるなら「－」方向（時計回り）</strong>に六角レンチで回します。ピタッと空中で止まるまで微調整を繰り返します。</div></div>
           </li>
         </ul>
-
-        <div class="al al-w">
-          <div class="al-ico">🔧</div>
-          <div>
-            <div class="al-t">デュアルモニター時の重量バランス</div>
-            <p>PS2Sは左右2本のアームが独立しています。左右のテンションはそれぞれ別々に調整してください。片方が重いモニターの場合はその側だけ強めに調整します。</p>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- TAB 3: Network -->
-    <div class="tab-pane" id="tab-net">
+    <!-- 03: Wiring -->
+    <div class="tab-pane" id="t-wire">
       <div class="card sr">
         <div class="ca ca-a"></div>
         <div class="card-hd">
           <div class="snum">03</div>
-          <div>
-            <div class="ctitle">ASUS RT-BE72 Wi-Fi 7 ルーター設定</div>
-            <div class="csub">超低遅延ゲーミングネットワークの構築</div>
-          </div>
+          <div><div class="ctitle">高度な配線と回路設計</div><div class="csub">デスク裏のケーブルマネジメントと電力設計</div></div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">組み立てる人間の視点に立ち、最も美しく安全な経路（ルーティング）で配線を行います。</p>
+
+        <div class="photo-area">
+          <img src="images/cable-routing.png" alt="Cable Routing Diagram" onerror="this.style.display='none'">
+          <div class="photo-cap">写実的図解：アーム内を通る映像・電源ケーブルと、結束バンドを用いた配線（nanobanana生成）</div>
         </div>
 
-        <div class="al al-d">
-          <div class="al-ico">⚠️</div>
-          <div>
-            <div class="al-t">ルーター交換時は必ずモデムを再起動</div>
-            <p>モデム/ONUは以前のルーターのMACアドレスを記憶しています。そのまま新しいルーターを繋いでもインターネットに繋がりません。<strong>モデムのコンセントを抜き、1分以上待ってから再接続してください。</strong></p>
-          </div>
-        </div>
-
-        <!-- Network SVG Diagram -->
-        <div class="diag">
-          <svg viewBox="0 0 580 140" style="width:100%;max-width:580px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <style>.nl{font-size:11px;text-anchor:middle;fill:#7b8db5;font-family:sans-serif}.nv{font-size:12px;font-weight:bold;text-anchor:middle;font-family:monospace}</style>
-            </defs>
-            <!-- Internet -->
-            <circle cx="55" cy="70" r="38" fill="#0f1320" stroke="#272d42" stroke-width="1.5"/>
-            <text x="55" y="65" class="nl">インター</text>
-            <text x="55" y="80" class="nl">ネット</text>
-            <!-- line 1 -->
-            <line x1="94" y1="70" x2="158" y2="70" stroke="#272d42" stroke-width="1.5" stroke-dasharray="4,3"/>
-            <polygon points="155,65 165,70 155,75" fill="#272d42"/>
-            <text x="126" y="60" class="nl">光回線</text>
-            <!-- Modem -->
-            <rect x="165" y="48" width="65" height="44" rx="5" fill="#0f1320" stroke="#272d42" stroke-width="1.5"/>
-            <text x="197" y="72" class="nl">モデム</text>
-            <text x="197" y="85" class="nl" style="font-size:9px">ONU</text>
-            <!-- line 2 -->
-            <line x1="232" y1="70" x2="295" y2="70" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="4,3"/>
-            <polygon points="292,65 302,70 292,75" fill="#00e5ff"/>
-            <text x="264" y="60" class="nl" style="fill:#00e5ff">WAN</text>
-            <!-- Router -->
-            <rect x="302" y="42" width="78" height="56" rx="5" fill="#0f1320" stroke="#00e5ff" stroke-width="1.5"/>
-            <text x="341" y="68" class="nv" style="fill:#00e5ff">RT-BE72</text>
-            <text x="341" y="83" class="nl">Wi-Fi 7</text>
-            <!-- line 3 wired -->
-            <line x1="382" y1="58" x2="432" y2="38" stroke="#22c55e" stroke-width="1.5"/>
-            <polygon points="429,32 440,37 432,45" fill="#22c55e"/>
-            <text x="422" y="28" class="nl" style="fill:#22c55e">有線LAN</text>
-            <!-- PC -->
-            <rect x="440" y="22" width="68" height="42" rx="5" fill="#0f1320" stroke="#22c55e" stroke-width="1.5"/>
-            <text x="474" y="45" class="nv" style="fill:#22c55e">BTO PC</text>
-            <text x="474" y="58" class="nl">Ping↓↓</text>
-            <!-- line 4 wifi -->
-            <line x1="382" y1="88" x2="432" y2="108" stroke="#7b8db5" stroke-width="1" stroke-dasharray="3,3"/>
-            <text x="422" y="128" class="nl">Wi-Fi 7</text>
-            <rect x="440" y="100" width="68" height="28" rx="4" fill="#0f1320" stroke="#272d42"/>
-            <text x="474" y="119" class="nl">スマホ等</text>
-          </svg>
-          <div class="diag-cap">推奨構成 — PCは有線LAN、スマートフォン等はWi-Fi 7</div>
-        </div>
-
-        <div class="sh"><div class="dot"></div>セットアップ手順</div>
+        <div class="sh"><div class="dot"></div>配線（ルーティング）のルール</div>
         <ul class="cl">
-          <li class="ci" data-step="net1">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 01</div>
-              <div class="ci-t">モデムの再起動（必須）</div>
-              <div class="ci-d">壁コンセントからモデム/ONUの電源を抜き、1分以上待ってから再度挿します。LEDが安定点灯するまで待機（約2〜3分）。</div>
-            </div>
+          <li class="ci" data-s="wir1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">ルール 1</div><div class="ci-t">アーム内のテンション確保（ゆとり）</div><div class="ci-d">Pixioの下部プラスチックカバーを外し、モニターの電源とDPケーブルを通します。この時、<strong>アームを一番上まで上げた状態でケーブルに余裕がある長さ</strong>にしてからマジックバンドで束ねます。ギリギリだとアーム可動時に端子が折れます。</div></div>
           </li>
-          <li class="ci" data-step="net2">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 02</div>
-              <div class="ci-t">モデム → ルーターのWANポートを有線接続</div>
-              <div class="ci-d">モデムのLANポートと RT-BE72 背面の <code>WAN</code>（青色・地球マーク）をLANケーブルで接続します。</div>
-            </div>
+          <li class="ci" data-s="wir2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">ルール 2</div><div class="ci-t">DPケーブルの挿し先（超重要）</div><div class="ci-d">PC背面において、モニターからのDisplayPortケーブル2本は、<strong>マザーボード（縦方向）ではなく、下部にあるグラフィックボード（横方向）のDP端子</strong>に挿します。ここに挿さないとRX9070XTのGPUが働きません。</div></div>
           </li>
-          <li class="ci" data-step="net3">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 03</div>
-              <div class="ci-t">ルーター電源投入・LED安定確認</div>
-              <div class="ci-d">RT-BE72 をコンセントに繋ぎ、背面の電源ボタンを押します。前面LEDが点滅→白の安定点灯になれば接続完了のサインです。</div>
-            </div>
-          </li>
-          <li class="ci" data-step="net4">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 04</div>
-              <div class="ci-t">PCをルーターのLANポートに有線接続</div>
-              <div class="ci-d">RT-BE72 の <code>LAN</code>（黄色・番号付き）ポートとPCのLANポートをLANケーブルで接続。ゲームのPingを最小化するために有線を強く推奨します。</div>
-            </div>
-          </li>
-          <li class="ci" data-step="net5">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 05</div>
-              <div class="ci-t">「ASUS Router」アプリで初期設定</div>
-              <div class="ci-d">スマホに「ASUS Router」アプリをインストール。ルーター底面シールの初期SSIDへWi-Fi接続後、アプリが自動検出してクイックセットアップ（パスワード・Wi-Fi名の設定）に進みます。</div>
-            </div>
+          <li class="ci" data-s="wir3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">ルール 3</div><div class="ci-t">1500W回路構成とタコ足禁止</div><div class="ci-d">PC本体（約1000W電源）とモニター2枚を同じ延長コードに繋ぐ場合、電源タップのワット数（通常1500W上限）を意識してください。エアコンやヒーター等とのタコ足は火災の原因になります。PCの電源は極力壁コンセントから直接取ってください。</div></div>
           </li>
         </ul>
-
-        <div class="sh"><div class="dot"></div>よくあるトラブル</div>
-        <div class="acc">
-          <div class="acc-item">
-            <button class="acc-btn" onclick="toggleAcc(this)">
-              インターネットに繋がらない
-              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-            </button>
-            <div class="acc-body">
-              <div class="acc-inner">
-                <p><strong>① モデムの再起動を行ったか確認</strong> — ルーター交換後の最多原因です。</p>
-                <p><strong>② WANポートに挿しているか確認</strong> — LAN（黄）とWAN（青）は間違えやすい。</p>
-                <p><strong>③ PPPoE設定が必要な場合</strong> — ISPからID/パスワードが発行されている場合、ASUS RouterアプリでWAN接続タイプを「PPPoE」に変更してください。</p>
-              </div>
-            </div>
-          </div>
-          <div class="acc-item">
-            <button class="acc-btn" onclick="toggleAcc(this)">
-              Wi-Fi 7 の性能が出ない
-              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-            </button>
-            <div class="acc-body">
-              <div class="acc-inner">
-                <p><strong>MLO（マルチリンク）</strong>を有効にするとWi-Fi 7の性能が最大化されます。WebUI（<code>192.168.50.1</code>）→ 無線 → MLOから設定可能。対応デバイスが必要です。</p>
-                <p>スマホが Wi-Fi 7（802.11be）非対応の場合、6GHzや5GHz帯で接続されますが、これは正常な動作です。</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- TAB 4: Windows -->
-    <div class="tab-pane" id="tab-win">
+    <!-- 04: NVMe Expansion -->
+    <div class="tab-pane" id="t-nvme">
       <div class="card sr">
-        <div class="ca ca-c"></div>
+        <div class="ca ca-a"></div>
         <div class="card-hd">
           <div class="snum">04</div>
-          <div>
-            <div class="ctitle">Windows 初期設定</div>
-            <div class="csub">ドライバー・更新・ゲーム最適化 — まず最初にやること</div>
-          </div>
+          <div><div class="ctitle">M.2 NVMe SSD 増設術</div><div class="csub">センチュリー「裸族のNVMeを増やしタイ」の組み込みプロセス</div></div>
+        </div>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">既存のM.2スロットが埋まっている状態から、PCIe拡張カードを利用して新たなNVMeストレージを爆速で増設するための本格的なハードウェア・ハッキングです。</p>
+
+        <div class="photo-area">
+          <img src="images/nvme-installation.png" alt="NVMe Installation Diagram" onerror="this.style.display='none'">
+          <div class="photo-cap">写実的図解：センチュリー拡張カードへのM.2 NVMeナナメ挿入とヒートシンク装着プロセス（nanobanana生成）</div>
         </div>
 
-        <div class="al al-i">
-          <div class="al-ico">💡</div>
-          <div>
-            <div class="al-t">初回起動 — Microsoftアカウントのスキップ方法</div>
-            <p>Windows 11 の初期セットアップはMicrosoftアカウントへのサインインを強制しようとします。ローカルアカウントで設定したい場合は「サインインオプション」→「オフラインアカウント」を選択してください。</p>
-          </div>
-        </div>
-
-        <div class="sh"><div class="dot"></div>必須セットアップ手順</div>
+        <div class="sh"><div class="dot"></div>増設手順（ハードウェア構築）</div>
         <ul class="cl">
-          <li class="ci" data-step="win1">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 01</div>
-              <div class="ci-t">Windows Update を完了させる</div>
-              <div class="ci-d">設定 → Windows Update → 「更新プログラムの確認」を実行。再起動を繰り返し「最新の状態です」になるまで複数回実行してください。すべての操作の前にこれを完了させること。</div>
-            </div>
+          <li class="ci" data-s="nv1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">完全放電と静電気除去</div><div class="ci-d">PCの電源コンセントを抜き、電源ボタンを何度か押して内部の電気を放電します。その後、金属部分に触れて体内の静電気を逃がします（NVMeチップは静電気で即死します）。</div></div>
           </li>
-          <li class="ci" data-step="win2">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 02</div>
-              <div class="ci-t">AMD Adrenalin（グラフィックドライバー）を最新化</div>
-              <div class="ci-d">スタートメニューで「AMD」と検索し「AMD Software: Adrenalin Edition」を起動。「更新」タブから最新ドライバーへアップデートします。RX 9070 XT の性能はドライバーで変わります。</div>
-            </div>
+          <li class="ci" data-s="nv2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">「増やしタイ」カードへのM.2組み込み</div><div class="ci-d">カード側の基板スロットに対し、買ってきたNVMe SSDを<strong>「約30度の角度」</strong>で奥まで挿し込みます。その後、指で水平に押し倒し、カード裏面（またはスペーサー）から細いプラスドライバーでネジ留めします。</div></div>
           </li>
-          <li class="ci" data-step="win3">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 03</div>
-              <div class="ci-t">電源プランを「高パフォーマンス」に変更</div>
-              <div class="ci-d">コントロールパネル → ハードウェアとサウンド → 電源オプション → 「高パフォーマンス」を選択。デフォルトの「バランス」よりゲーム中のCPU応答が安定します。</div>
-            </div>
+          <li class="ci" data-s="nv3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">サーマルパッドとヒートシンクの装着</div><div class="ci-d">SSDのチップの上に付属のサーマルパッド（青い熱伝導ゴム）を載せ、その上からカード付属の分厚いアルミヒートシンクをかぶせ、ネジ穴を合わせて両サイドから固定ネジを締めます。</div></div>
           </li>
-          <li class="ci" data-step="win4">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 04</div>
-              <div class="ci-t">ゲームモードをオンに確認</div>
-              <div class="ci-d">設定 → ゲーム → 「ゲームモード」がオンになっているか確認。ゲームプレイ中にWindowsが優先的にリソースを割り当てます。</div>
-            </div>
+          <li class="ci" data-s="nv4"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 4</div><div class="ci-t">マザーボード上のPCIeスロット選定</div><div class="ci-d">PCケースを開け、グラボ（RX9070XT）の真下にある「PCI Express x4 または x16」スロットを探します。グラボのファンを塞がないよう、できれば一番下にカードを挿し、PCケース背面のブラケットをネジで留めて固定します。</div></div>
           </li>
-          <li class="ci" data-step="win5">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 05</div>
-              <div class="ci-t">Windowsセキュリティの確認</div>
-              <div class="ci-d">スタート → Windowsセキュリティ → 「ウイルスと脅威の防止」が緑（有効）になっているか確認。別のセキュリティソフトを入れると自動的にDefenderが無効化されます。</div>
-            </div>
-          </li>
-          <li class="ci" data-step="win6">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 06</div>
-              <div class="ci-t">回復ドライブ（リカバリー）の作成</div>
-              <div class="ci-d">スタートメニューで「回復ドライブ」を検索 → 「システムファイルを回復ドライブにバックアップします」にチェックして作成。16GB以上のUSBメモリが必要。最初の1回は必ず行ってください。</div>
-            </div>
+          <li class="ci" data-s="nv5"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ci-body"><div class="ci-n">STEP 5</div><div class="ci-t">Windows「ディスクの管理」での初期化</div><div class="ci-d">PCを起動し、スタートボタンを右クリック→「ディスクの管理」を開きます。すると「未割り当て」の黒い帯のディスクが表示されます。初期化（GPTを選択）し、右クリックして「新しいシンプルボリューム」としてフォーマットし、DドライブやEドライブとして利用可能にします。</div></div>
           </li>
         </ul>
-
-        <div class="sh"><div class="dot"></div>AMD Adrenalin おすすめ設定</div>
-        <div class="acc">
-          <div class="acc-item">
-            <button class="acc-btn" onclick="toggleAcc(this)">
-              Radeon Anti-Lag 2（低遅延）
-              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-            </button>
-            <div class="acc-body">
-              <div class="acc-inner">
-                <p>AMD Software → ゲーミング → グローバル設定 → 「Radeon Anti-Lag 2」をオンにします。マウス操作からゲーム内の反応までの遅延を削減し、FPS系ゲームで特に効果的です。</p>
-              </div>
-            </div>
-          </div>
-          <div class="acc-item">
-            <button class="acc-btn" onclick="toggleAcc(this)">
-              AMD Fluid Motion Frames（FPS補間）
-              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-            </button>
-            <div class="acc-body">
-              <div class="acc-inner">
-                <p>ゲームの実FPSを元にAIが中間フレームを生成し、表示フレームレートを倍増させます。AMD Software → 「Fluid Motion Frames」で有効化。重いゲームでのヌルヌル感が向上しますが、わずかなインプットラグが生じるため競技FPSには不向きです。</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
 
-    <!-- TAB 5: Steam -->
-    <div class="tab-pane" id="tab-steam">
+    <!-- 05: Network -->
+    <div class="tab-pane" id="t-net">
       <div class="card sr">
-        <div class="ca ca-g"></div>
-        <div class="card-hd">
-          <div class="snum">05</div>
-          <div>
-            <div class="ctitle">Steam 環境・ストレージ設定</div>
-            <div class="csub">ゲームは D:\ に — Cドライブを守る</div>
-          </div>
+        <div class="ca ca-c"></div>
+        <div class="card-hd"><div class="snum">05</div><div><div class="ctitle">ASUS RT-BE72 ルーター設定</div><div class="csub">超低遅延ゲーミングネットワーク</div></div></div>
+        <div class="al al-d">
+          <div class="al-ico">⚠️</div>
+          <div><div class="al-t">モデムの再起動はお済みですか？</div><p>以前のルーターから付け替える場合、モデムの電源を1分間抜いて再起動しないとIPが割り当てられません。</p></div>
         </div>
-
-        <p style="color:var(--muted);font-size:.88rem;margin-bottom:1.4rem;">BTOパソコンにはOS用SSD（C:）と大容量ドライブ（D:）が搭載されています。初期設定のままでは全ゲームがC:にインストールされ、すぐに容量が枯渇します。</p>
-
-        <div class="sh"><div class="dot"></div>Steamセットアップ手順</div>
         <ul class="cl">
-          <li class="ci" data-step="steam1">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 01</div>
-              <div class="ci-t">Steamクライアントのインストール</div>
-              <div class="ci-d"><code>store.steampowered.com</code> の右上「Steamをインストール」からインストーラーをダウンロードして実行。アカウントを新規作成またはログインします。</div>
-            </div>
-          </li>
-          <li class="ci" data-step="steam2">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 02</div>
-              <div class="ci-t">ストレージマネージャーを開く</div>
-              <div class="ci-d">Steam左上の「Steam」→「設定」→ 左メニューの「ストレージ」をクリック。現在のドライブ一覧が表示されます。</div>
-            </div>
-          </li>
-          <li class="ci" data-step="steam3">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 03</div>
-              <div class="ci-t">D:\ ドライブをライブラリに追加</div>
-              <div class="ci-d">ドライブ名横の「＋」ボタン → プルダウンから <code>D:\</code> を選択 → 「追加」をクリック。D:\ が一覧に追加されます。</div>
-            </div>
-          </li>
-          <li class="ci" data-step="steam4">
-            <div class="ci-chk"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body">
-              <div class="ci-n">STEP 04</div>
-              <div class="ci-t">D:\ をデフォルトのインストール先に設定</div>
-              <div class="ci-d">D:\ の右端「…」→「デフォルトにする」をクリック。★マークが D:\ に移れば完了。以降のゲームはすべて D:\ へインストールされます。</div>
-            </div>
-          </li>
+          <li class="ci" data-s="net1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">WANポートへの接続</div><div class="ci-d">モデムから伸びるLANケーブルをRT-BE72の「WAN（青色等）」ポートに接続し、電源を入れます。</div></div></li>
+          <li class="ci" data-s="net2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">PCへの有線LAN接続</div><div class="ci-d">ルーターの「LAN」ポートとPCを有線で繋ぎます。</div></div></li>
+          <li class="ci" data-s="net3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">ASUS Router アプリ設定</div><div class="ci-d">スマホにアプリを入れ、ルーター底面のWi-Fiに繋ぐと自動でパスワード等のセットアップが開始します。</div></div></li>
         </ul>
-
-        <!-- Steam UI Mockup -->
-        <div class="steam">
-          <div class="steam-tb">Steam &gt; 設定 &gt; ストレージ</div>
-          <div class="steam-body">
-            <div class="steam-card">
-              <div class="steam-clbl">LOCAL DISK</div>
-              <div class="steam-ct"><span>C:\ — OS / システム</span></div>
-              <div class="steam-pb"><div class="steam-pf" style="width:82%;background:#f87171"></div></div>
-              <div class="steam-stat">476 GB 中 390 GB 使用済み</div>
-            </div>
-            <div class="steam-card pri">
-              <div class="steam-clbl">LOCAL DISK</div>
-              <div class="steam-ct"><span>D:\ — ゲームライブラリ</span><span class="steam-star">★</span></div>
-              <div class="steam-pb"><div class="steam-pf" style="width:8%"></div></div>
-              <div class="steam-stat">931 GB 中 75 GB 使用済み</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="al al-i">
-          <div class="al-ico">💡</div>
-          <div>
-            <div class="al-t">既存ゲームを C:\ から D:\ に移動する方法</div>
-            <p>ストレージマネージャーで C:\ を選択 → 移動したいゲームにチェック → 「移動」→ 移動先に D:\ を指定。再インストール不要でデータがそのまま移動します。</p>
-          </div>
-        </div>
       </div>
     </div>
 
-  </div><!-- /wrap -->
+    <!-- 06: Windows/Steam -->
+    <div class="tab-pane" id="t-win">
+      <div class="card sr">
+        <div class="ca ca-a"></div>
+        <div class="card-hd"><div class="snum">06</div><div><div class="ctitle">Steam＆ストレージ割り当て</div><div class="csub">増設したNVMeへの保存設定</div></div></div>
+        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">先ほど増設した大容量のNVMe SSD（例：Dドライブ）を、各種ゲームのインストール先に指定する作業です。</p>
+        
+        <ul class="cl">
+          <li class="ci" data-s="stm1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">Steamのダウンロードとログイン</div><div class="ci-d">公式サイトからSteamクライアントをCドライブにインストールし、ログインします。</div></div></li>
+          <li class="ci" data-s="stm2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">ストレージ設定を開く</div><div class="ci-d">Steam左上の「Steam」メニュー → 「設定」 → 左サイドバーの「ストレージ」を選択。</div></div></li>
+          <li class="ci" data-s="stm3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">Dドライブの追加・デフォルト設定</div><div class="ci-d">画面上部のドライブ名横の「＋」を押し、先ほど増設したNVMeドライブを選択して追加します。その後、追加したドライブの横の「…」から「デフォルトにする（★）」を選択します。</div></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
   <script>
-    // Scroll progress bar
     const spb = document.getElementById('spb');
-    window.addEventListener('scroll', () => {
-      spb.style.width = (window.scrollY / (document.documentElement.scrollHeight - innerHeight) * 100) + '%';
-    }, {passive: true});
+    window.addEventListener('scroll', () => spb.style.width = (window.scrollY / (document.documentElement.scrollHeight - innerHeight) * 100) + '%', {passive: true});
 
-    // Tab switching
     const tabBtns = document.querySelectorAll('.tab-btn');
     tabBtns.forEach(btn => {
       btn.addEventListener('click', () => {
@@ -779,12 +347,10 @@
         document.querySelector('.tab-pane.active')?.classList.remove('active');
         btn.classList.add('active');
         document.getElementById(btn.dataset.target).classList.add('active');
-        document.querySelector('.tab-nav').scrollIntoView({behavior:'smooth', block:'nearest'});
       });
     });
 
-    // Checklist + Progress
-    const SK = 'pcg-steps';
+    const SK = 'pcg2-steps';
     let done = JSON.parse(localStorage.getItem(SK) || '{}');
 
     function updateProgress() {
@@ -792,44 +358,21 @@
       const doneCount = document.querySelectorAll('.ci.done').length;
       document.getElementById('pfill').style.width = (all.length ? doneCount / all.length * 100 : 0) + '%';
       document.getElementById('pcnt').textContent = doneCount + ' / ' + all.length;
-
-      tabBtns.forEach(btn => {
-        const pane = document.getElementById(btn.dataset.target);
-        if (!pane) return;
-        const items = pane.querySelectorAll('.ci');
-        const pdone = pane.querySelectorAll('.ci.done').length;
-        let badge = btn.querySelector('.tbadge');
-        if (items.length && pdone === items.length) {
-          if (!badge) { badge = document.createElement('span'); badge.className = 'tbadge'; btn.appendChild(badge); }
-          badge.textContent = '✓';
-        } else if (badge) badge.remove();
-      });
+      tabBtns.forEach(btn => {const pane = document.getElementById(btn.dataset.target); if(!pane)return; const items = pane.querySelectorAll('.ci'); const pdone = pane.querySelectorAll('.ci.done').length; let badge = btn.querySelector('.tbadge'); if(items.length&&pdone===items.length){if(!badge){badge=document.createElement('span');badge.className='tbadge';btn.appendChild(badge);}badge.textContent='✓';}else if(badge) badge.remove();});
     }
 
     document.querySelectorAll('.ci').forEach(item => {
-      if (done[item.dataset.step]) item.classList.add('done');
+      if (done[item.dataset.s]) item.classList.add('done');
       item.addEventListener('click', () => {
         item.classList.toggle('done');
-        done[item.dataset.step] = item.classList.contains('done');
+        done[item.dataset.s] = item.classList.contains('done');
         localStorage.setItem(SK, JSON.stringify(done));
         updateProgress();
       });
     });
     updateProgress();
 
-    // Accordion
-    function toggleAcc(btn) {
-      const body = btn.nextElementSibling;
-      const isOpen = body.classList.contains('open');
-      document.querySelectorAll('.acc-btn').forEach(b => b.classList.remove('open'));
-      document.querySelectorAll('.acc-body').forEach(b => b.classList.remove('open'));
-      if (!isOpen) { btn.classList.add('open'); body.classList.add('open'); }
-    }
-
-    // Scroll reveal
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('vis'); obs.unobserve(e.target); } });
-    }, {threshold: 0.08});
+    const obs = new IntersectionObserver(e => e.forEach(entry => { if(entry.isIntersecting){ entry.target.classList.add('vis'); obs.unobserve(entry.target); } }), {threshold: 0.08});
     document.querySelectorAll('.sr').forEach(el => obs.observe(el));
   </script>
 </body>
