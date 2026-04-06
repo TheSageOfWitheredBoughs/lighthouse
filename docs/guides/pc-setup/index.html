@@ -118,35 +118,13 @@
     code{background:rgba(255,255,255,.07);padding:2px 5px;border-radius:4px;font-family:var(--mono);color:var(--cyan);font-size:.85em}
 
     /* Photos / Diagrams */
-    .photo-area {
-      background: #0b0e17;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      overflow: hidden;
-      margin: 1.5rem 0;
-    }
-    .photo-area img {
-      width: 100%;
-      height: auto;
-      display: block;
-      opacity: 0.9;
-      transition: opacity 0.3s;
-    }
+    .photo-area { background: #0b0e17; border: 1px solid var(--border); border-radius: 9px; overflow: hidden; margin: 1.5rem 0; }
+    .photo-area img { width: 100%; height: auto; display: block; opacity: 0.9; transition: opacity 0.3s; }
     .photo-area img:hover { opacity: 1; }
-    .photo-cap {
-      padding: 12px 16px;
-      background: var(--bg-e);
-      border-top: 1px solid var(--border);
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-align: center;
-    }
+    .photo-cap { padding: 12px 16px; background: var(--bg-e); border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--muted); text-align: center; }
 
-    /* Hardware Specific Tables */
-    table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.86rem; }
-    th { text-align: left; background: rgba(0,229,255,0.05); padding: 10px; border-bottom: 2px solid var(--border); color: var(--text); }
-    td { padding: 10px; border-bottom: 1px solid var(--border); color: var(--muted); }
-    strong { color: var(--text); }
+    .diag { background: #0b0e17; border: 1px solid var(--border); border-radius: 9px; padding: 1.5rem; margin: 1.5rem 0; }
+    .diag-cap { text-align: center; font-size: 0.8rem; color: var(--cyan); margin-top: 10px; font-weight: bold;}
 
     @media(max-width:768px){.wrap{padding:0 1rem 4rem}.card{padding:1.4rem}.back{top:14px;left:14px;font-size:.75rem}.hero{padding:5.5rem 0 2rem}}
   </style>
@@ -173,7 +151,6 @@
       </div>
     </section>
 
-    <!-- Tab Nav -->
     <nav class="tab-nav rv rv3">
       <button class="tab-btn active" data-target="t-pc">01. PC本体</button>
       <button class="tab-btn" data-target="t-mon">02. アーム</button>
@@ -187,24 +164,14 @@
     <div class="tab-pane active" id="t-pc">
       <div class="card sr">
         <div class="ca ca-c"></div>
-        <div class="card-hd">
-          <div class="snum">01</div>
-          <div><div class="ctitle">レベルインフィニティの開封</div><div class="csub">LEVEL-R8B8 (RX9070XTモデル)</div></div>
-        </div>
+        <div class="card-hd"><div class="snum">01</div><div><div class="ctitle">レベルインフィニティの開封</div><div class="csub">LEVEL-R8B8 (RX9070XTモデル)</div></div></div>
         <div class="al al-d">
           <div class="al-ico">⚠️</div>
-          <div>
-            <div class="al-t">電源投入前の必須作業 — ガラスパネルと緩衝材</div>
-            <p>大型GPU（RX9070XT）は自重でPCIeスロットが折れるリスクがあるため、出荷時に巨大な発泡ウレタンが内部に詰められています。<strong>必ずガラスパネルを開け、すべての緩衝材を抜き取ってから電源を入れてください（発煙原因になります）。</strong></p>
-          </div>
+          <div><div class="al-t">電源投入前の必須作業 — ガラスパネルと緩衝材</div><p>大型GPUは自重でPCIeスロットが折れるリスクがあるため、出荷時に巨大な発泡ウレタンが内部に詰められています。<strong>必ず全ての緩衝材を抜き取ってから電源を入れてください（ファンが回れず発煙します）。</strong></p></div>
         </div>
-
         <ul class="cl">
           <li class="ci" data-s="pc1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">設置場所の確保</div><div class="ci-d">PCは吸気のために床から少し浮かせた台（PCワゴン等）に置くのが理想です。直置きはホコリを極端に吸い込みます。</div></div>
-          </li>
-          <li class="ci" data-s="pc2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">ガラスパネルの取り外しと緩衝材撤去</div><div class="ci-d">背面上部のサムスクリュー（手回しネジ）を2つ外し、ガラスパネルを後方にスライドして外します。奥まで手を入れ、詰まっているクッションを全て引き抜きます。</div></div>
+            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">ガラスパネルの取り外しと緩衝材撤去</div><div class="ci-d">背面上部のサムスクリューを外しガラスパネルを取ります。奥まで手を入れ、詰まっているクッションを全て引き抜きます。</div></div>
           </li>
         </ul>
       </div>
@@ -214,24 +181,13 @@
     <div class="tab-pane" id="t-mon">
       <div class="card sr">
         <div class="ca ca-p"></div>
-        <div class="card-hd">
-          <div class="snum">02</div>
-          <div><div class="ctitle">Pixio PS2S デュアルアーム</div><div class="csub">ガススプリングのテンション制御</div></div>
-        </div>
-        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">Pixioのガス圧アームは「組み立て後の調整」が全てです。</p>
-        
+        <div class="card-hd"><div class="snum">02</div><div><div class="ctitle">Pixio PS2S デュアルアーム</div><div class="csub">ガススプリングのテンション制御</div></div></div>
         <ul class="cl">
           <li class="ci" data-s="mon1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">クランプの固定</div><div class="ci-d">デスク天板の奥にC字クランプを挟み、下から六角レンチで締め固めます。天板裏にフレームがある机の場合は、干渉しないようオフセットするか木片を挟む必要があります。</div></div>
+            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">クランプの固定とVESA装着</div><div class="ci-d">デスク天板奥にC字クランプを固定し、モニター背面に付属のVESAプレート（四角い金具）を取り付け、アーム先端へスライド合体させます。</div></div>
           </li>
           <li class="ci" data-s="mon2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">VESAプレートの装着（100x100）</div><div class="ci-d">モニター背面のスタンドを外し、4つのネジでVESAプレート（四角い金具）を取り付けます。対角線順に少しずつ締めてください。</div></div>
-          </li>
-          <li class="ci" data-s="mon3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">アーム合体と落下防止ネジ</div><div class="ci-d">プレートをアーム先端に上から滑り込ませます。カチャっと鳴ったら、ブラケット上部の抜け防止ネジを締めます。</div></div>
-          </li>
-          <li class="ci" data-s="mon4"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 4</div><div class="ci-t">テンション調整（最難関）</div><div class="ci-d">モニターから手を離した時、<strong>頭が下がるなら関節のネジを「＋」方向（反時計回り）、浮き上がるなら「－」方向（時計回り）</strong>に六角レンチで回します。ピタッと空中で止まるまで微調整を繰り返します。</div></div>
+            <div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">テンション調整（最難関）</div><div class="ci-d">モニターから手を離した時、<strong>頭が下がるなら関節のネジを「＋」方向（反時計回り）、浮き上がるなら「－」方向（時計回り）</strong>に六角レンチで回し、空中でピッタリ止まるようにします。</div></div>
           </li>
         </ul>
       </div>
@@ -245,23 +201,63 @@
           <div class="snum">03</div>
           <div><div class="ctitle">高度な配線と回路設計</div><div class="csub">デスク裏のケーブルマネジメントと電力設計</div></div>
         </div>
-        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">組み立てる人間の視点に立ち、最も美しく安全な経路（ルーティング）で配線を行います。</p>
 
         <div class="photo-area">
           <img src="images/cable-routing.png" alt="Cable Routing Diagram" onerror="this.style.display='none'">
-          <div class="photo-cap">写実的図解：アーム内を通る映像・電源ケーブルと、結束バンドを用いた配線（nanobanana生成）</div>
+          <div class="photo-cap">【写実画像】アーム内を通る映像・電源ケーブルと結束バンドを用いた配線の様子</div>
         </div>
 
-        <div class="sh"><div class="dot"></div>配線（ルーティング）のルール</div>
+        <div class="diag">
+          <svg viewBox="0 0 600 300" style="width:100%;max-width:600px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <style>.txt{font-size:12px;fill:#7b8db5;font-family:monospace;text-anchor:middle}.ldp{stroke:#00e5ff;stroke-width:2;fill:none}.lpwr{stroke:#ff2d78;stroke-width:2;fill:none}</style>
+            </defs>
+            <rect x="50" y="20" width="120" height="70" rx="4" fill="#0f1320" stroke="#7b8db5" stroke-width="2"/>
+            <text x="110" y="55" class="txt" style="fill:#fff">Pixio Monitor L</text>
+            <rect x="190" y="20" width="120" height="70" rx="4" fill="#0f1320" stroke="#7b8db5" stroke-width="2"/>
+            <text x="250" y="55" class="txt" style="fill:#fff">Pixio Monitor R</text>
+            <path d="M110 90 L110 130 L180 130 L180 170" fill="none" stroke="#272d42" stroke-width="12"/>
+            <path d="M250 90 L250 130 L180 130" fill="none" stroke="#272d42" stroke-width="12"/>
+            <rect x="170" y="170" width="20" height="30" fill="#272d42"/>
+            <text x="180" y="115" class="txt" style="font-size:10px">PS2S Arm</text>
+
+            <rect x="420" y="20" width="140" height="250" rx="4" fill="#0f1320" stroke="#7b8db5" stroke-width="2"/>
+            <text x="490" y="45" class="txt" style="fill:#fff;font-weight:bold">BTO PC (LEVEL)</text>
+            <rect x="435" y="60" width="20" height="50" fill="#181d2e" stroke="#7b8db5"/>
+            <rect x="440" y="70" width="10" height="6" fill="#ff2d78"/>
+            <text x="395" y="75" class="txt" style="fill:#ff2d78;font-size:10px">MB(❌ 非推奨)</text>
+            
+            <rect x="435" y="160" width="110" height="20" fill="#181d2e" stroke="#00e5ff"/>
+            <text x="490" y="174" class="txt" style="fill:#00e5ff;font-size:10px;font-weight:bold">GPU (RX9070XT)</text>
+            <rect x="440" y="165" width="12" height="6" fill="#00e5ff"/>
+            <rect x="460" y="165" width="12" height="6" fill="#00e5ff"/>
+
+            <rect x="435" y="220" width="110" height="40" fill="#181d2e" stroke="#7b8db5"/>
+            <text x="490" y="244" class="txt">1000W Power</text>
+            
+            <rect x="150" y="240" width="100" height="40" rx="4" fill="#0f1320" stroke="#ffb347" stroke-width="2"/>
+            <text x="200" y="265" class="txt" style="fill:#ffb347">壁コンセント</text>
+            
+            <path d="M120 80 Q 130 180 440 168" class="ldp" stroke-dasharray="4"/>
+            <path d="M240 80 Q 230 150 460 168" class="ldp" stroke-dasharray="4"/>
+            <path d="M100 80 Q 80 250 160 250" class="lpwr"/>
+            <path d="M260 80 Q 300 250 200 250" class="lpwr"/>
+            <path d="M435 250 Q 350 270 240 260" class="lpwr"/>
+            
+            <rect x="50" y="260" width="15" height="4" fill="#00e5ff"/>
+            <text x="75" y="265" class="txt" style="font-size:10px;text-anchor:start">DP Cable (映像)</text>
+            <rect x="50" y="275" width="15" height="4" fill="#ff2d78"/>
+            <text x="75" y="280" class="txt" style="font-size:10px;text-anchor:start">Power Cable (電源)</text>
+          </svg>
+          <div class="diag-cap">【論理配線図】機器間のケーブルルーティング・DPケーブルの正しい接続先と電源系統の分離</div>
+        </div>
+
         <ul class="cl">
           <li class="ci" data-s="wir1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">ルール 1</div><div class="ci-t">アーム内のテンション確保（ゆとり）</div><div class="ci-d">Pixioの下部プラスチックカバーを外し、モニターの電源とDPケーブルを通します。この時、<strong>アームを一番上まで上げた状態でケーブルに余裕がある長さ</strong>にしてからマジックバンドで束ねます。ギリギリだとアーム可動時に端子が折れます。</div></div>
+            <div class="ci-body"><div class="ci-n">ルール 1</div><div class="ci-t">アーム内のテンション確保（ゆとり）</div><div class="ci-d">モニターを最上部・一番奥まで動かした状態でケーブルの長さを決め、マジックバンドで束ねます。ゆとりが無い状態で動かすと端子の根本がへし折れます。</div></div>
           </li>
           <li class="ci" data-s="wir2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">ルール 2</div><div class="ci-t">DPケーブルの挿し先（超重要）</div><div class="ci-d">PC背面において、モニターからのDisplayPortケーブル2本は、<strong>マザーボード（縦方向）ではなく、下部にあるグラフィックボード（横方向）のDP端子</strong>に挿します。ここに挿さないとRX9070XTのGPUが働きません。</div></div>
-          </li>
-          <li class="ci" data-s="wir3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">ルール 3</div><div class="ci-t">1500W回路構成とタコ足禁止</div><div class="ci-d">PC本体（約1000W電源）とモニター2枚を同じ延長コードに繋ぐ場合、電源タップのワット数（通常1500W上限）を意識してください。エアコンやヒーター等とのタコ足は火災の原因になります。PCの電源は極力壁コンセントから直接取ってください。</div></div>
+            <div class="ci-body"><div class="ci-n">ルール 2</div><div class="ci-t">1500W回路構成とタコ足禁止</div><div class="ci-d">1000WのPCと複数モニターを延長コードでタコ足配線すると火災の原因になります。PC本体の電源コードは極力壁のコンセントから直接取り、系統を分離（配線図参照）してください。</div></div>
           </li>
         </ul>
       </div>
@@ -275,29 +271,55 @@
           <div class="snum">04</div>
           <div><div class="ctitle">M.2 NVMe SSD 増設術</div><div class="csub">センチュリー「裸族のNVMeを増やしタイ」の組み込みプロセス</div></div>
         </div>
-        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">既存のM.2スロットが埋まっている状態から、PCIe拡張カードを利用して新たなNVMeストレージを爆速で増設するための本格的なハードウェア・ハッキングです。</p>
 
         <div class="photo-area">
           <img src="images/pcie-insertion.png" alt="PCIe Card Insertion Diagram" onerror="this.style.display='none'">
-          <div class="photo-cap">写実的図解：マザーボードのPCIeスロットに「増やしタイ」を挿入し、ケース背面のブラケットをネジ留めする様子</div>
+          <div class="photo-cap">【写実画像】マザーボードのPCIeスロット（グラボ下）に「増やしタイ」を挿入し、ケース背面に固定する様子</div>
         </div>
 
-        <div class="sh"><div class="dot"></div>増設手順（ハードウェア構築）</div>
+        <div class="diag">
+          <svg viewBox="0 0 400 370" style="width:100%;max-width:400px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+            <defs><style>.txt{font-size:12px;fill:#7b8db5;font-family:monospace;text-anchor:middle}</style></defs>
+            <rect x="50" y="20" width="300" height="340" rx="5" fill="#0f1320" stroke="#272d42" stroke-width="2"/>
+            <text x="200" y="45" class="txt" style="fill:#fff;font-weight:bold">Motherboard (ATX)</text>
+            
+            <rect x="150" y="70" width="80" height="60" rx="4" fill="#181d2e" stroke="#7b8db5"/>
+            <text x="190" y="105" class="txt" style="font-size:14px">CPU</text>
+
+            <rect x="120" y="140" width="100" height="20" fill="#272d42"/>
+            <text x="170" y="154" class="txt" style="font-size:10px">M.2 (OS入り)</text>
+
+            <rect x="80" y="180" width="250" height="60" rx="4" fill="rgba(255,45,120,0.1)" stroke="#ff2d78" stroke-width="2"/>
+            <text x="205" y="215" class="txt" style="fill:#ff2d78;font-weight:bold">GPU (RX9070XT - 物理干渉エリア)</text>
+
+            <rect x="80" y="270" width="200" height="15" fill="#181d2e" stroke="#00e5ff" stroke-width="2" stroke-dasharray="4"/>
+            <text x="180" y="260" class="txt" style="fill:#00e5ff;font-weight:bold">空きの PCIe x4 / x16 スロット</text>
+
+            <g transform="translate(90, 290)">
+              <rect x="-30" y="0" width="10" height="50" fill="#7b8db5"/>
+              <circle cx="-25" cy="5" r="2" fill="#fff"/>
+              <rect x="-20" y="10" width="180" height="40" fill="#00e5ff" fill-opacity="0.2" stroke="#00e5ff" stroke-width="2"/>
+              <rect x="-20" y="5" width="130" height="5" fill="#ffb347"/>
+              <rect x="10" y="15" width="130" height="30" fill="#181d2e" stroke="#fff" stroke-width="1"/>
+              <text x="75" y="35" class="txt" style="fill:#fff;font-weight:bold">NVMeを増やしタイ</text>
+            </g>
+            <path d="M 180 300 L 180 280 L 175 280 L 185 270 L 195 280 L 190 280 L 190 300 Z" fill="#00e5ff"/>
+          </svg>
+          <div class="diag-cap">【設置図解】グラフィックボードが覆いかぶさるスロットを避け、ケース下部の空きPCIeスロットへ装填する</div>
+        </div>
+
         <ul class="cl">
           <li class="ci" data-s="nv1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">完全放電と静電気除去</div><div class="ci-d">PCの電源コンセントを抜き、電源ボタンを何度か押して内部の電気を放電します。その後、金属部分に触れて体内の静電気を逃がします（NVMeチップは静電気で即死します）。</div></div>
+            <div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">完全放電と静電気除去</div><div class="ci-d">PCの電源線を抜き、電源ボタンを何度か押して放電。金属に触れて体内の静電気を逃がします（チップは静電気で即死します）。</div></div>
           </li>
           <li class="ci" data-s="nv2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">「増やしタイ」カードへのM.2組み込み</div><div class="ci-d">カード側の基板スロットに対し、買ってきたNVMe SSDを<strong>「約30度の角度」</strong>で奥まで挿し込みます。その後、指で水平に押し倒し、カード裏面（またはスペーサー）から細いプラスドライバーでネジ留めします。</div></div>
+            <div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">基板へのM.2組み込みとヒートシンク装着</div><div class="ci-d">拡張カードにSSDを「斜め30度」で奥まで挿し水平にしてネジ留め。青い熱伝導パッドを載せ、アルミヒートシンクを被せて固定します。</div></div>
           </li>
           <li class="ci" data-s="nv3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">サーマルパッドとヒートシンクの装着</div><div class="ci-d">SSDのチップの上に付属のサーマルパッド（青い熱伝導ゴム）を載せ、その上からカード付属の分厚いアルミヒートシンクをかぶせ、ネジ穴を合わせて両サイドから固定ネジを締めます。</div></div>
+            <div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">マザーボード スロットへの装填と固定</div><div class="ci-d">PCケースの背面ブラケットカバーを1箇所外し、グラボ下部の空きPCIeスロットにカードを垂直に挿入します。その後、背面の金具をネジでケースに強く留めます。</div></div>
           </li>
           <li class="ci" data-s="nv4"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 4</div><div class="ci-t">マザーボード上のPCIeスロット選定</div><div class="ci-d">PCケースを開け、グラボ（RX9070XT）の真下にある「PCI Express x4 または x16」スロットを探します。グラボのファンを塞がないよう、できれば一番下にカードを挿し、PCケース背面のブラケットをネジで留めて固定します。</div></div>
-          </li>
-          <li class="ci" data-s="nv5"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
-            <div class="ci-body"><div class="ci-n">STEP 5</div><div class="ci-t">Windows「ディスクの管理」での初期化</div><div class="ci-d">PCを起動し、スタートボタンを右クリック→「ディスクの管理」を開きます。すると「未割り当て」の黒い帯のディスクが表示されます。初期化（GPTを選択）し、右クリックして「新しいシンプルボリューム」としてフォーマットし、DドライブやEドライブとして利用可能にします。</div></div>
+            <div class="ci-body"><div class="ci-n">STEP 4</div><div class="ci-t">ディスクの管理での初期化</div><div class="ci-d">PC起動後、スタート右クリック→「ディスクの管理」を開き、黒い「未割り当て」のディスクをGPTで初期化。新しいシンプルボリュームとしてフォーマットして完了です。</div></div>
           </li>
         </ul>
       </div>
@@ -308,14 +330,8 @@
       <div class="card sr">
         <div class="ca ca-c"></div>
         <div class="card-hd"><div class="snum">05</div><div><div class="ctitle">ASUS RT-BE72 ルーター設定</div><div class="csub">超低遅延ゲーミングネットワーク</div></div></div>
-        <div class="al al-d">
-          <div class="al-ico">⚠️</div>
-          <div><div class="al-t">モデムの再起動はお済みですか？</div><p>以前のルーターから付け替える場合、モデムの電源を1分間抜いて再起動しないとIPが割り当てられません。</p></div>
-        </div>
         <ul class="cl">
-          <li class="ci" data-s="net1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">WANポートへの接続</div><div class="ci-d">モデムから伸びるLANケーブルをRT-BE72の「WAN（青色等）」ポートに接続し、電源を入れます。</div></div></li>
-          <li class="ci" data-s="net2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">PCへの有線LAN接続</div><div class="ci-d">ルーターの「LAN」ポートとPCを有線で繋ぎます。</div></div></li>
-          <li class="ci" data-s="net3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">ASUS Router アプリ設定</div><div class="ci-d">スマホにアプリを入れ、ルーター底面のWi-Fiに繋ぐと自動でパスワード等のセットアップが開始します。</div></div></li>
+          <li class="ci" data-s="net1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">モデム再起動と接続</div><div class="ci-d">モデムの電源を抜き1分待って再起動。モデムからルーターのWANへ接続。</div></div></li>
         </ul>
       </div>
     </div>
@@ -324,13 +340,9 @@
     <div class="tab-pane" id="t-win">
       <div class="card sr">
         <div class="ca ca-a"></div>
-        <div class="card-hd"><div class="snum">06</div><div><div class="ctitle">Steam＆ストレージ割り当て</div><div class="csub">増設したNVMeへの保存設定</div></div></div>
-        <p style="font-size:0.85rem;color:var(--muted);margin-bottom:1rem">先ほど増設した大容量のNVMe SSD（例：Dドライブ）を、各種ゲームのインストール先に指定する作業です。</p>
-        
+        <div class="card-hd"><div class="snum">06</div><div><div class="ctitle">Steam＆ストレージ設定</div><div class="csub">増設済み新NVMeをゲーム専用にする</div></div></div>
         <ul class="cl">
-          <li class="ci" data-s="stm1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">Steamのダウンロードとログイン</div><div class="ci-d">公式サイトからSteamクライアントをCドライブにインストールし、ログインします。</div></div></li>
-          <li class="ci" data-s="stm2"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 2</div><div class="ci-t">ストレージ設定を開く</div><div class="ci-d">Steam左上の「Steam」メニュー → 「設定」 → 左サイドバーの「ストレージ」を選択。</div></div></li>
-          <li class="ci" data-s="stm3"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 3</div><div class="ci-t">Dドライブの追加・デフォルト設定</div><div class="ci-d">画面上部のドライブ名横の「＋」を押し、先ほど増設したNVMeドライブを選択して追加します。その後、追加したドライブの横の「…」から「デフォルトにする（★）」を選択します。</div></div></li>
+          <li class="ci" data-s="stm1"><div class="ci-chk"><svg viewBox="0 0 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div><div class="ci-body"><div class="ci-n">STEP 1</div><div class="ci-t">Dドライブの追加・デフォルト設定</div><div class="ci-d">Steam「設定」→「ストレージ」から増設したDドライブを追加し★（デフォルト）にします。</div></div></li>
         </ul>
       </div>
     </div>
@@ -350,7 +362,7 @@
       });
     });
 
-    const SK = 'pcg2-steps';
+    const SK = 'pcg3-steps';
     let done = JSON.parse(localStorage.getItem(SK) || '{}');
 
     function updateProgress() {
@@ -358,7 +370,6 @@
       const doneCount = document.querySelectorAll('.ci.done').length;
       document.getElementById('pfill').style.width = (all.length ? doneCount / all.length * 100 : 0) + '%';
       document.getElementById('pcnt').textContent = doneCount + ' / ' + all.length;
-      tabBtns.forEach(btn => {const pane = document.getElementById(btn.dataset.target); if(!pane)return; const items = pane.querySelectorAll('.ci'); const pdone = pane.querySelectorAll('.ci.done').length; let badge = btn.querySelector('.tbadge'); if(items.length&&pdone===items.length){if(!badge){badge=document.createElement('span');badge.className='tbadge';btn.appendChild(badge);}badge.textContent='✓';}else if(badge) badge.remove();});
     }
 
     document.querySelectorAll('.ci').forEach(item => {
