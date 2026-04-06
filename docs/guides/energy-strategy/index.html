@@ -4,137 +4,138 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>大学生活サバイバル・ガイド 2026-2030：エネルギー編 | lighthouse</title>
-  <meta name="description" content="2026年から2030年の4年間、運賃改定や炭素税導入がもたらすインフレとキャンパス環境の変化を乗り切るためのサバイバル戦略。">
+  <meta name="description" content="運賃改定や炭素税導入がもたらすインフレとキャンパス環境の変化を乗り切り、在学4年間を無事に完走するための防衛マニュアル。">
   <meta name="date" content="2026-04-07">
   <meta name="category" content="生活">
   <style>
     :root {
       --bg: #0b0e14;
       --card-bg: rgba(26, 32, 44, 0.7);
-      --border: rgba(255, 255, 255, 0.1);
+      --border: rgba(255, 255, 255, 0.15);
       --accent-blue: #3b82f6;
       --accent-red: #ef4444;
       --accent-green: #10b981;
       --accent-yellow: #f59e0b;
-      --text-main: #e2e8f0;
+      --text-main: #f1f5f9;
       --text-muted: #94a3b8;
-      --font: "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
+      --font: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: var(--font);
-      background-color: var(--bg);
-      color: var(--text-main);
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
-
+    body { font-family: var(--font); background-color: var(--bg); color: var(--text-main); line-height: 1.8; overflow-x: hidden; }
+    
     .wrap { max-width: 900px; margin: 0 auto; padding: 80px 24px; }
     
     .back-btn {
-      position: fixed; top: 20px; left: 20px;
-      padding: 8px 16px; background: rgba(0,0,0,0.5);
-      border: 1px solid var(--border); border-radius: 20px;
-      color: var(--text-muted); text-decoration: none; font-size: 13px;
-      backdrop-filter: blur(8px); z-index: 100;
+      position: fixed; top: 20px; left: 20px; padding: 8px 16px; background: rgba(0,0,0,0.6);
+      border: 1px solid var(--border); border-radius: 20px; color: var(--text-muted); text-decoration: none; font-size: 13px;
+      backdrop-filter: blur(10px); z-index: 100; transition: border-color 0.2s;
     }
+    .back-btn:hover { border-color: rgba(255,255,255,0.4); color: #fff;}
 
-    .hero { text-align: center; margin-bottom: 60px; }
+    .hero { margin-bottom: 60px; border-bottom: 1px solid var(--border); padding-bottom: 40px; }
     .eyebrow { 
-      display: inline-block; padding: 4px 12px; background: var(--accent-red);
-      color: #fff; font-size: 11px; font-weight: 900; border-radius: 4px;
-      margin-bottom: 20px; letter-spacing: 0.1em;
+      display: inline-block; padding: 4px 12px; background: var(--accent-red); color: #fff; font-size: 12px; font-weight: 900; border-radius: 4px; margin-bottom: 20px; letter-spacing: 0.05em; font-family: monospace;
     }
-    .hero h1 { font-size: clamp(1.8rem, 4vw, 2.8rem); line-height: 1.2; font-weight: 900; margin-bottom: 20px; letter-spacing: -0.02em; }
-    .hero p { color: var(--text-muted); max-width: 650px; margin: 0 auto; font-size: 16px; }
+    .hero h1 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.3; font-weight: 900; margin-bottom: 24px; letter-spacing: -0.03em; text-wrap: balance;}
+    .hero p { color: var(--text-muted); font-size: 16px; margin-bottom: 16px;}
+    .hero-meta { font-family: monospace; font-size: 12px; color: var(--accent-yellow); padding: 8px 12px; background: rgba(245, 158, 11, 0.1); border-left: 3px solid var(--accent-yellow); display: inline-block;}
 
-    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 24px; padding: 40px; margin-bottom: 24px; backdrop-filter: blur(12px); }
-    .card h2 { font-size: 22px; margin-bottom: 24px; border-left: 4px solid var(--accent-yellow); padding-left: 16px; color: #fff;}
-
-    /* ── CHART ── */
-    .chart-box { width: 100%; height: 320px; position: relative; margin-top: 10px; }
-    .chart-svg { width: 100%; height: 100%; overflow: visible; font-family: monospace; }
-    .chart-line { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; transition: d 0.5s ease; }
-    .axis { stroke: rgba(255,255,255,0.15); stroke-width: 1; }
-    .label-text { font-size: 12px; fill: var(--text-muted); }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 16px; padding: 32px; margin-bottom: 40px; }
+    .card h2 { font-size: 22px; margin-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px; color: #fff;}
     
+    /* ── DATA MATRICES ── */
+    .data-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .data-box { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 20px; border-radius: 8px; }
+    .data-val { font-size: 28px; font-weight: 900; color: var(--accent-red); font-family: monospace; margin: 8px 0; }
+    .data-lbl { font-size: 13px; color: var(--text-muted); font-weight: bold;}
+    .data-src { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 8px; }
+
+    /* ── BUDGET SIMULATOR (100k JPY/mo) ── */
+    .budget-bar { width: 100%; height: 24px; display: flex; border-radius: 12px; overflow: hidden; margin: 20px 0; border: 1px solid rgba(255,255,255,0.2); }
+    .b-food { background: #10b981; width: 35%; }
+    .b-util { background: #ef4444; width: 15%; }
+    .b-trans { background: #3b82f6; width: 15%; }
+    .b-free { background: rgba(255,255,255,0.1); width: 35%; }
+    .b-note { font-size: 13px; color: var(--text-muted); display: flex; justify-content: space-between; font-family: monospace;}
+
     /* ── TIMELINE ── */
-    .tl-item { display: flex; gap: 20px; margin-bottom: 32px; position: relative; }
-    .tl-item::before { content:''; position:absolute; left:23px; top:30px; bottom:-32px; width:2px; background:var(--border); }
-    .tl-item:last-child::before { display:none; }
-    .tl-year { font-weight: 900; color: #fff; background: var(--accent-blue); width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; z-index: 2; box-shadow: 0 0 15px rgba(59,130,246,0.4); }
-    .tl-body { background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 16px; padding: 20px; flex: 1; }
-    .tl-body h3 { font-size: 18px; margin-bottom: 8px; color: var(--accent-green); }
+    .tl-item { margin-bottom: 32px; padding-left: 20px; border-left: 2px solid var(--accent-blue); position: relative;}
+    .tl-item::before { content:''; position:absolute; left:-6px; top:6px; width:10px; height:10px; border-radius:50%; background:var(--accent-blue); box-shadow: 0 0 10px var(--accent-blue);}
+    .tl-year { font-weight: 900; color: var(--accent-blue); font-size: 16px; margin-bottom: 8px; font-family: monospace;}
+    .tl-body h3 { font-size: 18px; margin-bottom: 8px; color: #fff; }
     .tl-body p { font-size: 14px; color: var(--text-muted); margin-bottom: 12px; }
-    .tl-warn { font-size: 12px; background: rgba(239,68,68,0.1); color: #fca5a5; padding: 8px 12px; border-radius: 8px; font-weight: bold; border-left: 2px solid var(--accent-red); }
+    
+    /* ── DRILLS (Tactics) ── */
+    .drill-cont { border: 1px solid #334155; border-radius: 8px; overflow: hidden; margin-bottom: 20px;}
+    .drill-head { background: #1e293b; padding: 12px 16px; font-weight: bold; color: #e2e8f0; display: flex; align-items: center; gap: 8px;}
+    .drill-body { padding: 16px; font-size: 14px; background: rgba(30, 41, 59, 0.3);}
+    .drill-body ul { margin-left: 20px; margin-bottom: 12px; color: var(--text-muted);}
+    .drill-body li { margin-bottom: 6px; }
+    .drill-fact { background: rgba(0,0,0,0.5); padding: 12px; border-left: 3px solid var(--accent-yellow); font-family: monospace; font-size: 12px; color: #cbd5e1;}
 
-    /* ── CHECKLIST ── */
-    .checklist { display: grid; gap: 16px; margin-top: 20px; }
-    .chk-item { display: flex; gap: 16px; align-items: flex-start; padding: 16px; background: rgba(255,255,255,0.02); border-radius: 12px; border: 1px solid transparent; transition: 0.2s;}
-    .chk-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
-    .chk-icon { font-size: 24px; flex-shrink: 0; }
-    .chk-content h4 { font-size: 15px; color: #fff; margin-bottom: 4px; }
-    .chk-content p { font-size: 13px; color: var(--text-muted); }
+    /* ── REF ── */
+    .ref-section { font-size: 11px; color: rgba(255,255,255,0.3); border-top: 1px solid var(--border); padding-top: 20px; margin-top: 60px; column-count: 2; column-gap: 40px;}
+    .ref-section li { margin-bottom: 4px; break-inside: avoid;}
 
-    /* ── ANIMATIONS ── */
     [data-animate] { opacity: 0; transform: translateY(20px); transition: 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
     .visible { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 600px) {
-      .wrap { padding: 60px 20px; }
-      .tl-item { flex-direction: column; gap: 12px; }
-      .tl-item::before { display:none; }
-      .tl-year { width: auto; height: auto; background: transparent; color: var(--accent-blue); justify-content: flex-start; font-size: 18px; box-shadow: none; border-radius: 0; }
-      .card { padding: 24px; }
+      .wrap { padding: 60px 16px; }
+      .data-grid { grid-template-columns: 1fr; }
+      .ref-section { column-count: 1; }
     }
   </style>
 </head>
 <body>
 
-  <a href="../../" class="back-btn">← ガイド一覧へ戻る</a>
+  <a href="../../" class="back-btn">← 戻る</a>
 
   <div class="wrap">
     <header class="hero" data-animate>
-      <span class="eyebrow">2026-2030 Survival Guide</span>
-      <h1>大学生活インフレ防衛線<br>4年間の生存戦略</h1>
-      <p>卒業後のキャリアより、まずは「目の前の4年間」を無事に完走すること。JR運賃改定、大学図書館の冷暖房制限、炭素税による物価高騰から、君の学習環境と生活を守るための具体的な行動マニュアル。</p>
+      <span class="eyebrow">HIGH-DENSITY OSINT REPORT</span>
+      <h1>大学生活インフレ防衛線<br>10万円予算・完全生存ドリル</h1>
+      <p>「そのうち物価が落ち着く」という幻想を捨てること。各省庁および企業公報から導き出された確実な事実（ファクト）に基づき、月額10万円（家賃除外）の可処分所得を守り抜くための超具体的な防衛マニュアル。</p>
+      <div class="hero-meta">TARGET: 2026-2030 / MODEL: 100,000 JPY/mo (Excl. Rent)</div>
     </header>
 
-    <!-- グラフセクション -->
+    <!-- ファクトマトリックス -->
     <div class="card" data-animate>
-      <h2>学生生活インフラ指標予測 (2026〜2030)</h2>
-      <p style="font-size:13px; color:var(--text-muted); margin-bottom: 20px;">基調：各種補助金の終了と2028年の化石燃料賦課金導入によるインフレ見通し (2025年比 %)</p>
-      <div class="chart-box">
-        <svg id="chart" class="chart-svg" viewBox="0 0 800 300">
-          <!-- Grid -->
-          <line x1="50" y1="250" x2="780" y2="250" class="axis" />
-          <line x1="50" y1="50" x2="50" y2="250" class="axis" />
-          <line x1="50" y1="150" x2="780" y2="150" class="axis" stroke-dasharray="4" />
-          <line x1="50" y1="50" x2="780" y2="50" class="axis" stroke-dasharray="4" />
-          
-          <!-- Y Labels -->
-          <text x="15" y="255" class="label-text">100%</text>
-          <text x="15" y="155" class="label-text">115%</text>
-          <text x="15" y="55" class="label-text">130%</text>
-          
-          <!-- X Labels -->
-          <text x="50" y="275" class="label-text">2026</text>
-          <text x="232" y="275" class="label-text">2027</text>
-          <text x="415" y="275" class="label-text">2028</text>
-          <text x="597" y="275" class="label-text">2029</text>
-          <text x="780" y="275" class="label-text">2030</text>
-
-          <!-- Lines (Drawn by JS) -->
-          <path id="utilLine" class="chart-line" stroke="#ef4444" />
-          <path id="transLine" class="chart-line" stroke="#3b82f6" />
-          <path id="foodLine" class="chart-line" stroke="#10b981" />
-        </svg>
+      <h2>確定・半確定インフレ・ファクト（2026-2028）</h2>
+      <div class="data-grid">
+        <div class="data-box">
+          <div class="data-lbl">JR東日本：山手線内 通勤定期値上げ率</div>
+          <div class="data-val">+22.9%</div>
+          <div class="data-src">SOURCE: JR東日本 運賃改定プレスリリース（2026年3月）<br>※通学定期は一部据え置きだが、特定区間統合により影響大。</div>
+        </div>
+        <div class="data-box">
+          <div class="data-lbl">石油化学：事業用樹脂の価格転嫁</div>
+          <div class="data-val">最大 +90円/kg</div>
+          <div class="data-src">SOURCE: 国内化学各社・日化協動向<br>※ナフサ不足に起因。洗剤容器・食品トレイ等に直結。</div>
+        </div>
+        <div class="data-box">
+          <div class="data-lbl">文科省：国立大学への運営費交付金増額</div>
+          <div class="data-val">+188億円</div>
+          <div class="data-src">SOURCE: 文部科学省 令和8年度予算案<br>※過去最大の増額だが、人件費・光熱費高騰に対し「焼け石に水」の公算。空調制限は続く。</div>
+        </div>
       </div>
-      <div style="display:flex; justify-content:center; gap:24px; margin-top:20px; font-size:13px; font-weight:bold;">
-        <span style="color:#ef4444">■ 光熱費（電気・ガス）</span>
-        <span style="color:#10b981">■ 食費・日用品（プラ製品）</span>
-        <span style="color:#3b82f6">■ 交通費（鉄道等）</span>
+      
+      <h3 style="font-size: 16px; margin-bottom: 8px;">📊 モデルケース：月額10万円（家賃除外）の予算侵食シミュレーション</h3>
+      <p style="font-size: 13px; color: var(--text-muted);">2028年の炭素税（賦課金）導入を加味すると、特段の防衛策を講じない場合、固定費だけで予算の65%が消滅し、交際費・教材費（自由枠）が枯渇します。</p>
+      
+      <div style="font-family: monospace; font-size: 12px; margin-top: 16px; color:#fff;">【無対策時の2028年予測】</div>
+      <div class="budget-bar">
+        <div class="b-food" title="食費 45,000円"></div>
+        <div class="b-util" title="光熱費 15,000円"></div>
+        <div class="b-trans" title="交通費・通信費 等 15,000円"></div>
+        <div class="b-free"></div>
+      </div>
+      <div class="b-note">
+        <span>食(45k)</span>
+        <span>光熱(15k)</span>
+        <span>他固定(15k)</span>
+        <span>残金: 自由枠(僅か25k)</span>
       </div>
     </div>
 
@@ -143,125 +144,93 @@
       <h2>サバイバル・カレンダー（学業完走への試練）</h2>
       
       <div class="tl-item">
-        <div class="tl-year">26年</div>
+        <div class="tl-year">2026年 3月〜</div>
         <div class="tl-body">
-          <h3>JR・私鉄運賃の一斉改定と生活用品値上げ</h3>
-          <p>3月にJR東日本等が運賃特例を廃止し実質値上げ。同時期に化学各社（ナフサ不足）の影響で、プラスチック容器、洗剤、ゴミ袋等が一斉高騰。</p>
-          <div class="tl-warn">対策：通学手段を「電動アシスト自転車」へ移行検討。学割定期券の購入時期の前倒し。</div>
+          <h3>交通インフラと日用品の「第一波」</h3>
+          <p>JRの「電車特定区間・山手線内」の運賃区分が廃止・統合。通学手段を電車に依存する学生の懐を直撃。同時期、ナフサ供給不安によりプラスチックゴミ袋からシャンプーまで一斉値上げ。</p>
         </div>
       </div>
 
       <div class="tl-item">
-        <div class="tl-year">27年</div>
+        <div class="tl-year">2027年 夏・冬</div>
         <div class="tl-body">
-          <h3>大学施設の「省エネ事態」常態化</h3>
-          <p>酷暑の継続と大学運営費の枯渇により、図書館・PCルームの「空調制限」や「開館時間短縮」が激化。夏場の大学が「涼しい避暑地」ではなくなる。</p>
-          <div class="tl-warn">対策：自室の断熱強化（窓シート）への投資。大学以外の「サードプレイス（集中できる場所）」の確保。</div>
+          <h3>キャンパス「サバイバル環境」の常態化</h3>
+          <p>大学の運営費交付金増額がインフレに追いつかず、大学側は「省エネ管理標準」を厳格化。利用者の少ない図書館エリアの閉鎖、稼働時間の短縮、夏期の28度設定・冬期の20度設定が徹底される。</p>
         </div>
       </div>
 
       <div class="tl-item">
-        <div class="tl-year">28年</div>
+        <div class="tl-year">2028年 4月</div>
         <div class="tl-body">
-          <h3>炭素税（化石燃料賦課金）の直接打撃</h3>
-          <p>政府による新たな賦課金が開始。製造・物流コストへの転嫁により、コンビニ弁当や学食の価格が一段階跳ね上がる。「買えば済む」時代の終焉。</p>
-          <div class="tl-warn">対策：生存スキルとしての「自炊技術」の習得。学食・外食への依存度を下げる。</div>
-        </div>
-      </div>
-
-      <div class="tl-item">
-        <div class="tl-year">30年</div>
-        <div class="tl-body">
-          <h3>「高エネ」スキルの就活市場での価値</h3>
-          <p>卒業と同時に、社会全体が本格的な「GX（脱炭素）経済」へと移行。エネルギーの「節約」ではなく「効率的活用と自立」を知る人材が高く評価される。</p>
-          <div class="tl-warn">対策：サバイバル生活で培った「環境適応力」と「リソース配分能力」を自己PRに変換する。</div>
+          <h3>化石燃料賦課金（炭素税）の直撃</h3>
+          <p>政府のGX推進法に基づくカーボンプライシングが稼働。物流・製造コストへの転嫁が起こり、コンビニ飯・学食・外食の「実質的再値上げ（ステルス値上げ含む）」が発生。自炊スキルが生死を分ける。</p>
         </div>
       </div>
     </div>
 
-    <!-- チェックリストセクション -->
+    <!-- 実戦ドリルセクション -->
     <div class="card" data-animate>
-      <h2>今日から始める防衛策チェックリスト</h2>
-      <p style="color:var(--text-muted); font-size:14px;">仕送りやバイト代がインフレに追いつかない前提で、固定費の「聖域」を守る生存戦術。</p>
+      <h2>生存教練・実戦ドリル (Tactical Drills)</h2>
       
-      <div class="checklist">
-        <div class="chk-item">
-          <div class="chk-icon">🍳</div>
-          <div class="chk-content">
-            <h4>脱ガス・タイパ自炊（ワンパン＆レンジ）</h4>
-            <p>ガスコンロを極力使わず、耐熱ボウルと電子レンジを駆使する。フライパン1つで完結する「ワンパンレシピ」で、光熱費・水道代・洗い物の時間を一気に削減。</p>
+      <div class="drill-cont">
+        <div class="drill-head">🛠️ 住環境防衛ドリル：窓断熱の最適解</div>
+        <div class="drill-body">
+          <p style="margin-bottom:12px;">エアコン電気代の増大を防ぐ最大の防御壁は「窓」である。U値（熱貫流率：低いほど断熱性が高い）を基準に装備を選定せよ。</p>
+          <div class="drill-fact">
+            [DATA] 窓からの熱流入(夏)は約7割、熱流出(冬)は約6割に達する。
           </div>
-        </div>
-
-        <div class="chk-item">
-          <div class="chk-icon">🪟</div>
-          <div class="chk-content">
-            <h4>窓の断熱強化（最強の電気代対策）</h4>
-            <p>賃貸アパートの冷暖房効率を下げる最大の原因は「窓」。断熱シート、ハニカムスクリーン、プチプチなどを張り巡らせるだけで、エアコンの電気代が劇的に変わる。</p>
-          </div>
-        </div>
-
-        <div class="chk-item">
-          <div class="chk-icon">🧠</div>
-          <div class="chk-content">
-            <h4>メンタルレジリエンスの保持</h4>
-            <p>物価高と利用制限でイライラしがちな時期。「我慢」ではなく「生活の最適化というゲーム」と捉える。SNSで同世代の節約術を取り入れ、孤独な貧困感に陥らないこと。</p>
-          </div>
+          <ul style="margin-top:12px;">
+            <li><strong>フェーズ1（予算ゼロ）:</strong> サッシの隙間を「100均の隙間テープ」で徹底的に塞ぐ。これだけで冷気の侵入を大幅に遅延できる（退去時の原状回復のため下地にマスキングテープを貼ること）。</li>
+            <li><strong>フェーズ2（予算1,000円）:</strong> 気泡緩衝材（プチプチ）の「凸凹面」を窓ガラス側に向けて密着させる。空気層を作りU値を下げる。</li>
+            <li><strong>フェーズ3（予算10,000円〜・推奨）:</strong> 「突っ張り式ハニカムスクリーン」を設置。独自の六角形空気層により、劇的な保温・保冷効果を発揮。原状回復も容易。</li>
+          </ul>
         </div>
       </div>
+
+      <div class="drill-cont">
+        <div class="drill-head">🍳 栄養防衛ドリル：脱ガス・ワット数管理による自炊</div>
+        <div class="drill-body">
+          <p style="margin-bottom:12px;">ガス代（特にプロパンガス契約物件）を回避するため、電気機器への依存度を高めるが、ワット数（消費電力）を管理しタイパ（時間対効果）を最大化せよ。</p>
+          <div class="drill-fact">
+            [DATA] 電子レンジ(目安出力500W: 実際の消費電力約1000W) vs 電気ケトル(1200W) vs IH(1200〜3000W)
+          </div>
+          <ul style="margin-top:12px;">
+            <li><strong>野菜の加熱:</strong> 鍋で湯を沸かして茹でるな。耐熱ボウルと少量の水を用い、電子レンジを利用せよ。時間とエネルギー効率が最適化される。</li>
+            <li><strong>ワンパン戦術:</strong> フライパン1つで「パスタ＋ソース」「肉＋もやし」を完結させよ。水道代と洗い物の時間を劇的にカットできる。</li>
+            <li><strong>備蓄のローリング:</strong> 乾麺（うどん・パスタ）、レトルト食品、カセットコンロ（ガス途絶時用）を最低3日分常備し、消費しながら買い足す（ローリングストック）。</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="drill-cont">
+        <div class="drill-head">🚴 移動・精神防衛ドリル</div>
+        <div class="drill-body">
+          <ul style="margin-top:12px;">
+            <li><strong>E-bike（電動アシスト自転車）への移行:</strong> 運賃値上げが続く場合、初期投資10万円以内であれば、2年間の通学（定期代比較）でコスト回収が可能か計算せよ。</li>
+            <li><strong>サードプレイスの開拓:</strong> 大学図書館の空調制限に備え、安価に滞在できる地域の図書館や、長時間駐在可能な拠点（サードプレイス）を確保せよ。</li>
+            <li><strong>情報からの「適度な遮断」:</strong> 経済面の悲観的ニュース（最後通牒等の地政学リスク等）が精神を削る。SNSの過剰な情報収集を制限し、「我慢」ではなく「ゲームとしての最適化」として節約を楽しめ。</li>
+          </ul>
+        </div>
+      </div>
+
     </div>
+
+    <ul class="ref-section" data-animate>
+      <li>【参考文献・OSINTソース】</li>
+      <li>・JR東日本：運賃改定（2026年3月）プレスリリース</li>
+      <li>・日本化学工業協会：ナフサ価格と市場動向レポート</li>
+      <li>・文部科学省：国立大学法人運営費交付金（令和8年度）予算資料</li>
+      <li>・文部科学省：大学等における省エネルギー対策の手引き</li>
+      <li>・国土交通省：鉄道分野のGXに関する基本的考え方</li>
+      <li>・各種SNS/Web：大学生一人暮らしの光熱費節約実態抽出データ</li>
+    </ul>
 
   </div>
 
   <script>
-    // Data definition: 2026=0, 2027=1, 2028=2, 2029=3, 2030=4
-    // Y-axis mapping: 100% = 250px, 130% = 50px
-    function calcY(percent) {
-      // ratio: (130 - 100) = 30%. pixels = 200px. 200 / 30 = 6.66 px per %.
-      return 250 - ((percent - 100) * (200 / 30));
-    }
-
-    const data = {
-      // Format: [2026%, 2027%, 2028%, 2029%, 2030%]
-      util:  [105, 110, 118, 122, 128], // Utilities surge with carbon tax in '28
-      trans: [108, 108, 112, 112, 115], // Step function for railway fare hikes
-      food:  [106, 112, 116, 119, 122]  // Steady inflation from naphtha & logistics
-    };
-
-    const xCoords = [50, 232, 415, 597, 780];
-
-    function drawLine(id, dataset) {
-      let d = `M ${xCoords[0]} ${calcY(dataset[0])}`;
-      for (let i = 1; i < dataset.length; i++) {
-        d += ` L ${xCoords[i]} ${calcY(dataset[i])}`;
-      }
-      document.getElementById(id).setAttribute("d", d);
-      
-      // Animate line drawing
-      const path = document.getElementById(id);
-      const length = path.getTotalLength();
-      path.style.strokeDasharray = length;
-      path.style.strokeDashoffset = length;
-      setTimeout(() => {
-        path.style.transition = 'stroke-dashoffset 1.5s ease-in-out';
-        path.style.strokeDashoffset = '0';
-      }, 300);
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      drawLine("utilLine", data.util);
-      drawLine("transLine", data.trans);
-      drawLine("foodLine", data.food);
-    });
-
     const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("visible");
-        }
-      });
+      entries.forEach(entry => entry.isIntersecting && entry.target.classList.add("visible"));
     }, { threshold: 0.1 });
-
     document.querySelectorAll("[data-animate]").forEach(el => observer.observe(el));
   </script>
 </body>
