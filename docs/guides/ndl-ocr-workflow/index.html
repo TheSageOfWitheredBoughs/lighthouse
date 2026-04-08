@@ -661,7 +661,7 @@
     <a href="#architecture" class="mindmap-card">
       <span class="mindmap-num">Section 05</span>
       <span class="mindmap-label">アーキテクチャ解説</span>
-      <span class="mindmap-desc">APIルート / OCRルートの分岐と処理フロー</span>
+      <span class="mindmap-desc">API / OCR / PDF_TEXT / PDF_OCR — 4ルートの自動分岐</span>
     </a>
     <a href="#usage" class="mindmap-card">
       <span class="mindmap-num">Section 06</span>
@@ -982,7 +982,7 @@ DROPBOX_PATH = <span class="string">r"C:\Users\YourName\Dropbox\NDL_Archives"</s
       <h2 class="section-title">アーキテクチャ解説<small>How it works</small></h2>
     </div>
 
-    <p>本システムの処理フローは、NDLにOCRテキストが既に存在するかどうかによって<strong>2つのルートに自動分岐</strong>します。ユーザーはどちらのルートが選択されるかを事前に知る必要はありません。スクリプトが自動判定します。</p>
+    <p>本システムは入力の種類によって<strong>4つのルートに自動分岐</strong>します。NDLデジタルコレクションのPIDを指定した場合はAPI/OCRルートに、ローカルPDFを指定した場合はPDF_TEXT/PDF_OCRルートに進みます。いずれのルートが選択されるかはスクリプトが自動判定するため、ユーザーは意識する必要はありません。</p>
 
     <h3>全体処理フロー</h3>
 
@@ -990,23 +990,31 @@ DROPBOX_PATH = <span class="string">r"C:\Users\YourName\Dropbox\NDL_Archives"</s
       <div class="flow-step">
         <div class="flow-line"><div class="flow-dot active"></div><div class="flow-connector"></div></div>
         <div class="flow-content">
-          <div class="flow-label">Step 1: PID解析 + 書誌情報取得</div>
-          <div class="flow-desc">入力されたURL/PIDからNDLサーチAPIで書誌情報（タイトル・著者）を取得します。Book APIも併用して、メタデータの信頼性を高めます。</div>
+          <div class="flow-label">Step 1: 入力判定（NDL / PDF）</div>
+          <div class="flow-desc"><strong>NDLルート（<code>--pid</code> / <code>--url</code>）</strong>: NDLサーチAPIで書誌情報（タイトル・著者）を取得します。<br><strong>PDFルート（<code>--pdf</code>）</strong>: 指定されたローカルPDFのメタデータ（ファイル名・ページ数）を読み取ります。<code>--title</code> で書名を上書き指定できます。</div>
         </div>
       </div>
       <div class="flow-step">
         <div class="flow-line"><div class="flow-dot active"></div><div class="flow-connector"></div></div>
         <div class="flow-content">
-          <div class="flow-label">Step 2: OCRテキスト存在確認（分岐点）</div>
-          <div class="flow-desc">NDL次世代デジタルライブラリーのBook API + Page APIを順にチェックし、既存のOCRテキストが利用可能かを判定します。</div>
+          <div class="flow-label">Step 2: テキスト取得（4ルート分岐点）</div>
+          <div class="flow-desc">入力の種類とPDF内容に応じて以下の4ルートに分岐します。</div>
           <div class="flow-branch">
             <div class="flow-branch-card">
               <strong>APIルート（高速）</strong><br>
-              既にNDL側でOCR処理済みのテキストが存在する場合。全文API（gzip圧縮）で一括取得を試み、失敗時はページ単位のAPI取得にフォールバックします。著作権保護期間満了の資料（約28万点）の多くがこちらに該当します。
+              NDL側でOCR処理済みのテキストが存在する場合。全文API（gzip圧縮）で一括取得。著作権保護期間満了の資料（約28万点）の多くがここに該当します。
             </div>
             <div class="flow-branch-card">
               <strong>OCRルート（ローカル処理）</strong><br>
-              NDLにテキストがない場合。IIIF API経由で画像をダウンロードし、NDLOCR-Lite（ローカルのONNXモデル）でリアルタイムOCR処理を行います。1ページあたり30〜60秒かかります。
+              NDLにテキストがない場合。IIIF API経由で画像をダウンロードし、NDLOCR-Lite（ONNXモデル）でリアルタイムOCR処理を行います。1ページあたり30〜60秒かかります。
+            </div>
+            <div class="flow-branch-card">
+              <strong>PDF_TEXTルート（高速）</strong><br>
+              PDFにテキスト層が存在する場合（デジタル生成PDFやOCR済みPDF）。pypdfium2でテキストを直接抽出します。ページ画像の処理が不要なため高速です。
+            </div>
+            <div class="flow-branch-card">
+              <strong>PDF_OCRルート（ローカル処理）</strong><br>
+              スキャンPDFでテキスト層がない場合。pypdfium2でページを高解像度（288DPI）JPEG画像に変換し、NDLOCR-LiteでリアルタイムOCR処理を行います。
             </div>
           </div>
         </div>
@@ -1074,6 +1082,12 @@ DROPBOX_PATH = <span class="string">r"C:\Users\YourName\Dropbox\NDL_Archives"</s
             <td>ページ画像のダウンロード</td>
             <td>Step 2b（OCRルート）</td>
           </tr>
+          <tr>
+            <td><strong>pypdfium2（ローカル）</strong></td>
+            <td>—（ネットワーク不使用）</td>
+            <td>PDFテキスト層抽出 / ページ画像化（288DPI）</td>
+            <td>Step 2c/2d（PDF_TEXT / PDF_OCRルート）</td>
+          </tr>
         </tbody>
       </table>
     </div>
@@ -1086,7 +1100,7 @@ DROPBOX_PATH = <span class="string">r"C:\Users\YourName\Dropbox\NDL_Archives"</s
       <h2 class="section-title">使い方ガイド<small>Usage</small></h2>
     </div>
 
-    <h3>基本的な使い方</h3>
+    <h3>NDLデジタルコレクション（--pid / --url）</h3>
 
     <pre><code><span class="comment"># PIDを指定して1ページ目を取得</span>
 python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">3048008</span>
@@ -1106,6 +1120,27 @@ python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">30
 <span class="comment"># APIテキストがあってもOCRを強制実行</span>
 python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">1</span> <span class="flag">--force-ocr</span></code><span class="code-label">PowerShell</span></pre>
 
+    <h3>ローカル / ダウンロードPDF（--pdf）</h3>
+
+    <p>NDL・CiNii Books・その他アーカイブからダウンロードしたPDF、または手持ちのPDFを直接指定できます。テキスト層の有無を自動検出し、最適なルートで処理します。</p>
+
+    <pre><code><span class="comment"># PDFを指定（書名はファイル名から自動設定）</span>
+python ndl_vault_sync.py <span class="flag">--pdf</span> <span class="string">C:\Downloads\meiji_civil_code.pdf</span>
+
+<span class="comment"># ページ範囲を指定</span>
+python ndl_vault_sync.py <span class="flag">--pdf</span> <span class="string">C:\Downloads\book.pdf</span> <span class="flag">--pages</span> <span class="number">1-30</span>
+
+<span class="comment"># 書名を手動指定（正式な書名が判明している場合）</span>
+python ndl_vault_sync.py <span class="flag">--pdf</span> <span class="string">C:\Downloads\book.pdf</span> <span class="flag">--title</span> <span class="string">"明治民法草案"</span> <span class="flag">--pages</span> <span class="number">1-50</span>
+
+<span class="comment"># Google Driveへの保存をスキップ</span>
+python ndl_vault_sync.py <span class="flag">--pdf</span> <span class="string">C:\Downloads\book.pdf</span> <span class="flag">--no-gdrive</span></code><span class="code-label">PowerShell</span></pre>
+
+    <div class="callout info">
+      <div class="callout-title">テキスト層の自動検出について</div>
+      <p>スクリプトはPDFの先頭3ページをサンプリングしてテキスト層の有無を自動判定します。<strong>PDF_TEXTルート</strong>（テキスト層あり）は数秒で完了します。<strong>PDF_OCRルート</strong>（スキャンPDF）は画像化してNDLOCR-LiteでOCR処理するため、NDLのOCRルートと同程度の時間がかかります。</p>
+    </div>
+
     <h3>コマンドラインオプション一覧</h3>
 
     <div class="table-wrap">
@@ -1114,11 +1149,13 @@ python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">30
           <tr><th>オプション</th><th>説明</th><th>デフォルト</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>--pid</code></td><td>NDLの資料番号（PID）。<code>--url</code> と排他。</td><td>なし</td></tr>
-          <tr><td><code>--url</code></td><td>NDLデジタルコレクションのURL。PIDは自動抽出されます。</td><td>なし</td></tr>
-          <tr><td><code>--pages</code></td><td>取得するページ範囲。<code>1-50</code>（範囲）または <code>1,5,10</code>（個別指定）。</td><td><code>1</code></td></tr>
+          <tr><td><code>--pid</code></td><td>NDLの資料番号（PID）。<code>--url</code> と排他。NDLルート専用。</td><td>なし</td></tr>
+          <tr><td><code>--url</code></td><td>NDLデジタルコレクションのURL。PIDは自動抽出されます。NDLルート専用。</td><td>なし</td></tr>
+          <tr><td><code>--pdf</code></td><td>ローカルPDFファイルの絶対パス。NDL・CiNii・その他アーカイブからDLしたPDFを指定。PDFルート専用。</td><td>なし</td></tr>
+          <tr><td><code>--title</code></td><td>書名を手動指定。省略するとPDFファイル名が書名になります。PDFルートで正式な書名が判明している場合に使用。</td><td>ファイル名</td></tr>
+          <tr><td><code>--pages</code></td><td>取得するページ範囲。<code>1-50</code>（範囲）/<code>1,5,10</code>（個別）/<code>all</code>（全ページ）。PDFで省略すると全ページ対象。</td><td><code>1</code></td></tr>
           <tr><td><code>--no-gdrive</code></td><td>Google Driveへの保存をスキップします。</td><td>無効</td></tr>
-          <tr><td><code>--force-ocr</code></td><td>NDL APIにOCRテキストが存在しても、ローカルOCRを強制実行します。</td><td>無効</td></tr>
+          <tr><td><code>--force-ocr</code></td><td>NDL APIにOCRテキストが存在しても、ローカルOCRを強制実行します。NDLルート専用。</td><td>無効</td></tr>
         </tbody>
       </table>
     </div>
@@ -1227,8 +1264,8 @@ https://dl.ndl.go.jp/pid/<span class="number">3048008</span></code></pre>
     </div>
 
     <div class="callout info">
-      <div class="callout-title">APIルートとの使い分け</div>
-      <p>NDLが既にOCR処理済みのテキストを公開している資料（著作権保護期間満了の約28万点）では、<strong>OCRを自分で実行する必要はありません</strong>。本システムは自動的にAPIルートを選択し、数秒でテキストを取得します。OCRルートが起動するのは、APIにテキストがない資料（著作権保護中のためOCR非公開の資料等）のみです。</p>
+      <div class="callout-title">ルートの使い分けガイド</div>
+      <p>NDLが既にOCR処理済みのテキストを公開している資料（著作権保護期間満了の約28万点）では、<strong>OCRを自分で実行する必要はありません</strong>。本システムは自動的にAPIルートを選択し、数秒でテキストを取得します。OCRルートが起動するのは、APIにテキストがない資料のみです。<br>手持ちやダウンロードしたPDFには <code>--pdf</code> を使用してください。デジタル生成PDFはPDF_TEXTルートで即座に完了し、スキャンPDFはPDF_OCRルートでNDLOCR-Liteが処理します。</p>
     </div>
   </section>
 
@@ -1289,9 +1326,13 @@ https://dl.ndl.go.jp/pid/<span class="number">3048008</span></code></pre>
       <div class="step-item">
         <h4>Antigravityで実行</h4>
         <p>Antigravityのチャットで <code>/ndl</code> コマンドを入力するだけで、テキスト取得からAI校正、DOCX生成、保存までが一連の対話フローで実行されます。</p>
-        <pre><code><span class="comment"># Antigravityチャット内で入力</span>
+        <pre><code><span class="comment"># NDLデジタルコレクション</span>
 /ndl https://dl.ndl.go.jp/pid/3048008
-/ndl <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">1-50</span></code><span class="code-label">Antigravity</span></pre>
+/ndl <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">1-50</span>
+
+<span class="comment"># ローカル / ダウンロードPDF</span>
+/ndl <span class="flag">--pdf</span> <span class="string">"C:\Downloads\meiji_civil_code.pdf"</span>
+/ndl <span class="flag">--pdf</span> <span class="string">"C:\Downloads\book.pdf"</span> <span class="flag">--title</span> <span class="string">"明治民法草案"</span> <span class="flag">--pages</span> <span class="number">1-80</span></code><span class="code-label">Antigravity</span></pre>
       </div>
     </div>
 
@@ -1369,6 +1410,27 @@ https://dl.ndl.go.jp/pid/<span class="number">3048008</span></code></pre>
           <li><code>scripts/ndlocr-lite/</code> フォルダを削除し、<code>setup.ps1</code> を再実行してクリーンクローンを行ってください。</li>
           <li><code>pip install --upgrade onnxruntime</code> で最新版にアップデートしてください。</li>
         </ol>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">「ModuleNotFoundError: No module named 'pypdfium2'」</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p><strong>原因</strong>: <code>pypdfium2</code> パッケージがインストールされていません。<code>setup.ps1</code> を実行したが、ndlocr-liteの <code>requirements.txt</code> に含まれていなかった可能性があります。</p>
+        <p><strong>解決策</strong>: 以下を実行してください。</p>
+        <pre><code>pip install pypdfium2 pillow</code></pre>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">--pdf 指定時にテキストが空白・文字化けする</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p><strong>原因A（PDF_TEXTルートで空白）</strong>: PDFがスキャン画像のみで構成されており、テキスト層が存在しません。スクリプトは先頭3ページで判定しますが、まれに誤検出することがあります。</p>
+        <p><strong>解決策A</strong>: そのまま再実行するとPDF_OCRルートに切り替わります。または <code>--force-ocr</code> に相当する動作として、PDFをスキャン扱いで処理させてください。</p>
+        <p><strong>原因B（PDF_OCRルートで文字化け）</strong>: スキャン画像の解像度が低い（300DPI未満）か、NDLOCR-Liteが対応していない言語（英語・中国語等）が大半を占めています。</p>
+        <p><strong>解決策B</strong>: より高解像度のPDFを入手するか、英語PDFの場合はOCR処理自体が不向きです（NDLOCR-Liteは日本語特化モデル）。</p>
+        <p><strong>原因C（パスワード保護PDF）</strong>: 暗号化されたPDFは pypdfium2 が読み取れません。</p>
+        <p><strong>解決策C</strong>: PDFのパスワード保護を解除してから再実行してください。</p>
       </div></div>
     </div>
 
