@@ -5,6 +5,10 @@
 # --- DOCX Generation ---
 python-docx>=1.1.0
 
+# --- PDF Processing (テキスト層抽出 / ページ画像化) ---
+pypdfium2>=4.30.0
+pillow>=12.0.0
+
 # --- NDLOCR-Lite Dependencies ---
 # These are installed when you run setup.ps1, which clones
 # ndlocr-lite and installs its own requirements.txt.

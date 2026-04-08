@@ -1,18 +1,30 @@
 ---
-description: 国立国会図書館デジタルコレクションから文献をOCR・取得し、設定された保存先に自動保存する
+description: 国立国会図書館・CiNii・その他デジタルアーカイブからダウンロードしたPDF、または手持ちPDFをOCR・取得し、設定された保存先に自動保存する
 ---
 
 # /ndl ワークフロー
 
-国立国会図書館（NDL）デジタルコレクションのURLまたはPIDを指定するだけで、
+NDLデジタルコレクションのURL/PID指定、またはローカルPDFファイルパス指定で、
 文字起こしを全自動で保存先（Obsidian / Dropbox / Google Drive / ローカル）に保存します。
+
+**対応ルート:**
+- **NDL API ルート**: NDLが持つOCRテキストをAPIから直接取得（高速）
+- **NDL OCR ルート**: NDL IIIF画像をダウンロード → NDLOCR-Lite でOCR
+- **PDF テキスト抽出ルート**: PDFのテキスト層を直接抽出（高速・高精度）
+- **PDF OCR ルート**: スキャンPDFをページ画像化 → NDLOCR-Lite でOCR
 
 ## 使い方
 
 ```
+# --- NDLデジタルコレクション ---
 /ndl https://dl.ndl.go.jp/pid/3048008
 /ndl --pid 3048008 --pages 1-10
 /ndl --pid 3048008 --pages 1 --no-gdrive
+
+# --- ローカル / ダウンロードPDF ---
+/ndl --pdf /path/to/downloaded_book.pdf
+/ndl --pdf /path/to/book.pdf --pages 1-30
+/ndl --pdf /path/to/book.pdf --title "明治民法草案" --pages 1-50
 ```
 
 ## 実行ステップ
@@ -24,16 +36,28 @@ description: 国立国会図書館デジタルコレクションから文献をO
 
 ### Step 1: スクリプト実行（テキスト取得・判定）
 
+**NDLデジタルコレクションの場合:**
 ```powershell
 python ndl_vault_sync.py --pid {PID} --pages {PAGES}
+```
+
+**ローカル / ダウンロードPDFの場合:**
+```powershell
+python ndl_vault_sync.py --pdf "{PDFファイルの絶対パス}" --pages {PAGES}
+python ndl_vault_sync.py --pdf "{PDFファイルの絶対パス}" --title "{書名}" --pages {PAGES}
 ```
 
 ※ config.py の設定に基づいてパスが自動解決されます。
 
 実行後、以下の情報がコンソールに出力されます：
-- **ルート判定結果**（API / OCR）
+- **ルート判定結果**（API / OCR / PDF_TEXT / PDF_OCR）
 - **先頭500文字のプレビューテキスト**
 - **`[RESULT_JSON]`** 以降にJSON形式の全データ
+
+### Step 1.5: PDFルートでの書名確認（`--pdf` 使用時のみ）
+
+`--title` を省略した場合、書名はPDFファイル名から自動設定されます。
+必要に応じてユーザーに書名を確認し、`--title "正式な書名"` を付けて再実行します。
 
 ### Step 2: AI校正・補完（私が実施）
 
@@ -93,6 +117,9 @@ python ndl_docx_generator.py --input [テキストファイル] --output [出力
 | OCRルートで空白出力 | 入力画像の解像度が低すぎる | モデルファイルが破損 |
 | DOCX生成エラー | python-docx ライブラリの依存関係 | 出力先パスに書き込み権限なし |
 | 保存エラー | クラウドストレージ同期の競合ロック | 保存先フォルダが存在しない |
+| PDF_TEXT が空白 | PDFが画像のみのスキャン（テキスト層なし） | PDFが暗号化・パスワード保護されている |
+| PDF_OCR が空白 | スキャン画像の解像度が低い（300DPI未満） | NDLOCRモデルが日本語以外の文字に対応不可 |
+| pypdfium2 ImportError | `pip install pypdfium2` 未実行 | Python環境が32bit（pypdfium2は64bit必須） |
 
 ### Step C: 検証（最大2回まで試行）
 1. 可能性の高い仮説から診断コマンドを実行して確認する
