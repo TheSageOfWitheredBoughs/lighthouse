@@ -1,0 +1,1448 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NDL OCR Workflow — 国立国会図書館デジタルコレクション自動文字起こしシステム導入ガイド</title>
+  <meta name="description" content="国立国会図書館が公開するNDLOCR-Liteを活用し、デジタルコレクションの文献を全自動でOCR処理・DOCX生成・クラウド保存するワークフローの包括的導入ガイド。">
+  <meta name="date" content="2026-04-08">
+  <meta name="category" content="デジタルツール">
+  <style>
+    /* ============================================================
+       NDL OCR Workflow Guide — Design System
+       Color Palette: 墨 (Sumi) + 朱 (Vermillion) + 藍 (Indigo)
+       Typography: 和文ゴシック + 明朝の二段構え
+       ============================================================ */
+
+    :root {
+      --sumi:        #1c1c1e;
+      --sumi-soft:   #2c2c2e;
+      --sumi-muted:  #636366;
+      --stone:       #8e8e93;
+      --paper:       #faf9f6;
+      --paper-warm:  #f5f3ee;
+      --paper-cool:  #f0eff5;
+      --vermillion:  #c0392b;
+      --vermillion-l:#e74c3c;
+      --vermillion-d:#962d22;
+      --indigo:      #1a3a5c;
+      --indigo-l:    #2c5282;
+      --indigo-d:    #0f2440;
+      --teal:        #0d6e6e;
+      --teal-l:      #17a2a2;
+      --gold:        #b8860b;
+      --gold-l:      #d4a017;
+      --moss:        #3d5e3a;
+      --moss-l:      #5a8a54;
+      --border:      #d1cdc4;
+      --border-l:    #e8e5de;
+      --shadow-s:    rgba(28,28,30,0.06);
+      --shadow-m:    rgba(28,28,30,0.12);
+      --shadow-l:    rgba(28,28,30,0.20);
+      --radius:      8px;
+      --radius-l:    16px;
+      --transition:  0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
+
+    body {
+      font-family: "Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic","Meiryo",sans-serif;
+      background: var(--paper);
+      color: var(--sumi);
+      line-height: 1.85;
+      font-size: 16px;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Serif for headings ── */
+    h1,h2,h3,h4 {
+      font-family: "Hiragino Mincho ProN","Yu Mincho","MS PMincho","Georgia",serif;
+      font-weight: 700;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(24px) }
+      to   { opacity:1; transform:translateY(0) }
+    }
+    @keyframes fadeIn {
+      from { opacity:0 }
+      to   { opacity:1 }
+    }
+    @keyframes slideRight {
+      from { opacity:0; transform:translateX(-20px) }
+      to   { opacity:1; transform:translateX(0) }
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1 }
+      50%     { opacity:0.6 }
+    }
+    @keyframes float {
+      0%,100% { transform:translateY(0) }
+      50%     { transform:translateY(-6px) }
+    }
+    .reveal {
+      opacity:0;
+      transform:translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    /* ── Sticky Navigation ── */
+    .sticky-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(28,28,30,0.97);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      transform: translateY(-100%);
+      transition: transform var(--transition);
+    }
+    .sticky-nav.visible { transform: translateY(0); }
+    .sticky-nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      padding: 0 24px;
+      display: flex; align-items: center;
+      height: 56px; gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .sticky-nav-inner::-webkit-scrollbar { display:none }
+    .sticky-nav a {
+      color: rgba(255,255,255,0.6);
+      text-decoration: none;
+      font-size: 0.78rem;
+      white-space: nowrap;
+      padding: 6px 12px;
+      border-radius: 4px;
+      transition: all var(--transition);
+      flex-shrink: 0;
+    }
+    .sticky-nav a:hover, .sticky-nav a.active {
+      color: #fff;
+      background: rgba(255,255,255,0.1);
+    }
+    .sticky-nav-title {
+      color: var(--vermillion-l);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, var(--indigo-d) 0%, var(--sumi) 50%, var(--indigo) 100%);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+      padding: 100px 24px 80px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(circle at 20% 50%, rgba(192,57,43,0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 30%, rgba(26,58,92,0.3) 0%, transparent 50%);
+    }
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .hero-inner {
+      max-width: 900px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(192,57,43,0.2);
+      border: 1px solid rgba(192,57,43,0.4);
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 24px;
+      opacity:0; animation: fadeUp 0.6s 0.1s ease forwards;
+    }
+    .hero-badge::before { content:''; width:8px; height:8px; background:var(--vermillion-l); border-radius:50%; animation: pulse 2s infinite; }
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.25;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+      opacity:0; animation: fadeUp 0.6s 0.2s ease forwards;
+    }
+    .hero h1 span { color: var(--vermillion-l); }
+    .hero-sub {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.7);
+      max-width: 640px;
+      line-height: 1.9;
+      opacity:0; animation: fadeUp 0.6s 0.35s ease forwards;
+    }
+
+    /* ── MIND MAP NAV ── */
+    .mindmap {
+      max-width: 1200px; margin: -40px auto 0;
+      padding: 0 24px;
+      position: relative; z-index: 2;
+    }
+    .mindmap-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .mindmap-card {
+      background: #fff;
+      border: 1px solid var(--border-l);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      text-decoration: none;
+      color: var(--sumi);
+      transition: all var(--transition);
+      box-shadow: 0 2px 8px var(--shadow-s);
+      display: flex; flex-direction: column; gap: 6px;
+      opacity:0; animation: fadeUp 0.5s ease forwards;
+    }
+    .mindmap-card:nth-child(1) { animation-delay: 0.3s }
+    .mindmap-card:nth-child(2) { animation-delay: 0.38s }
+    .mindmap-card:nth-child(3) { animation-delay: 0.46s }
+    .mindmap-card:nth-child(4) { animation-delay: 0.54s }
+    .mindmap-card:nth-child(5) { animation-delay: 0.62s }
+    .mindmap-card:nth-child(6) { animation-delay: 0.70s }
+    .mindmap-card:nth-child(7) { animation-delay: 0.78s }
+    .mindmap-card:nth-child(8) { animation-delay: 0.86s }
+    .mindmap-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px var(--shadow-m);
+      border-color: var(--vermillion);
+    }
+    .mindmap-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--vermillion);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .mindmap-label {
+      font-family: "Hiragino Mincho ProN","Yu Mincho",serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .mindmap-desc {
+      font-size: 0.75rem;
+      color: var(--stone);
+      line-height: 1.5;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .content-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 24px 100px;
+    }
+
+    /* Section styling */
+    .section {
+      margin-bottom: 80px;
+      scroll-margin-top: 80px;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid var(--sumi);
+    }
+    .section-num {
+      font-family: "Georgia","Times New Roman",serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--vermillion);
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .section-title {
+      font-size: 1.6rem;
+      line-height: 1.3;
+      color: var(--sumi);
+    }
+    .section-title small {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 400;
+      color: var(--stone);
+      font-family: "Hiragino Kaku Gothic ProN",sans-serif;
+      margin-top: 4px;
+    }
+
+    /* Sub-sections */
+    h3 {
+      font-size: 1.15rem;
+      margin: 40px 0 16px;
+      padding-left: 14px;
+      border-left: 3px solid var(--vermillion);
+      color: var(--indigo-d);
+    }
+    h4 {
+      font-size: 1rem;
+      margin: 28px 0 12px;
+      color: var(--sumi-soft);
+    }
+
+    p { margin-bottom: 16px; }
+    p + p { margin-top: 0; }
+
+    /* ── CALLOUT BOXES ── */
+    .callout {
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      margin: 24px 0;
+      font-size: 0.92rem;
+      line-height: 1.8;
+    }
+    .callout-title {
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .callout.info {
+      background: #eef4fb;
+      border-left: 4px solid var(--indigo-l);
+    }
+    .callout.info .callout-title { color: var(--indigo-l); }
+    .callout.warn {
+      background: #fff8e6;
+      border-left: 4px solid var(--gold);
+    }
+    .callout.warn .callout-title { color: var(--gold); }
+    .callout.danger {
+      background: #fdf0ef;
+      border-left: 4px solid var(--vermillion);
+    }
+    .callout.danger .callout-title { color: var(--vermillion); }
+    .callout.success {
+      background: #eef7ee;
+      border-left: 4px solid var(--moss);
+    }
+    .callout.success .callout-title { color: var(--moss); }
+
+    /* ── CODE BLOCKS ── */
+    pre {
+      background: var(--sumi);
+      color: #e0e0e0;
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      overflow-x: auto;
+      font-family: "Cascadia Code","Consolas","Monaco","Courier New",monospace;
+      font-size: 0.85rem;
+      line-height: 1.65;
+      margin: 16px 0 24px;
+      position: relative;
+    }
+    pre .comment { color: #6a9955; }
+    pre .keyword { color: #569cd6; }
+    pre .string  { color: #ce9178; }
+    pre .func    { color: #dcdcaa; }
+    pre .number  { color: #b5cea8; }
+    pre .flag    { color: #c586c0; }
+
+    code {
+      font-family: "Cascadia Code","Consolas",monospace;
+      font-size: 0.88em;
+      background: rgba(0,0,0,0.06);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    pre code { background: none; padding: 0; font-size: 1em; }
+
+    .code-label {
+      position: absolute;
+      top: 8px; right: 12px;
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── TABLES ── */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 16px 0 24px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+    th {
+      background: var(--indigo-d);
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-l);
+      vertical-align: top;
+    }
+    tr:hover td { background: var(--paper-warm); }
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .tag-required { background: #fdf0ef; color: var(--vermillion); }
+    .tag-optional { background: #eef4fb; color: var(--indigo-l); }
+    .tag-auto     { background: #eef7ee; color: var(--moss); }
+
+    /* ── FLOW DIAGRAM (CSS-only) ── */
+    .flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin: 24px 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: stretch;
+      gap: 16px;
+    }
+    .flow-line {
+      width: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .flow-dot {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 3px solid var(--indigo);
+      background: #fff;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+    .flow-dot.active { background: var(--vermillion); border-color: var(--vermillion); }
+    .flow-connector {
+      width: 2px;
+      flex-grow: 1;
+      background: var(--border);
+    }
+    .flow-content {
+      flex-grow: 1;
+      padding: 4px 0 28px;
+    }
+    .flow-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: var(--indigo-d);
+      margin-bottom: 6px;
+    }
+    .flow-desc {
+      font-size: 0.88rem;
+      color: var(--sumi-muted);
+      line-height: 1.7;
+    }
+    .flow-branch {
+      display: flex; gap: 12px;
+      margin-top: 8px;
+    }
+    .flow-branch-card {
+      flex: 1;
+      background: var(--paper-warm);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      font-size: 0.82rem;
+    }
+    .flow-branch-card strong { color: var(--indigo); }
+
+    /* ── ACCORDION ── */
+    .accordion {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin: 16px 0;
+      overflow: hidden;
+    }
+    .accordion-header {
+      background: var(--paper-warm);
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.92rem;
+      user-select: none;
+      transition: background var(--transition);
+    }
+    .accordion-header:hover { background: var(--paper-cool); }
+    .accordion-header::after {
+      content: '+';
+      font-size: 1.2rem;
+      color: var(--stone);
+      transition: transform var(--transition);
+    }
+    .accordion.open .accordion-header::after {
+      content: '-';
+    }
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+    .accordion.open .accordion-body { max-height: 2000px; }
+    .accordion-body-inner {
+      padding: 20px;
+      font-size: 0.9rem;
+      border-top: 1px solid var(--border-l);
+    }
+
+    /* ── STEP COUNTER ── */
+    .steps { counter-reset: step-counter; }
+    .step-item {
+      counter-increment: step-counter;
+      position: relative;
+      padding: 20px 20px 20px 64px;
+      margin: 12px 0;
+      background: #fff;
+      border: 1px solid var(--border-l);
+      border-radius: var(--radius);
+      transition: all var(--transition);
+    }
+    .step-item:hover {
+      border-color: var(--indigo-l);
+      box-shadow: 0 4px 12px var(--shadow-s);
+    }
+    .step-item::before {
+      content: counter(step-counter);
+      position: absolute;
+      left: 16px; top: 20px;
+      width: 32px; height: 32px;
+      background: var(--indigo);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    /* ── FILE TREE ── */
+    .file-tree {
+      background: var(--sumi);
+      color: #d4d4d4;
+      padding: 20px 24px;
+      border-radius: var(--radius);
+      font-family: "Cascadia Code","Consolas",monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      margin: 16px 0 24px;
+    }
+    .file-tree .dir { color: #4ec9b0; }
+    .file-tree .file { color: #d4d4d4; }
+    .file-tree .highlight { color: var(--vermillion-l); font-weight: 700; }
+    .file-tree .comment { color: #6a9955; }
+
+    /* ── FOOTER ── */
+    .site-footer {
+      background: var(--sumi);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 40px 24px;
+      font-size: 0.8rem;
+    }
+    .site-footer a { color: var(--vermillion-l); text-decoration: none; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero { padding: 80px 20px 60px; }
+      .hero h1 { font-size: 1.8rem; }
+      .mindmap-grid { grid-template-columns: repeat(2, 1fr); }
+      .content-wrap { padding: 40px 16px 60px; }
+      .section-num { font-size: 1.8rem; }
+      .section-title { font-size: 1.3rem; }
+      .flow-branch { flex-direction: column; }
+      pre { font-size: 0.78rem; padding: 16px; }
+      .sticky-nav-inner { height: 48px; }
+    }
+    @media (max-width: 480px) {
+      .mindmap-grid { grid-template-columns: 1fr; }
+      .step-item { padding-left: 56px; }
+    }
+
+    /* ── PRINT ── */
+    @media print {
+      .sticky-nav, .mindmap { display: none; }
+      .hero { background: #fff; color: #000; padding: 20px; }
+      body { font-size: 11pt; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     STICKY NAVIGATION
+     ════════════════════════════════════════════════════════ -->
+<nav class="sticky-nav" id="stickyNav">
+  <div class="sticky-nav-inner">
+    <span class="sticky-nav-title">NDL OCR</span>
+    <a href="#overview">概要</a>
+    <a href="#prerequisites">前提環境</a>
+    <a href="#setup">セットアップ</a>
+    <a href="#config">設定</a>
+    <a href="#architecture">アーキテクチャ</a>
+    <a href="#usage">使い方</a>
+    <a href="#ocr-engine">OCRエンジン</a>
+    <a href="#docx">DOCX生成</a>
+    <a href="#workflow">Antigravity連携</a>
+    <a href="#troubleshooting">トラブルシュート</a>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════
+     HERO SECTION
+     ════════════════════════════════════════════════════════ -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">NDL OCR Workflow v1.0</div>
+    <h1>国立国会図書館<br><span>デジタルコレクション</span><br>自動文字起こしシステム</h1>
+    <p class="hero-sub">
+      国立国会図書館が公開するOCRエンジン「NDLOCR-Lite」と、NDL次世代デジタルライブラリーAPIを組み合わせ、
+      古典籍・学術文献の全文テキスト化からWord文書生成・クラウド保存までを完全自動化するワークフローの包括的ガイドです。
+    </p>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════
+     MIND MAP NAVIGATION
+     ════════════════════════════════════════════════════════ -->
+<nav class="mindmap">
+  <div class="mindmap-grid">
+    <a href="#overview" class="mindmap-card">
+      <span class="mindmap-num">Section 01</span>
+      <span class="mindmap-label">システム概要</span>
+      <span class="mindmap-desc">全体像・できること・構成要素</span>
+    </a>
+    <a href="#prerequisites" class="mindmap-card">
+      <span class="mindmap-num">Section 02</span>
+      <span class="mindmap-label">前提環境の確認</span>
+      <span class="mindmap-desc">必要なソフトウェアと事前準備</span>
+    </a>
+    <a href="#setup" class="mindmap-card">
+      <span class="mindmap-num">Section 03</span>
+      <span class="mindmap-label">セットアップ手順</span>
+      <span class="mindmap-desc">ワンコマンドで環境を構築</span>
+    </a>
+    <a href="#config" class="mindmap-card">
+      <span class="mindmap-num">Section 04</span>
+      <span class="mindmap-label">config.py の設定</span>
+      <span class="mindmap-desc">保存先・パス・辞書のカスタマイズ</span>
+    </a>
+    <a href="#architecture" class="mindmap-card">
+      <span class="mindmap-num">Section 05</span>
+      <span class="mindmap-label">アーキテクチャ解説</span>
+      <span class="mindmap-desc">APIルート / OCRルートの分岐と処理フロー</span>
+    </a>
+    <a href="#usage" class="mindmap-card">
+      <span class="mindmap-num">Section 06</span>
+      <span class="mindmap-label">使い方ガイド</span>
+      <span class="mindmap-desc">コマンド例・オプション・出力の読み方</span>
+    </a>
+    <a href="#ocr-engine" class="mindmap-card">
+      <span class="mindmap-num">Section 07</span>
+      <span class="mindmap-label">OCRエンジンの仕組み</span>
+      <span class="mindmap-desc">NDLOCR-Lite・ONNXモデル・認識精度</span>
+    </a>
+    <a href="#docx" class="mindmap-card">
+      <span class="mindmap-num">Section 08</span>
+      <span class="mindmap-label">DOCX生成の仕組み</span>
+      <span class="mindmap-desc">見出し検出・旧字体補正・ページ参照</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════
+     MAIN CONTENT
+     ════════════════════════════════════════════════════════ -->
+<main class="content-wrap">
+
+  <!-- ──────── Section 01: 概要 ──────── -->
+  <section class="section reveal" id="overview">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2 class="section-title">システム概要<small>What this system does</small></h2>
+    </div>
+
+    <p>本システムは、<strong>国立国会図書館デジタルコレクション</strong>（約400万点の資料を公開するデジタルアーカイブ）から、指定した文献のテキストを自動取得し、整形されたWord文書（.docx）とMarkdownファイルを生成して、あなたのPC・クラウドストレージに保存する一連のツール群です。</p>
+
+    <h3>このシステムでできること</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>機能</th><th>説明</th><th>自動化</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>文献テキストの取得</strong></td>
+            <td>NDLのPID（資料番号）またはURLを指定するだけで、NDL次世代デジタルライブラリーAPIからOCRテキストを自動取得します。APIにテキストがない場合は、自動的にNDLOCR-LiteによるローカルのリアルタイムOCRに切り替わります。</td>
+            <td><span class="tag tag-auto">全自動</span></td>
+          </tr>
+          <tr>
+            <td><strong>旧字体の自動補正</strong></td>
+            <td>OCRで読み取られた旧字体（「國」「佛」「淨土」等）を、設定可能な補正辞書に基づいて新字体に自動変換します。辞書はユーザーが自由に拡張可能です。</td>
+            <td><span class="tag tag-auto">全自動</span></td>
+          </tr>
+          <tr>
+            <td><strong>高品質DOCX生成</strong></td>
+            <td>取得したテキストから、MS明朝 18pt本文・MSゴシック 22pt見出し・1.5倍行間の読みやすいWord文書を生成します。章・節の見出しを自動検出し、ページ参照ヘッダー（[NDL p.XX]）を付加します。</td>
+            <td><span class="tag tag-auto">全自動</span></td>
+          </tr>
+          <tr>
+            <td><strong>マルチ保存先対応</strong></td>
+            <td>Google Drive、Dropbox、Obsidian保管庫、ローカルフォルダのいずれか（複数可）に自動保存します。保存先は <code>config.py</code> で一元管理します。</td>
+            <td><span class="tag tag-auto">全自動</span></td>
+          </tr>
+          <tr>
+            <td><strong>AI校正連携</strong></td>
+            <td>Antigravity（Gemini CLI）と組み合わせると、OCRテキストに対してAIによる文脈的校正（助詞の補完、句読点の復元、専門用語の修復）が自動適用されます。</td>
+            <td><span class="tag tag-optional">オプション</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>構成ファイル一覧</h3>
+
+    <div class="file-tree">
+<span class="dir">scripts/</span>
+├── <span class="highlight">config.py</span>             <span class="comment"># ← 唯一の設定ファイル（最初に1回だけ編集）</span>
+├── <span class="highlight">ndl_vault_sync.py</span>    <span class="comment"># ← メインスクリプト（テキスト取得 + 保存）</span>
+├── <span class="highlight">ndl_docx_generator.py</span> <span class="comment"># ← DOCX生成スクリプト</span>
+├── <span class="file">requirements.txt</span>     <span class="comment"># ← Python依存パッケージ一覧</span>
+├── <span class="file">setup.ps1</span>            <span class="comment"># ← 自動セットアップスクリプト</span>
+├── <span class="dir">ndlocr-lite/</span>         <span class="comment"># ← NDL公式OCRエンジン（setup.ps1で自動取得）</span>
+│   ├── <span class="dir">src/</span>
+│   │   ├── <span class="file">ocr.py</span>       <span class="comment"># ← OCR実行エントリポイント</span>
+│   │   └── <span class="dir">model/</span>       <span class="comment"># ← ONNXモデル（DEIMv2 + PARSeq）</span>
+│   └── <span class="file">requirements.txt</span>
+└── <span class="dir">workflows/</span>
+    └── <span class="file">ndl.md</span>           <span class="comment"># ← Antigravity用ワークフロー定義</span>
+    </div>
+
+    <h3>ライセンスについて</h3>
+    <p>本システムが内部で使用するNDLOCR-Liteは、国立国会図書館（NDLラボ）が開発・公開しているソフトウェアで、<strong>Creative Commons Attribution 4.0 International（CC BY 4.0）</strong>ライセンスのもとで配布されています。これは、適切なクレジット表示を行えば、商用・非商用を問わず自由に利用・改変・再配布が可能なライセンスです。</p>
+  </section>
+
+  <!-- ──────── Section 02: 前提環境 ──────── -->
+  <section class="section reveal" id="prerequisites">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2 class="section-title">前提環境の確認<small>Prerequisites</small></h2>
+    </div>
+
+    <p>セットアップを始める前に、以下のソフトウェアがインストールされていることを確認してください。すべてWindows環境を前提としています。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>ソフトウェア</th><th>バージョン</th><th>必須/任意</th><th>確認コマンド</th><th>入手先</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Python</strong></td>
+            <td>3.10以上</td>
+            <td><span class="tag tag-required">必須</span></td>
+            <td><code>python --version</code></td>
+            <td>python.org/downloads</td>
+          </tr>
+          <tr>
+            <td><strong>Git</strong></td>
+            <td>2.x以上</td>
+            <td><span class="tag tag-required">必須</span></td>
+            <td><code>git --version</code></td>
+            <td>git-scm.com</td>
+          </tr>
+          <tr>
+            <td><strong>pip</strong></td>
+            <td>Python同梱</td>
+            <td><span class="tag tag-required">必須</span></td>
+            <td><code>pip --version</code></td>
+            <td>Python同梱</td>
+          </tr>
+          <tr>
+            <td><strong>Antigravity</strong></td>
+            <td>最新版</td>
+            <td><span class="tag tag-optional">推奨</span></td>
+            <td>Gemini CLIとして起動確認</td>
+            <td>Google提供</td>
+          </tr>
+          <tr>
+            <td><strong>Google Drive Desktop</strong></td>
+            <td>最新版</td>
+            <td><span class="tag tag-optional">任意</span></td>
+            <td>G:\ ドライブの存在確認</td>
+            <td>google.com/drive/download</td>
+          </tr>
+          <tr>
+            <td><strong>Dropbox</strong></td>
+            <td>最新版</td>
+            <td><span class="tag tag-optional">任意</span></td>
+            <td>Dropboxフォルダの存在確認</td>
+            <td>dropbox.com</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">Python のインストール時の注意</div>
+      <p>Pythonインストーラーで <strong>「Add Python to PATH」にチェックを入れる</strong> ことを忘れないでください。これを忘れると、PowerShellから <code>python</code> コマンドが認識されず、すべてのスクリプトが動作しません。既にインストール済みでPATHが通っていない場合は、<code>config.py</code> でPythonのフルパスを指定することで回避できます。</p>
+    </div>
+
+    <h3>事前確認チェックリスト</h3>
+    <p>以下の3つのコマンドをPowerShellで実行し、すべてバージョン番号が表示されることを確認してください。</p>
+
+    <pre><code><span class="comment"># PowerShellを開いて以下を順に実行</span>
+python <span class="flag">--version</span>      <span class="comment"># Python 3.10.x 以上が表示されればOK</span>
+git <span class="flag">--version</span>         <span class="comment"># git version 2.x.x が表示されればOK</span>
+pip <span class="flag">--version</span>         <span class="comment"># pip 2x.x from ... が表示されればOK</span></code><span class="code-label">PowerShell</span></pre>
+  </section>
+
+  <!-- ──────── Section 03: セットアップ ──────── -->
+  <section class="section reveal" id="setup">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2 class="section-title">セットアップ手順<small>Installation</small></h2>
+    </div>
+
+    <p>セットアップは3ステップです。<code>setup.ps1</code> が大部分を自動化するため、手作業は最小限で済みます。</p>
+
+    <div class="steps">
+      <div class="step-item">
+        <h4>scriptsフォルダをダウンロード</h4>
+        <p>このガイドページと同じ場所に <code>scripts/</code> フォルダが公開されています。GitHubリポジトリをクローンするか、ZIPでダウンロードして、PCの任意の場所に配置してください。</p>
+        <pre><code><span class="comment"># 方法A: GitHubからクローン（推奨）</span>
+git clone https://github.com/<span class="string">[リポジトリURL]</span>.git
+<span class="keyword">cd</span> lighthouse/docs/guides/ndl-ocr-workflow/scripts
+
+<span class="comment"># 方法B: ZIPダウンロード後に展開</span>
+<span class="comment"># ブラウザでGitHubの「Code → Download ZIP」からダウンロード</span></code><span class="code-label">PowerShell</span></pre>
+      </div>
+
+      <div class="step-item">
+        <h4>setup.ps1 を実行</h4>
+        <p>PowerShellを<strong>管理者権限で</strong>開き、scriptsフォルダに移動して <code>setup.ps1</code> を実行します。このスクリプトは以下を自動的に行います：</p>
+        <ul style="margin:12px 0 12px 20px;list-style:disc">
+          <li>Python と Git の存在確認</li>
+          <li>NDLOCR-Lite リポジトリのクローン（<code>scripts/ndlocr-lite/</code> に配置）</li>
+          <li>必要なPythonパッケージのインストール（<code>python-docx</code>, <code>onnxruntime</code>, <code>opencv-python-headless</code> 等）</li>
+        </ul>
+        <pre><code><span class="comment"># PowerShell の実行ポリシーを変更（初回のみ）</span>
+Set-ExecutionPolicy <span class="flag">-Scope CurrentUser</span> RemoteSigned
+
+<span class="comment"># scriptsフォルダに移動</span>
+<span class="keyword">cd</span> <span class="string">C:\path\to\scripts</span>
+
+<span class="comment"># セットアップ実行</span>
+.\setup.ps1</code><span class="code-label">PowerShell</span></pre>
+
+        <div class="callout warn">
+          <div class="callout-title">初回実行時の所要時間</div>
+          <p>NDLOCR-Liteのクローンにはモデルファイル（ONNX形式、合計約150MB）が含まれるため、ネットワーク環境によっては<strong>数分〜10分程度</strong>かかる場合があります。途中で中断しないでください。</p>
+        </div>
+      </div>
+
+      <div class="step-item">
+        <h4>config.py を編集</h4>
+        <p>テキストエディタで <code>config.py</code> を開き、自分の環境に合わせて保存先を設定します。<strong>詳細は次のセクション（Section 04）で解説します。</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────── Section 04: config.py ──────── -->
+  <section class="section reveal" id="config">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <h2 class="section-title">config.py の設定<small>Configuration</small></h2>
+    </div>
+
+    <p><code>config.py</code> はこのシステムの<strong>唯一の設定ファイル</strong>です。すべてのスクリプトはこのファイルを参照して動作するため、初回セットアップ時に一度だけ正しく設定すれば、以後の操作ではこのファイルを触る必要はありません。</p>
+
+    <h3>設定項目の詳細</h3>
+
+    <h4>基本設定（必須）</h4>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>変数名</th><th>説明</th><th>デフォルト値</th><th>設定例</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>PYTHON_BIN</code></td>
+            <td>Python実行ファイルのパス。PATHが通っていれば <code>"python"</code> のままでOK。通っていない場合はフルパスを指定します。</td>
+            <td><code>"python"</code></td>
+            <td><code>r"C:\Users\YourName\AppData\Local\Programs\Python\Python312\python.exe"</code></td>
+          </tr>
+          <tr>
+            <td><code>NDLOCR_DIR</code></td>
+            <td>NDLOCR-Liteのインストール先。<code>setup.ps1</code> で自動配置されるため、通常は変更不要です。</td>
+            <td>scriptsフォルダ内の <code>ndlocr-lite/</code></td>
+            <td>デフォルトのまま</td>
+          </tr>
+          <tr>
+            <td><code>TEMP_DIR</code></td>
+            <td>OCR処理の中間ファイル（ダウンロードした画像等）の一時保存先。自動作成されます。</td>
+            <td>scriptsフォルダ内の <code>_ndl_tmp/</code></td>
+            <td>デフォルトのまま</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h4>保存先設定（少なくとも1つを有効化）</h4>
+
+    <p>取得したテキストとDOCXファイルの保存先を指定します。<strong>複数の保存先を同時に有効にすることもできます</strong>（例：ObsidianとDropboxの両方に保存）。すべてが無効の場合は、ユーザーのDocumentsフォルダ内に自動的にフォールバック保存されます。</p>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">Obsidian保管庫に保存する場合</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p>Obsidianを使用している場合、OCR結果をMarkdownファイルとしてObsidian保管庫内に直接保存できます。YAML Frontmatter（タイトル・PID・取得ルート・日付・タグ）が自動付与されるため、Obsidianの検索・タグ・リンク機能でそのまま活用できます。</p>
+        <pre><code><span class="comment"># config.py 内の該当箇所</span>
+OBSIDIAN_NDL_PATH = <span class="string">r"C:\Users\YourName\Documents\ObsidianVault\NDL_Archives"</span></code></pre>
+        <p>指定したパスにフォルダが存在しない場合は自動作成されます。</p>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">Google Drive に保存する場合</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p>Google Driveデスクトップ版がインストールされている場合に有効化します。内部では <code>gws</code> コマンド（Google Workspace CLI）を使用してアップロードを行います。</p>
+        <pre><code>GDRIVE_ENABLED = <span class="keyword">True</span>
+GDRIVE_BASE_FOLDER = <span class="string">"NDL_Archives"</span>  <span class="comment"># マイドライブ直下に作成されるフォルダ名</span></code></pre>
+        <div class="callout info">
+          <div class="callout-title">gws コマンドについて</div>
+          <p>Google Drive API を使うために <code>gws</code> コマンドが必要です。<code>pip install gws</code> でインストールできます。<code>gws</code> がない場合でも、他の保存先（Obsidian、Dropbox、ローカル）は正常に動作します。</p>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">Dropbox に保存する場合</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p>Dropboxデスクトップアプリがインストールされている場合、同期フォルダに直接ファイルを書き込むことで保存します。APIやCLIツールは不要で、ファイルシステム上のパスを指定するだけです。</p>
+        <pre><code>DROPBOX_ENABLED = <span class="keyword">True</span>
+DROPBOX_PATH = <span class="string">r"C:\Users\YourName\Dropbox\NDL_Archives"</span></code></pre>
+        <p>大学のDropboxアカウントでデータ管理をしている場合は、ここを有効にすると大学の環境からもアクセスできるようになります。</p>
+      </div></div>
+    </div>
+
+    <h4>OCR補正辞書（任意）</h4>
+    <p><code>AI_REPAIR_MAP</code> はOCRで読み取られたテキストに対して自動適用される文字置換辞書です。デフォルトでは旧字体→新字体の基本的な変換ペアが設定されています。</p>
+
+    <pre><code>AI_REPAIR_MAP = {
+    <span class="string">"國"</span>: <span class="string">"国"</span>, <span class="string">"眞"</span>: <span class="string">"真"</span>, <span class="string">"實"</span>: <span class="string">"実"</span>, <span class="string">"來"</span>: <span class="string">"来"</span>,
+    <span class="string">"敎"</span>: <span class="string">"教"</span>, <span class="string">"辨"</span>: <span class="string">"弁"</span>, <span class="string">"吿"</span>: <span class="string">"告"</span>, <span class="string">"淨"</span>: <span class="string">"浄"</span>,
+    <span class="string">"佛"</span>: <span class="string">"仏"</span>, <span class="string">"如來"</span>: <span class="string">"如来"</span>, <span class="string">"信樂"</span>: <span class="string">"信楽"</span>,
+    <span class="comment"># 独自のパターンを自由に追加可能</span>
+    <span class="comment"># "誤字パターン": "正しい文字",</span>
+}</code></pre>
+
+    <div class="callout info">
+      <div class="callout-title">補正辞書のカスタマイズ</div>
+      <p>自分が頻繁に扱う分野の文献でOCR誤読が繰り返し発生するパターンがあれば、ここに追加することで以後のすべてのOCR処理に自動適用されます。辞書を空にしたい場合は <code>AI_REPAIR_MAP = {}</code> と書いてください。</p>
+    </div>
+  </section>
+
+  <!-- ──────── Section 05: アーキテクチャ ──────── -->
+  <section class="section reveal" id="architecture">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <h2 class="section-title">アーキテクチャ解説<small>How it works</small></h2>
+    </div>
+
+    <p>本システムの処理フローは、NDLにOCRテキストが既に存在するかどうかによって<strong>2つのルートに自動分岐</strong>します。ユーザーはどちらのルートが選択されるかを事前に知る必要はありません。スクリプトが自動判定します。</p>
+
+    <h3>全体処理フロー</h3>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot active"></div><div class="flow-connector"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Step 1: PID解析 + 書誌情報取得</div>
+          <div class="flow-desc">入力されたURL/PIDからNDLサーチAPIで書誌情報（タイトル・著者）を取得します。Book APIも併用して、メタデータの信頼性を高めます。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot active"></div><div class="flow-connector"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Step 2: OCRテキスト存在確認（分岐点）</div>
+          <div class="flow-desc">NDL次世代デジタルライブラリーのBook API + Page APIを順にチェックし、既存のOCRテキストが利用可能かを判定します。</div>
+          <div class="flow-branch">
+            <div class="flow-branch-card">
+              <strong>APIルート（高速）</strong><br>
+              既にNDL側でOCR処理済みのテキストが存在する場合。全文API（gzip圧縮）で一括取得を試み、失敗時はページ単位のAPI取得にフォールバックします。著作権保護期間満了の資料（約28万点）の多くがこちらに該当します。
+            </div>
+            <div class="flow-branch-card">
+              <strong>OCRルート（ローカル処理）</strong><br>
+              NDLにテキストがない場合。IIIF API経由で画像をダウンロードし、NDLOCR-Lite（ローカルのONNXモデル）でリアルタイムOCR処理を行います。1ページあたり30〜60秒かかります。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Step 3: テキスト補正</div>
+          <div class="flow-desc"><code>config.py</code> の <code>AI_REPAIR_MAP</code> に基づく旧字体補正が自動適用されます。Antigravityと連携している場合は、この段階でAIによる高度な文脈校正（助詞の補完、句読点の復元等）も行われます。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div><div class="flow-connector"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Step 4: ファイル保存</div>
+          <div class="flow-desc"><code>config.py</code> で有効化されたすべての保存先（Obsidian / Dropbox / Google Drive / ローカル）に、Markdownファイル（YAML Frontmatter付き）を書き出します。</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Step 5: 結果レポート</div>
+          <div class="flow-desc">処理結果（使用ルート・取得文字数・保存先パス）をコンソールに出力します。<code>[RESULT_JSON]</code> 以降にJSON形式のデータも出力されるため、Antigravityが後続処理（DOCX生成等）に利用できます。</div>
+        </div>
+      </div>
+    </div>
+
+    <h3>NDL API の構造</h3>
+
+    <p>本システムは、国立国会図書館が提供する複数のAPIを組み合わせて使用しています。以下はそれぞれのAPIの役割と、システム内での使用箇所の対応表です。</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>API名</th><th>エンドポイント</th><th>役割</th><th>使用箇所</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>NDLサーチ RSS</strong></td>
+            <td><code>ndlsearch.ndl.go.jp/api/opensearch</code></td>
+            <td>書誌情報（タイトル等）の取得</td>
+            <td>Step 1</td>
+          </tr>
+          <tr>
+            <td><strong>Book API</strong></td>
+            <td><code>lab.ndl.go.jp/dl/api/book/{pid}</code></td>
+            <td>資料メタデータ・ページ一覧の取得</td>
+            <td>Step 1, 2</td>
+          </tr>
+          <tr>
+            <td><strong>Fulltext API</strong></td>
+            <td><code>lab.ndl.go.jp/dl/api/book/fulltext/{pid}</code></td>
+            <td>全文テキスト一括取得（gzip/zip）</td>
+            <td>Step 2a（APIルート）</td>
+          </tr>
+          <tr>
+            <td><strong>Page API</strong></td>
+            <td><code>lab.ndl.go.jp/dl/api/page/{pid}_{page}</code></td>
+            <td>ページ単位のOCRテキスト取得</td>
+            <td>Step 2a（フォールバック）</td>
+          </tr>
+          <tr>
+            <td><strong>IIIF Image API</strong></td>
+            <td><code>dl.ndl.go.jp/api/iiif/{pid}_{seq}/full/full/0/default.jpg</code></td>
+            <td>ページ画像のダウンロード</td>
+            <td>Step 2b（OCRルート）</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ──────── Section 06: 使い方 ──────── -->
+  <section class="section reveal" id="usage">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <h2 class="section-title">使い方ガイド<small>Usage</small></h2>
+    </div>
+
+    <h3>基本的な使い方</h3>
+
+    <pre><code><span class="comment"># PIDを指定して1ページ目を取得</span>
+python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">3048008</span>
+
+<span class="comment"># URLを指定（PIDは自動抽出される）</span>
+python ndl_vault_sync.py <span class="flag">--url</span> <span class="string">https://dl.ndl.go.jp/pid/3048008</span>
+
+<span class="comment"># ページ範囲を指定</span>
+python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">1-50</span>
+
+<span class="comment"># 特定ページのみ指定</span>
+python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">1,5,10,24</span>
+
+<span class="comment"># Google Driveへの保存をスキップ</span>
+python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">1-10</span> <span class="flag">--no-gdrive</span>
+
+<span class="comment"># APIテキストがあってもOCRを強制実行</span>
+python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">1</span> <span class="flag">--force-ocr</span></code><span class="code-label">PowerShell</span></pre>
+
+    <h3>コマンドラインオプション一覧</h3>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>オプション</th><th>説明</th><th>デフォルト</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--pid</code></td><td>NDLの資料番号（PID）。<code>--url</code> と排他。</td><td>なし</td></tr>
+          <tr><td><code>--url</code></td><td>NDLデジタルコレクションのURL。PIDは自動抽出されます。</td><td>なし</td></tr>
+          <tr><td><code>--pages</code></td><td>取得するページ範囲。<code>1-50</code>（範囲）または <code>1,5,10</code>（個別指定）。</td><td><code>1</code></td></tr>
+          <tr><td><code>--no-gdrive</code></td><td>Google Driveへの保存をスキップします。</td><td>無効</td></tr>
+          <tr><td><code>--force-ocr</code></td><td>NDL APIにOCRテキストが存在しても、ローカルOCRを強制実行します。</td><td>無効</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>DOCX生成（ndl_docx_generator.py）</h3>
+
+    <p>テキスト取得後、以下のコマンドでWord文書を生成できます。</p>
+
+    <pre><code>python ndl_docx_generator.py <span class="flag">--input</span> <span class="string">_full_ocr_text.txt</span> <span class="flag">--output</span> <span class="string">result.docx</span> <span class="flag">--title</span> <span class="string">"正信偈講義"</span> <span class="flag">--author</span> <span class="string">"柏原祐義"</span> <span class="flag">--pid</span> <span class="string">"3048008"</span></code><span class="code-label">PowerShell</span></pre>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>オプション</th><th>説明</th><th>デフォルト</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>--input</code></td><td>入力テキストファイルのパス。<code>--- page N ---</code> 形式のページ区切りに対応。</td><td><span class="tag tag-required">必須</span></td></tr>
+          <tr><td><code>--output</code></td><td>出力DOCXファイルのパス。</td><td><span class="tag tag-required">必須</span></td></tr>
+          <tr><td><code>--title</code></td><td>表紙に表示するタイトル。</td><td>"NDL Document"</td></tr>
+          <tr><td><code>--author</code></td><td>表紙に表示する著者名。</td><td>空</td></tr>
+          <tr><td><code>--pid</code></td><td>表紙に表示するNDL PID。</td><td>空</td></tr>
+          <tr><td><code>--body-size</code></td><td>本文のフォントサイズ（pt）。</td><td>18</td></tr>
+          <tr><td><code>--heading-size</code></td><td>見出しのフォントサイズ（pt）。</td><td>22</td></tr>
+          <tr><td><code>--limit</code></td><td>このページ番号以降を除外します。</td><td>なし</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>PIDの調べ方</h3>
+    <p>NDLデジタルコレクション（<code>dl.ndl.go.jp</code>）で目的の資料を検索し、URLを確認してください。URLに含まれる数字がPIDです。</p>
+    <pre><code><span class="comment"># このURLの場合、PIDは 3048008</span>
+https://dl.ndl.go.jp/pid/<span class="number">3048008</span></code></pre>
+
+    <div class="callout success">
+      <div class="callout-title">動作確認用のテスト資料</div>
+      <p>初めて使う場合は、以下のPIDでテストしてください。これは著作権保護期間が満了した資料で、APIルートで即座にテキストを取得できます。</p>
+      <pre><code>python ndl_vault_sync.py <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">24</span></code></pre>
+    </div>
+  </section>
+
+  <!-- ──────── Section 07: OCRエンジン ──────── -->
+  <section class="section reveal" id="ocr-engine">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <h2 class="section-title">OCRエンジンの仕組み<small>NDLOCR-Lite internals</small></h2>
+    </div>
+
+    <p>NDLOCR-Liteは、国立国会図書館（NDLラボ）が2024年に公開した軽量OCRエンジンです。GPUを必要とせず、一般的なPCのCPUのみで動作するよう設計されています。内部では2段階のONNXモデルによるカスケード処理が行われます。</p>
+
+    <h3>OCR処理パイプライン</h3>
+
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot active"></div><div class="flow-connector"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Stage 1: レイアウト認識（DEIMv2）</div>
+          <div class="flow-desc">
+            入力画像（JPG/PNG/TIFF/BMP）に対して、深層学習モデル <strong>DEIMv2</strong>（<code>deim-s-1024x1024.onnx</code>）がテキスト行の矩形領域を検出します。同時に、各テキスト行の文字数カテゴリ（少/中/多）を判定し、次段のPARSeqモデルの選択に使用します。縦書き・横書きの混在レイアウトにも対応しています。
+          </div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot active"></div><div class="flow-connector"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Stage 2: 文字認識（PARSeqカスケード）</div>
+          <div class="flow-desc">
+            検出された各テキスト行に対して、文字数カテゴリに応じた最適なPARSeqモデルが選択・適用されます。3つのモデルがカスケード構成で動作します：
+          </div>
+          <div class="flow-branch">
+            <div class="flow-branch-card">
+              <strong>parseq-ndl-30</strong><br>
+              文字数が少ない行（30文字以下）向け。高速処理に最適化されており、短い見出しやキャプションに使用されます。
+            </div>
+            <div class="flow-branch-card">
+              <strong>parseq-ndl-50</strong><br>
+              中程度の行（31〜50文字）向け。一般的な本文行の多くがここに該当します。
+            </div>
+            <div class="flow-branch-card">
+              <strong>parseq-ndl-100</strong><br>
+              長い行（51〜100文字）向け。密度の高い活字や注釈部分に使用されます。認識精度が最も高いモデルです。
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-line"><div class="flow-dot"></div></div>
+        <div class="flow-content">
+          <div class="flow-label">Stage 3: 読み順整序</div>
+          <div class="flow-desc">
+            認識されたテキスト行を、原本のレイアウトに基づいて正しい読み順に並べ替えます。日本語の古典籍に特徴的な<strong>縦書き右→左</strong>の読み順に対応しており、段組みや割注（小さい文字の注釈）も適切に処理されます。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3>処理速度の目安</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>処理内容</th><th>1ページあたり</th><th>100ページあたり</th></tr></thead>
+        <tbody>
+          <tr><td>画像ダウンロード</td><td>2〜5秒</td><td>3〜8分</td></tr>
+          <tr><td>OCR処理（CPU）</td><td>30〜60秒</td><td>50分〜1.5時間</td></tr>
+          <tr><td>テキスト出力</td><td>即時</td><td>即時</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">APIルートとの使い分け</div>
+      <p>NDLが既にOCR処理済みのテキストを公開している資料（著作権保護期間満了の約28万点）では、<strong>OCRを自分で実行する必要はありません</strong>。本システムは自動的にAPIルートを選択し、数秒でテキストを取得します。OCRルートが起動するのは、APIにテキストがない資料（著作権保護中のためOCR非公開の資料等）のみです。</p>
+    </div>
+  </section>
+
+  <!-- ──────── Section 08: DOCX生成 ──────── -->
+  <section class="section reveal" id="docx">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <h2 class="section-title">DOCX生成の仕組み<small>Document generation</small></h2>
+    </div>
+
+    <p><code>ndl_docx_generator.py</code> は、OCR/APIで取得したプレーンテキストを、読みやすく構造化されたWord文書に変換するスクリプトです。内部で以下の処理を行います。</p>
+
+    <h3>自動見出し検出</h3>
+    <p>テキスト中の「第一章」「自序」「目次」「解題」等の見出しパターンを正規表現で自動検出し、Word文書の見出しスタイル（Heading 1）として整形します。見出しの直前には自動改ページが挿入されるため、章ごとに新しいページから始まります。</p>
+
+    <pre><code><span class="comment"># 自動検出される見出しパターン</span>
+<span class="string">第一章</span> / <span class="string">第二編</span> / <span class="string">第三回</span> / <span class="string">第四節</span>
+<span class="string">自序</span> / <span class="string">目次</span> / <span class="string">要目索引</span> / <span class="string">解題</span> / <span class="string">序文</span> / <span class="string">後記</span> / <span class="string">付録</span></code></pre>
+
+    <h3>デザイン仕様</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>要素</th><th>設定</th><th>カスタマイズ</th></tr></thead>
+        <tbody>
+          <tr><td>本文フォント</td><td>MS 明朝</td><td><code>config.py</code> の <code>DOCX_BODY_FONT</code></td></tr>
+          <tr><td>本文サイズ</td><td>18pt</td><td><code>DOCX_BODY_SIZE</code> または <code>--body-size</code></td></tr>
+          <tr><td>見出しフォント</td><td>MS ゴシック</td><td><code>DOCX_HEADING_FONT</code></td></tr>
+          <tr><td>見出しサイズ</td><td>22pt</td><td><code>DOCX_HEADING_SIZE</code> または <code>--heading-size</code></td></tr>
+          <tr><td>見出し色</td><td>濃紺 (#000080)</td><td><code>DOCX_HEADING_COLOR</code></td></tr>
+          <tr><td>行間</td><td>1.5倍</td><td><code>DOCX_LINE_SPACING</code> または <code>--line-spacing</code></td></tr>
+          <tr><td>段落配置</td><td>両端揃え</td><td>固定</td></tr>
+          <tr><td>字下げ</td><td>本文サイズ分（1文字分）</td><td>自動</td></tr>
+          <tr><td>ページ参照</td><td>各ページ右上に [NDL p.XX]</td><td>自動</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>段落統合処理</h3>
+    <p>OCRは原本の物理的な改行位置でテキストを分割するため、論理的には1つの段落が複数行に分割されることがあります。<code>ndl_docx_generator.py</code> はこれを検知し、連続するテキスト行を1つの論理段落に統合します。空行は段落の区切りとして認識されます。</p>
+  </section>
+
+  <!-- ──────── Section 09: Antigravity連携 ──────── -->
+  <section class="section reveal" id="workflow">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <h2 class="section-title">Antigravity連携<small>Workflow integration</small></h2>
+    </div>
+
+    <p>Antigravity（Gemini CLI）がインストールされている場合、<code>/ndl</code> コマンドとして本システムを直接呼び出せるようになります。</p>
+
+    <h3>導入手順</h3>
+    <div class="steps">
+      <div class="step-item">
+        <h4>ワークフローファイルをコピー</h4>
+        <p><code>scripts/workflows/ndl.md</code> を、Antigravityの <code>.agents/workflows/</code> フォルダにコピーします。</p>
+        <pre><code><span class="keyword">Copy-Item</span> <span class="string">.\workflows\ndl.md</span> <span class="string">~\.agents\workflows\ndl.md</span></code><span class="code-label">PowerShell</span></pre>
+      </div>
+      <div class="step-item">
+        <h4>Antigravityで実行</h4>
+        <p>Antigravityのチャットで <code>/ndl</code> コマンドを入力するだけで、テキスト取得からAI校正、DOCX生成、保存までが一連の対話フローで実行されます。</p>
+        <pre><code><span class="comment"># Antigravityチャット内で入力</span>
+/ndl https://dl.ndl.go.jp/pid/3048008
+/ndl <span class="flag">--pid</span> <span class="number">3048008</span> <span class="flag">--pages</span> <span class="number">1-50</span></code><span class="code-label">Antigravity</span></pre>
+      </div>
+    </div>
+
+    <h3>AntigravityによるAI校正</h3>
+    <p>Antigravityと組み合わせた場合の最大の利点は、<strong>AI校正ステップ（Step 2）</strong>が追加されることです。<code>ndl_vault_sync.py</code> のStep 1で取得した生テキストに対し、AntigravityのAIが以下の校正を行います：</p>
+    <ul style="margin:12px 0 12px 20px;list-style:disc">
+      <li>OCR誤認識の文脈的修正（前後の文脈から正しい文字を推定）</li>
+      <li>旧字体の可読化（意味・ニュアンスが変わるものは原文保持）</li>
+      <li>助詞・句読点の補完（OCRによる欠落箇所を復元）</li>
+      <li>段落構造の整形（OCR由来の不要な改行を統合）</li>
+    </ul>
+
+    <div class="callout info">
+      <div class="callout-title">Antigravityなしでも動作します</div>
+      <p>Antigravityがインストールされていなくても、<code>ndl_vault_sync.py</code> と <code>ndl_docx_generator.py</code> はスタンドアロンのPythonスクリプトとして動作します。AI校正ステップがスキップされ、<code>config.py</code> の辞書ベース補正のみが適用される形になります。</p>
+    </div>
+  </section>
+
+  <!-- ──────── Section 10: トラブルシューティング ──────── -->
+  <section class="section reveal" id="troubleshooting">
+    <div class="section-header">
+      <span class="section-num">10</span>
+      <h2 class="section-title">トラブルシューティング<small>Troubleshooting</small></h2>
+    </div>
+
+    <p>エラーが発生した場合は、以下のパターンを確認してください。ほとんどの問題は環境設定またはネットワークに起因します。</p>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">「config.py が見つかりません」と表示される</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p><strong>原因</strong>: <code>ndl_vault_sync.py</code> と <code>config.py</code> が同じフォルダにありません。</p>
+        <p><strong>解決策</strong>: 両方のファイルが <code>scripts/</code> フォルダ内に存在することを確認してください。カレントディレクトリが <code>scripts/</code> であることも確認してください。</p>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">「python: command not found」「python は認識されていません」</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p><strong>原因</strong>: PythonにPATHが通っていません。</p>
+        <p><strong>解決策A</strong>: Pythonインストーラーを再実行し、「Add Python to PATH」にチェックを入れて「Modify」を選択します。</p>
+        <p><strong>解決策B</strong>: <code>config.py</code> の <code>PYTHON_BIN</code> にフルパスを指定します。</p>
+        <pre><code>PYTHON_BIN = <span class="string">r"C:\Users\YourName\AppData\Local\Programs\Python\Python312\python.exe"</span></code></pre>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">「ModuleNotFoundError: No module named 'docx'」</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p><strong>原因</strong>: <code>python-docx</code> パッケージがインストールされていません。</p>
+        <p><strong>解決策</strong>: <code>pip install python-docx</code> を実行してください。<code>setup.ps1</code> を実行済みであればこのエラーは発生しないはずですが、Pythonの仮想環境を使用している場合は、正しい環境がアクティブになっているか確認してください。</p>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">「API取得失敗」「テキスト取得に失敗しました」</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p><strong>原因A</strong>: ネットワーク接続の問題。NDLのサーバーに到達できていません。</p>
+        <p><strong>原因B</strong>: 指定したPIDの資料が存在しないか、アクセス制限があります。</p>
+        <p><strong>解決策</strong>:</p>
+        <ul style="margin:8px 0 8px 16px;list-style:disc">
+          <li>ブラウザで <code>https://dl.ndl.go.jp/pid/[PID]</code> にアクセスし、資料が存在するか確認してください。</li>
+          <li>NDLのサーバーが一時的にダウンしている可能性もあります。数分後に再試行してください。</li>
+          <li>VPNやプロキシ環境下では接続がブロックされる場合があります。</li>
+        </ul>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">OCRルートで「NDLOCR-Lite エラー」が発生する</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p><strong>原因A</strong>: ONNXモデルファイルが不完全（ダウンロードが中断された等）。</p>
+        <p><strong>原因B</strong>: <code>onnxruntime</code> のバージョン不整合。</p>
+        <p><strong>解決策</strong>:</p>
+        <ol style="margin:8px 0 8px 16px;list-style:decimal">
+          <li><code>scripts/ndlocr-lite/</code> フォルダを削除し、<code>setup.ps1</code> を再実行してクリーンクローンを行ってください。</li>
+          <li><code>pip install --upgrade onnxruntime</code> で最新版にアップデートしてください。</li>
+        </ol>
+      </div></div>
+    </div>
+
+    <div class="accordion" onclick="this.classList.toggle('open')">
+      <div class="accordion-header">保存先にファイルが作成されない</div>
+      <div class="accordion-body"><div class="accordion-body-inner">
+        <p><strong>原因</strong>: <code>config.py</code> の保存先設定が正しくありません。</p>
+        <p><strong>確認事項</strong>:</p>
+        <ul style="margin:8px 0 8px 16px;list-style:disc">
+          <li><code>OBSIDIAN_NDL_PATH</code> のパスが実在するか（存在しない場合は自動作成されますが、親ディレクトリは存在する必要があります）</li>
+          <li>Dropboxの場合、同期クライアントが起動しているか</li>
+          <li>Google Driveの場合、<code>gws</code> コマンドがインストールされ、認証済みか</li>
+          <li>すべての保存先が無効の場合は、<code>Documents/NDL_Archives/</code> にフォールバック保存されます</li>
+        </ul>
+      </div></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════════════ -->
+<footer class="site-footer">
+  <p>NDL OCR Workflow Guide &mdash; Built with lighthouse</p>
+  <p style="margin-top:8px">
+    NDLOCR-Lite: <a href="https://github.com/ndl-lab/ndlocr-lite" target="_blank">ndl-lab/ndlocr-lite</a> (CC BY 4.0, National Diet Library)
+  </p>
+</footer>
+
+<!-- ════════════════════════════════════════════════════════
+     SCRIPTS (Vanilla JS - no dependencies)
+     ════════════════════════════════════════════════════════ -->
+<script>
+(function(){
+  // Sticky nav show/hide on scroll
+  const nav = document.getElementById('stickyNav');
+  let lastScroll = 0;
+  window.addEventListener('scroll', function(){
+    const y = window.scrollY;
+    if(y > 400) {
+      nav.classList.add('visible');
+    } else {
+      nav.classList.remove('visible');
+    }
+    lastScroll = y;
+  });
+
+  // Active nav link highlight
+  const sections = document.querySelectorAll('.section[id]');
+  const navLinks = nav.querySelectorAll('a[href^="#"]');
+  const observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        navLinks.forEach(function(l){l.classList.remove('active')});
+        const active = nav.querySelector('a[href="#'+e.target.id+'"]');
+        if(active) active.classList.add('active');
+      }
+    });
+  }, {rootMargin: '-80px 0px -60% 0px'});
+  sections.forEach(function(s){observer.observe(s)});
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('visible');
+      }
+    });
+  }, {threshold: 0.1});
+  reveals.forEach(function(r){revealObserver.observe(r)});
+})();
+</script>
+
+</body>
+</html>

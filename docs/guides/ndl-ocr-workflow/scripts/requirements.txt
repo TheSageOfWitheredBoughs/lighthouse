@@ -1,0 +1,22 @@
+# NDL OCR Workflow — Python Dependencies
+# ========================================
+# Install: pip install -r requirements.txt
+
+# --- DOCX Generation ---
+python-docx>=1.1.0
+
+# --- NDLOCR-Lite Dependencies ---
+# These are installed when you run setup.ps1, which clones
+# ndlocr-lite and installs its own requirements.txt.
+# Listed here for reference:
+#
+# onnxruntime>=1.23.0
+# pillow>=12.0.0
+# opencv-python-headless>=4.11.0
+# numpy>=2.2.0
+# lxml>=5.4.0
+# networkx>=3.3
+# PyYAML>=6.0.1
+# tqdm>=4.66.0
+# reportlab>=4.2.0
+# pypdfium2>=4.30.0
