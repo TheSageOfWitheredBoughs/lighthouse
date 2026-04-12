@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dropbox 同期システム 完全復旧マニュアル</title>
+  <meta name="description" content="Google DriveとDropboxを自動同期するシステムをゼロから再構築するための手順書。GASを初めて触る方でも迷わず進められるよう設計した復旧ガイドです。">
+  <meta name="date" content="2026-04-12">
+  <meta name="category" content="デジタルツール">
+  <style>
+    /* ─────────────────────────────────────────
+       CSS Variables
+    ───────────────────────────────────────── */
+    :root {
+      --bg:           #eef1f5;
+      --card:         #ffffff;
+      --deep:         #0c3547;
+      --primary:      #0d7694;
+      --primary-lt:   #1a9fbf;
+      --amber:        #e87c2f;
+      --amber-lt:     #f5a442;
+      --success:      #197346;
+      --danger:       #c0392b;
+      --text:         #1a2332;
+      --text-mid:     #4a5568;
+      --text-light:   #718096;
+      --border:       #d0dae5;
+      --code-bg:      #091e2f;
+      --code-text:    #cdd6f4;
+      --code-kw:      #89dceb;
+      --code-fn:      #89b4fa;
+      --code-str:     #a6e3a1;
+      --code-num:     #fab387;
+      --code-cmt:     #4a5568;
+      --code-cls:     #f38ba8;
+      --code-op:      #cba6f7;
+      --font-jp:      'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Yu Gothic UI', 'YuGothic', 'Meiryo', sans-serif;
+      --font-serif:   'Hiragino Mincho ProN', 'Hiragino Mincho Pro', 'Yu Mincho', '游明朝', serif;
+      --font-mono:    'Courier New', 'Consolas', 'Monaco', 'Lucida Console', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-jp);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.85;
+      font-size: 15px;
+    }
+
+    /* ─────────────────────────────────────────
+       Animations
+    ───────────────────────────────────────── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes dataFlow {
+      0%   { transform: translateX(-130%) scaleX(0.7); opacity: 0; }
+      15%  { opacity: 1; }
+      85%  { opacity: 1; }
+      100% { transform: translateX(130%); opacity: 0; }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    .reveal {
+      opacity: 0;
+      animation: fadeInUp 0.55s ease-out forwards;
+    }
+    .reveal:nth-child(1)  { animation-delay: 0.08s; }
+    .reveal:nth-child(2)  { animation-delay: 0.16s; }
+    .reveal:nth-child(3)  { animation-delay: 0.24s; }
+    .reveal:nth-child(4)  { animation-delay: 0.32s; }
+    .reveal:nth-child(5)  { animation-delay: 0.40s; }
+    .reveal:nth-child(6)  { animation-delay: 0.48s; }
+    .reveal:nth-child(7)  { animation-delay: 0.56s; }
+    .reveal:nth-child(8)  { animation-delay: 0.64s; }
+
+    /* ─────────────────────────────────────────
+       Hero
+    ───────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(155deg, #071c2e 0%, #0c3547 35%, #0d5c7a 70%, #0d7694 100%);
+      color: white;
+      padding: 5rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-flow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .flow-line {
+      position: absolute;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(13,159,191,0.55), transparent);
+      border-radius: 2px;
+      animation: dataFlow 5s ease-in-out infinite;
+    }
+    .flow-line:nth-child(1) { width: 220px; top: 22%; animation-delay: 0s; }
+    .flow-line:nth-child(2) { width: 150px; top: 52%; animation-delay: 1.6s; }
+    .flow-line:nth-child(3) { width: 180px; top: 72%; animation-delay: 0.9s; }
+    .flow-line:nth-child(4) { width: 110px; top: 38%; animation-delay: 3.1s; }
+    .flow-line:nth-child(5) { width: 260px; top: 85%; animation-delay: 2.3s; }
+
+    .hero-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(232,124,47,0.22);
+      border: 1px solid rgba(232,124,47,0.55);
+      color: var(--amber-lt);
+      font-size: 0.73rem;
+      letter-spacing: 0.12em;
+      padding: 0.3rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.6rem;
+      animation: fadeInUp 0.5s 0.15s ease-out both;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.85rem, 5vw, 3.1rem);
+      font-weight: 700;
+      line-height: 1.32;
+      margin-bottom: 1.3rem;
+      animation: fadeInUp 0.6s 0.25s ease-out both;
+    }
+    .hero h1 .sub {
+      display: block;
+      font-size: 0.52em;
+      font-family: var(--font-jp);
+      color: rgba(255,255,255,0.65);
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.25rem;
+    }
+
+    .hero-desc {
+      font-size: 1rem;
+      color: rgba(255,255,255,0.78);
+      max-width: 600px;
+      line-height: 1.95;
+      animation: fadeInUp 0.6s 0.35s ease-out both;
+    }
+
+    .hero-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1.8rem;
+      animation: fadeInUp 0.6s 0.45s ease-out both;
+    }
+    .pill {
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 6px;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.81rem;
+      color: rgba(255,255,255,0.82);
+    }
+
+    /* ─────────────────────────────────────────
+       Layout
+    ───────────────────────────────────────── */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    .section {
+      padding: 3.5rem 0;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 1.55rem;
+      color: var(--deep);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.55rem;
+      border-bottom: 3px solid var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .section-title .icon { font-size: 1.35rem; }
+
+    /* ─────────────────────────────────────────
+       Intro card
+    ───────────────────────────────────────── */
+    .intro-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+      border: 1px solid var(--border);
+    }
+    .intro-card p { color: var(--text-mid); margin-bottom: 0.85rem; }
+    .intro-card p:last-child { margin-bottom: 0; }
+
+    /* ─────────────────────────────────────────
+       Glossary
+    ───────────────────────────────────────── */
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(255px, 1fr));
+      gap: 1rem;
+    }
+    .gloss-item {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+      transition: transform 0.22s, box-shadow 0.22s;
+    }
+    .gloss-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 18px rgba(13,118,148,0.16);
+    }
+    .gloss-term {
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      color: var(--primary);
+      font-weight: 700;
+      background: rgba(13,118,148,0.08);
+      display: inline-block;
+      padding: 0.15rem 0.55rem;
+      border-radius: 4px;
+      margin-bottom: 0.45rem;
+    }
+    .gloss-def {
+      font-size: 0.87rem;
+      color: var(--text-mid);
+      line-height: 1.72;
+    }
+
+    /* ─────────────────────────────────────────
+       Step cards
+    ───────────────────────────────────────── */
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    details.step {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      overflow: hidden;
+      transition: box-shadow 0.28s;
+    }
+    details.step:hover { box-shadow: 0 6px 24px rgba(13,118,148,0.13); }
+    details.step[open] {
+      border-color: var(--primary-lt);
+      box-shadow: 0 5px 22px rgba(13,118,148,0.2);
+    }
+
+    summary.step-header {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 1.2rem 1.5rem;
+      cursor: pointer;
+      list-style: none;
+      user-select: none;
+      transition: background 0.18s;
+    }
+    summary.step-header::-webkit-details-marker { display: none; }
+    summary.step-header::marker { display: none; }
+    details.step[open] summary.step-header { background: rgba(13,118,148,0.05); }
+
+    .step-num {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--deep);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-family: var(--font-serif);
+      transition: background 0.28s;
+    }
+    details.step[open] .step-num { background: var(--primary); }
+
+    .step-header-text { flex: 1; }
+    .step-action {
+      font-size: 0.72rem;
+      color: var(--primary);
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      margin-bottom: 0.18rem;
+      font-family: var(--font-mono);
+    }
+    .step-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .step-chevron {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      transition: transform 0.28s;
+    }
+    details.step[open] .step-chevron {
+      transform: rotate(180deg);
+      color: var(--primary);
+    }
+
+    .step-body {
+      padding: 0 1.5rem 1.6rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .step-why {
+      background: rgba(13,118,148,0.06);
+      border-left: 3px solid var(--primary-lt);
+      border-radius: 0 8px 8px 0;
+      padding: 0.85rem 1rem;
+      margin: 1.1rem 0;
+      font-size: 0.88rem;
+      color: var(--text-mid);
+    }
+    .step-why strong {
+      color: var(--primary);
+      display: block;
+      margin-bottom: 0.3rem;
+      font-size: 0.9rem;
+    }
+
+    .step-p {
+      color: var(--text-mid);
+      line-height: 1.9;
+      margin-bottom: 0.85rem;
+    }
+    .step-p:last-child { margin-bottom: 0; }
+
+    /* ─────────────────────────────────────────
+       URL box
+    ───────────────────────────────────────── */
+    .url-box {
+      background: var(--code-bg);
+      border-radius: 8px;
+      padding: 0.9rem 1.2rem;
+      margin: 0.9rem 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      flex-wrap: wrap;
+    }
+    .url-label {
+      font-size: 0.73rem;
+      color: var(--code-cmt);
+      font-family: var(--font-mono);
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .url-text {
+      font-family: var(--font-mono);
+      font-size: 0.79rem;
+      color: var(--code-str);
+      word-break: break-all;
+      flex: 1;
+      line-height: 1.7;
+    }
+
+    /* ─────────────────────────────────────────
+       Callouts
+    ───────────────────────────────────────── */
+    .callout {
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+    .callout-warn {
+      background: rgba(232,124,47,0.1);
+      border-left: 4px solid var(--amber);
+      color: #6b3810;
+    }
+    .callout-warn strong { color: #c45e10; }
+    .callout-info {
+      background: rgba(13,118,148,0.08);
+      border-left: 4px solid var(--primary);
+      color: var(--text-mid);
+    }
+    .callout-info strong { color: var(--primary); }
+    .callout-success {
+      background: rgba(25,115,70,0.08);
+      border-left: 4px solid var(--success);
+      color: #145232;
+    }
+    .callout-success strong { color: var(--success); }
+
+    /* ─────────────────────────────────────────
+       Property table
+    ───────────────────────────────────────── */
+    .prop-table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.08);
+      border: 1px solid var(--border);
+    }
+    table.prop-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card);
+      font-size: 0.9rem;
+    }
+    table.prop-table thead { background: var(--deep); color: white; }
+    table.prop-table th {
+      padding: 0.95rem 1.2rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.06em;
+    }
+    table.prop-table td {
+      padding: 0.9rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.7;
+    }
+    table.prop-table tr:last-child td { border-bottom: none; }
+    table.prop-table tr:nth-child(even) { background: #f7f9fc; }
+    .prop-key {
+      font-family: var(--font-mono);
+      font-size: 0.81rem;
+      color: var(--primary);
+      background: rgba(13,118,148,0.09);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+    .prop-val {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--amber);
+    }
+    .prop-note {
+      font-size: 0.83rem;
+      color: var(--text-light);
+      font-style: italic;
+    }
+
+    /* ─────────────────────────────────────────
+       Code block
+    ───────────────────────────────────────── */
+    .code-wrap {
+      position: relative;
+      margin: 1.5rem 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 22px rgba(0,0,0,0.22);
+    }
+    .code-header {
+      background: #142030;
+      display: flex;
+      align-items: center;
+      padding: 0.7rem 1.2rem;
+      gap: 0.5rem;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #28c840; }
+    .code-filename {
+      margin-left: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.77rem;
+      color: rgba(255,255,255,0.45);
+    }
+    .copy-btn {
+      margin-left: auto;
+      background: rgba(255,255,255,0.09);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.75);
+      font-size: 0.77rem;
+      padding: 0.28rem 0.8rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: var(--font-jp);
+      transition: background 0.18s, color 0.18s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover { background: rgba(255,255,255,0.18); }
+    .copy-btn.copied { background: var(--success); border-color: var(--success); color: white; }
+
+    pre.code-pre {
+      background: var(--code-bg);
+      padding: 1.5rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.81rem;
+      line-height: 1.8;
+      color: var(--code-text);
+      tab-size: 2;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Syntax highlight classes */
+    .kw  { color: var(--code-kw); }
+    .fn  { color: var(--code-fn); }
+    .str { color: var(--code-str); }
+    .num { color: var(--code-num); }
+    .cmt { color: var(--code-cmt); font-style: italic; }
+    .cls { color: var(--code-cls); }
+    .op  { color: var(--code-op); }
+
+    /* inline code */
+    code.ic {
+      font-family: var(--font-mono);
+      font-size: 0.87em;
+      background: rgba(13,118,148,0.1);
+      color: var(--primary);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    /* ─────────────────────────────────────────
+       Footer
+    ───────────────────────────────────────── */
+    footer {
+      background: var(--deep);
+      color: rgba(255,255,255,0.55);
+      text-align: center;
+      padding: 2.2rem 1.5rem;
+      font-size: 0.82rem;
+      margin-top: 2rem;
+    }
+    footer a { color: var(--primary-lt); text-decoration: none; }
+
+    /* ─────────────────────────────────────────
+       Responsive
+    ───────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .hero { padding: 3rem 1.2rem 2.5rem; }
+      .section { padding: 2.5rem 0; }
+      .section-title { font-size: 1.25rem; }
+      .glossary-grid { grid-template-columns: 1fr; }
+      .step-title { font-size: 0.97rem; }
+      pre.code-pre { font-size: 0.73rem; padding: 1.1rem; }
+      summary.step-header { padding: 1rem 1.1rem; gap: 0.9rem; }
+      .step-body { padding: 0 1.1rem 1.3rem; }
+      table.prop-table th,
+      table.prop-table td { padding: 0.75rem 0.9rem; font-size: 0.83rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<header class="hero">
+  <div class="hero-flow" aria-hidden="true">
+    <div class="flow-line"></div>
+    <div class="flow-line"></div>
+    <div class="flow-line"></div>
+    <div class="flow-line"></div>
+    <div class="flow-line"></div>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-badge">Recovery Manual · GAS + Dropbox API</div>
+    <h1>
+      <span class="sub">Dropbox 同期システム</span>
+      完全復旧マニュアル
+    </h1>
+    <p class="hero-desc">
+      Google Drive のファイルを自動的に Dropbox へコピーする仕組みを、
+      新しいセッションでも最短で再構築するための手順書です。<br>
+      コードの知識がなくても、順番どおりに進めれば完成します。
+    </p>
+    <div class="hero-pills">
+      <span class="pill">⚡ 差分スキップで高速同期</span>
+      <span class="pill">🔒 原本を絶対に壊さない</span>
+      <span class="pill">📦 50MB 超の大容量対応</span>
+      <span class="pill">🗂 階層フォルダも自動追従</span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ════════════════════════════════════════
+       INTRO
+  ═══════════════════════════════════════════ -->
+  <div class="section">
+    <div class="container">
+      <h2 class="section-title reveal"><span class="icon">📖</span> このマニュアルについて</h2>
+      <div class="intro-card reveal">
+        <p>このシステムは <strong>Google Apps Script（GAS）</strong> という、Google が提供する無料の自動化ツールを使っています。難しいサーバーの準備は一切不要で、<strong>ブラウザだけで完結します。</strong></p>
+        <p>以前に設定した内容が消えてしまっても、このマニュアルの手順を上から順に実行すれば、<strong>30 分以内に元通りになります。</strong></p>
+        <p>専門用語はすべて下の「用語集」で解説しています。わからない言葉が出てきたら、まずそちらを確認してください。</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       GLOSSARY
+  ═══════════════════════════════════════════ -->
+  <div class="section" style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span class="icon">📚</span> よく出てくる言葉の意味</h2>
+      <div class="glossary-grid">
+        <div class="gloss-item reveal">
+          <div class="gloss-term">GAS</div>
+          <div class="gloss-def">Google Apps Script の略。Google が無料で提供するプログラム実行環境。ブラウザだけで使え、インストール不要。</div>
+        </div>
+        <div class="gloss-item reveal">
+          <div class="gloss-term">App Key / App Secret</div>
+          <div class="gloss-def">Dropbox に「このプログラムは正規のアプリです」と証明するための ID とパスワードのペア。Dropbox の開発者コンソールから取得できる。</div>
+        </div>
+        <div class="gloss-item reveal">
+          <div class="gloss-term">認可コード</div>
+          <div class="gloss-def">「このプログラムが自分の Dropbox にアクセスすることを許可する」という一時的な許可証。有効期限があり、一度しか使えない。</div>
+        </div>
+        <div class="gloss-item reveal">
+          <div class="gloss-term">リフレッシュトークン</div>
+          <div class="gloss-def">認可コードを使って取得する長期間有効なアクセス許可証。これを保存しておけば、次回以降はブラウザで許可ボタンを押す操作が不要になる。</div>
+        </div>
+        <div class="gloss-item reveal">
+          <div class="gloss-term">スクリプト プロパティ</div>
+          <div class="gloss-def">GAS が安全に保持できる「設定値の保管庫」。パスワードのような秘密の情報をコードに直接書かずに済む。</div>
+        </div>
+        <div class="gloss-item reveal">
+          <div class="gloss-term">差分スキップ</div>
+          <div class="gloss-def">「すでに Dropbox にある、変わっていないファイル」は転送をスキップする機能。毎回全部送り直すより速く、通信量も少ない。</div>
+        </div>
+        <div class="gloss-item reveal">
+          <div class="gloss-term">チャンク送信</div>
+          <div class="gloss-def">大きなファイルを小さなブロックに分けて少しずつ送る方法。GAS には 1 回の処理に制限があるため、これで大容量ファイルも安全に転送できる。</div>
+        </div>
+        <div class="gloss-item reveal">
+          <div class="gloss-term">makeCopy()</div>
+          <div class="gloss-def">GAS の命令で「コピーを作る」という意味。原本を直接加工せずコピーだけを操作することで、元のファイルを絶対に壊さない設計になっている。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       STEPS
+  ═══════════════════════════════════════════ -->
+  <div class="section" style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span class="icon">🔧</span> 復旧ステップ（全 6 ステップ）</h2>
+
+      <div class="callout callout-info reveal">
+        <strong>📌 始める前に</strong><br>
+        ステップは <strong>上から順番に</strong> 実行してください。特にステップ 2〜3 は順番を変えると動きません。
+        各ステップの ▼ をクリックすると詳細が展開されます。
+      </div>
+
+      <div class="steps-list">
+
+        <!-- Step 1 -->
+        <details class="step reveal">
+          <summary class="step-header">
+            <div class="step-num">1</div>
+            <div class="step-header-text">
+              <div class="step-action">DROPBOX DEVELOPER CONSOLE</div>
+              <div class="step-title">認証情報の準備</div>
+            </div>
+            <div class="step-chevron">▼</div>
+          </summary>
+          <div class="step-body">
+            <div class="step-why">
+              <strong>💡 何をするの？</strong>
+              Dropbox に「このプログラムはあなたが作った信頼できるアプリです」と登録するための ID（App key）と秘密鍵（App secret）を手元に用意します。
+            </div>
+            <p class="step-p">下のリンクから Dropbox の開発者コンソールを開き、すでに作成してあるアプリをクリックします。「App key」と「App secret」という 2 つの値が表示されているので、どこかにメモしておきましょう。</p>
+            <div class="url-box">
+              <span class="url-label">アクセス先</span>
+              <span class="url-text">https://www.dropbox.com/developers/apps</span>
+            </div>
+            <div class="callout callout-warn">
+              <strong>⚠️ App secret は絶対に他人に見せないこと。</strong><br>
+              パスワードと同じくらい重要な情報です。スクリーンショットを SNS に投稿したり、メールで送ったりしないでください。
+            </div>
+          </div>
+        </details>
+
+        <!-- Step 2 -->
+        <details class="step reveal">
+          <summary class="step-header">
+            <div class="step-num">2</div>
+            <div class="step-header-text">
+              <div class="step-action">BROWSER</div>
+              <div class="step-title">認可コードの再取得</div>
+            </div>
+            <div class="step-chevron">▼</div>
+          </summary>
+          <div class="step-body">
+            <div class="step-why">
+              <strong>💡 何をするの？</strong>
+              「このプログラムが自分の Dropbox にアクセスしていいよ」という一時的な許可証（認可コード）を発行してもらいます。
+            </div>
+            <p class="step-p">下の URL をブラウザのアドレスバーにコピーして開いてください。Dropbox のログイン画面が表示されるので、ログインして「許可」ボタンをクリックします。</p>
+            <div class="url-box">
+              <span class="url-label">認可 URL</span>
+              <span class="url-text">https://www.dropbox.com/oauth2/authorize?client_id=fwmiac5ydeujlvm&amp;response_type=code&amp;token_access_type=offline</span>
+            </div>
+            <div class="callout callout-warn">
+              <strong>⚠️ 表示されたコードはすぐにコピー！</strong><br>
+              認可コードは <strong>一度しか使えません。</strong>「許可」後に画面に表示された英数字の文字列を、すぐにメモ帳などに貼り付けてください。ページを閉じたり更新したりすると無効になります。
+            </div>
+          </div>
+        </details>
+
+        <!-- Step 3 -->
+        <details class="step reveal">
+          <summary class="step-header">
+            <div class="step-num">3</div>
+            <div class="step-header-text">
+              <div class="step-action">GOOGLE APPS SCRIPT</div>
+              <div class="step-title">プロパティの設定</div>
+            </div>
+            <div class="step-chevron">▼</div>
+          </summary>
+          <div class="step-body">
+            <div class="step-why">
+              <strong>💡 何をするの？</strong>
+              App Key・App Secret・認可コード・同期元フォルダ ID の 4 つを、GAS の安全な保管庫「スクリプト プロパティ」に登録します。コードに直接書かずに済むので、誰かにコードを見られても大丈夫です。
+            </div>
+            <p class="step-p">GAS エディタで「プロジェクトの設定（歯車アイコン ⚙）」を開き、「スクリプト プロパティ」セクションで以下の 4 つの値を入力・保存してください。詳細は下の「Property 定義マトリクス」の表を参照してください。</p>
+            <div class="callout callout-info">
+              <strong>📌 GAS エディタの開き方</strong><br>
+              Google Drive で GAS プロジェクトを右クリック →「アプリで開く」→「Google Apps Script」を選択。
+              または <code class="ic">script.google.com</code> から直接開くこともできます。
+            </div>
+          </div>
+        </details>
+
+        <!-- Step 4 -->
+        <details class="step reveal">
+          <summary class="step-header">
+            <div class="step-num">4</div>
+            <div class="step-header-text">
+              <div class="step-action">GOOGLE APPS SCRIPT EDITOR</div>
+              <div class="step-title">コードの配置</div>
+            </div>
+            <div class="step-chevron">▼</div>
+          </summary>
+          <div class="step-body">
+            <div class="step-why">
+              <strong>💡 何をするの？</strong>
+              同期システムの本体（プログラムコード）を GAS エディタに貼り付けます。これが同期処理のすべての指示書になります。
+            </div>
+            <p class="step-p">GAS エディタの左側のファイル一覧で <code class="ic">コード.gs</code>（または任意の .gs ファイル）を開き、<strong>既存の内容を全選択（Ctrl+A または Cmd+A）して削除</strong>した後、このページ下部の「最終統合版ソースコード」を全コピーして貼り付けてください。</p>
+            <p class="step-p">貼り付け後、フロッピーディスクアイコン（💾）または <code class="ic">Ctrl+S</code> で保存します。</p>
+            <div class="callout callout-warn">
+              <strong>⚠️ 既存のコードは全部消してから貼り付けること。</strong><br>
+              一部だけ貼り付けると関数が重複してエラーになります。
+            </div>
+          </div>
+        </details>
+
+        <!-- Step 5 -->
+        <details class="step reveal">
+          <summary class="step-header">
+            <div class="step-num">5</div>
+            <div class="step-header-text">
+              <div class="step-action">RUN FUNCTION</div>
+              <div class="step-title">トークンの永続化</div>
+            </div>
+            <div class="step-chevron">▼</div>
+          </summary>
+          <div class="step-body">
+            <div class="step-why">
+              <strong>💡 何をするの？</strong>
+              一時的な認可コードを「リフレッシュトークン」に変換して保存します。これにより、次回以降はブラウザで許可ボタンを押す必要がなくなります。
+            </div>
+            <p class="step-p">GAS エディタ上部の関数選択ドロップダウンで <code class="ic">setupRefreshToken</code> を選択し、「実行」ボタン（▶）をクリックします。</p>
+            <p class="step-p">初回実行時は「このスクリプトが Google アカウントへのアクセスを求めています」というダイアログが表示されます。「詳細を表示」→「（プロジェクト名）に移動」→「許可」の順にクリックしてください。</p>
+            <div class="callout callout-success">
+              <strong>✅ 成功の確認方法</strong><br>
+              画面下部の「実行ログ」に <strong>「【成功】リフレッシュトークンを保存しました。」</strong> と表示されれば完了です。<br>
+              「【失敗】」と出た場合は認可コードの有効期限が切れているため、ステップ 2 からやり直してください。
+            </div>
+          </div>
+        </details>
+
+        <!-- Step 6 -->
+        <details class="step reveal">
+          <summary class="step-header">
+            <div class="step-num">6</div>
+            <div class="step-header-text">
+              <div class="step-action">RUN FUNCTION</div>
+              <div class="step-title">初回同期テスト</div>
+            </div>
+            <div class="step-chevron">▼</div>
+          </summary>
+          <div class="step-body">
+            <div class="step-why">
+              <strong>💡 何をするの？</strong>
+              実際に Google Drive から Dropbox へのファイル転送を実行して、システムが正しく動いているか確認します。
+            </div>
+            <p class="step-p">関数選択で <code class="ic">syncDriveToDropbox</code> を選択し、「実行」ボタン（▶）をクリックします。</p>
+            <div class="callout callout-success">
+              <strong>✅ 成功の確認方法</strong><br>
+              実行ログに <strong>「--- [同期終了] 成功:○○ スキップ:○○ エラー:0 ---」</strong> と出ていれば成功です。
+              Dropbox アプリでフォルダを確認すると、ファイルが追加されているはずです。
+            </div>
+            <div class="callout callout-warn">
+              <strong>⚠️ エラー数が 0 でない場合</strong><br>
+              GAS エディタのログに具体的なエラー内容が表示されています。多くの場合、ステップ 3 のプロパティ設定ミスです。
+              プロパティ名のスペルを確認してみてください（大文字・小文字・アンダースコアは区別されます）。
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       PROPERTY MATRIX
+  ═══════════════════════════════════════════ -->
+  <div class="section" style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span class="icon">⚙️</span> Property 定義マトリクス</h2>
+      <p class="reveal" style="color:var(--text-mid);margin-bottom:1.2rem">
+        ステップ 3 で GAS の「スクリプト プロパティ」に設定する 4 つの値の一覧です。<br>
+        プロパティ名は <strong>完全一致（大文字・小文字・アンダースコアを含む）</strong> で入力してください。
+      </p>
+      <div class="prop-table-wrap reveal">
+        <table class="prop-table">
+          <thead>
+            <tr>
+              <th>プロパティ名</th>
+              <th>設定する値</th>
+              <th>役割・説明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="prop-key">DROPBOX_APP_KEY</span></td>
+              <td><span class="prop-val">fwmiac5ydeujlvm</span></td>
+              <td>Dropbox API のクライアント ID。アプリを識別するための値。</td>
+            </tr>
+            <tr>
+              <td><span class="prop-key">DROPBOX_APP_SECRET</span></td>
+              <td><span class="prop-note">ステップ 1 で確認した秘密鍵</span></td>
+              <td>API 通信の暗号化に使用。絶対に他人に見せてはいけない秘密の値。</td>
+            </tr>
+            <tr>
+              <td><span class="prop-key">DROPBOX_AUTH_CODE</span></td>
+              <td><span class="prop-note">ステップ 2 で取得したコード</span></td>
+              <td>最初のリフレッシュトークン取得にのみ使用（一度きり）。<code class="ic">setupRefreshToken</code> 実行後は不要になります。</td>
+            </tr>
+            <tr>
+              <td><span class="prop-key">DRIVE_FOLDER_ID</span></td>
+              <td><span class="prop-note">Google Drive フォルダの ID</span></td>
+              <td>同期元フォルダの URL 末尾の英数字部分。<br><code style="font-family:var(--font-mono);font-size:0.78em;color:var(--text-light)">drive.google.com/drive/folders/<strong style="color:var(--amber)">ここ</strong></code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout callout-info reveal" style="margin-top:1rem">
+        <strong>📌 フォルダ ID の見つけ方</strong><br>
+        Google Drive で同期したいフォルダを開き、ブラウザのアドレスバーを確認してください。<br>
+        <code style="font-family:var(--font-mono);font-size:0.83em">https://drive.google.com/drive/folders/<strong>1AbCdEfGhIjKlMnOpQrStUv</strong></code><br>
+        この太字部分（英数字の長い文字列）がフォルダ ID です。
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       SOURCE CODE
+  ═══════════════════════════════════════════ -->
+  <div class="section" style="padding-top:0">
+    <div class="container">
+      <h2 class="section-title reveal"><span class="icon">💻</span> 最終統合版ソースコード</h2>
+      <p class="reveal" style="color:var(--text-mid);margin-bottom:1.2rem">
+        以下のコード全体をコピーして、GAS エディタに貼り付けてください。<br>
+        「階層同期」「差分スキップ」「50MB 超の大容量チャンク転送」「Google 形式の非破壊分割」の 4 機能がすべて含まれています。
+      </p>
+
+      <div class="code-wrap reveal">
+        <div class="code-header">
+          <div class="dot dot-r"></div>
+          <div class="dot dot-y"></div>
+          <div class="dot dot-g"></div>
+          <span class="code-filename">コード.gs &mdash; Google Apps Script</span>
+          <button class="copy-btn" data-target="main-code">コピーする</button>
+        </div>
+        <pre class="code-pre" id="main-code"><span class="cmt">/**
+ * Google Drive to Dropbox Sync - Ultimate Recovery Edition
+ * 【主要機能】
+ * 1. 非破壊分割：原本を makeCopy() してから分割。原本は一切毀損しません。
+ * 2. 差分検知：パーツ単位（part1, part2...）で存在チェックを行い、無駄な転送を回避。
+ * 3. 大容量対応：通常ファイルはチャンク送信（分割アップロード）でGASの制限を回避。
+ */</span>
+
+<span class="kw">const</span> <span class="cls">CHUNK_SIZE</span>          <span class="op">=</span> <span class="num">10</span> <span class="op">*</span> <span class="num">1024</span> <span class="op">*</span> <span class="num">1024</span>; <span class="cmt">// 10MB 単位</span>
+<span class="kw">const</span> <span class="cls">SIMPLE_UPLOAD_LIMIT</span> <span class="op">=</span> <span class="num">20</span> <span class="op">*</span> <span class="num">1024</span> <span class="op">*</span> <span class="num">1024</span>; <span class="cmt">// 20MB</span>
+
+<span class="kw">function</span> <span class="fn">syncDriveToDropbox</span>() {
+  <span class="kw">const</span> props  <span class="op">=</span> PropertiesService.getScriptProperties();
+  <span class="kw">const</span> config <span class="op">=</span> {
+    appKey:       props.getProperty(<span class="str">'DROPBOX_APP_KEY'</span>),
+    appSecret:    props.getProperty(<span class="str">'DROPBOX_APP_SECRET'</span>),
+    refreshToken: props.getProperty(<span class="str">'DROPBOX_REFRESH_TOKEN'</span>),
+    rootFolderId: props.getProperty(<span class="str">'DRIVE_FOLDER_ID'</span>)
+  };
+
+  <span class="kw">if</span> (!config.refreshToken)
+    <span class="kw">return</span> console.error(<span class="str">"Error: Refresh token missing. Run setupRefreshToken first."</span>);
+
+  <span class="kw">const</span> accessToken <span class="op">=</span> <span class="fn">getAccessToken</span>(config.appKey, config.appSecret, config.refreshToken);
+  <span class="kw">const</span> rootFolder  <span class="op">=</span> DriveApp.getFolderById(config.rootFolderId);
+  <span class="kw">let</span>   stats        <span class="op">=</span> { success: <span class="num">0</span>, skipped: <span class="num">0</span>, error: <span class="num">0</span> };
+
+  console.log(<span class="str">`--- [同期開始] ${rootFolder.getName()} ---`</span>);
+  <span class="fn">processFolder</span>(rootFolder, <span class="str">""</span>, accessToken, stats);
+  console.log(<span class="str">`--- [同期終了] 成功:${stats.success} スキップ:${stats.skipped} エラー:${stats.error} ---`</span>);
+}
+
+<span class="kw">function</span> <span class="fn">processFolder</span>(driveFolder, currentPath, accessToken, stats) {
+  <span class="kw">const</span> files <span class="op">=</span> driveFolder.getFiles();
+  <span class="kw">while</span> (files.hasNext()) {
+    <span class="fn">handleFileSync</span>(files.next(), currentPath, accessToken, stats);
+  }
+  <span class="kw">const</span> subFolders <span class="op">=</span> driveFolder.getFolders();
+  <span class="kw">while</span> (subFolders.hasNext()) {
+    <span class="kw">const</span> subFolder <span class="op">=</span> subFolders.next();
+    <span class="kw">const</span> subPath   <span class="op">=</span> currentPath <span class="op">+</span> <span class="str">"/"</span> <span class="op">+</span> subFolder.getName();
+    <span class="fn">createDropboxFolder</span>(subPath, accessToken);
+    <span class="fn">processFolder</span>(subFolder, subPath, accessToken, stats);
+  }
+}
+
+<span class="kw">function</span> <span class="fn">handleFileSync</span>(file, folderPath, accessToken, stats) {
+  <span class="kw">const</span> mimeType    <span class="op">=</span> file.getMimeType();
+  <span class="kw">const</span> isGoogleType <span class="op">=</span> mimeType.includes(<span class="str">'google-apps'</span>);
+  <span class="kw">const</span> fileName    <span class="op">=</span> file.getName();
+
+  <span class="kw">if</span> (!isGoogleType) {
+    <span class="kw">const</span> dropboxPath <span class="op">=</span> folderPath <span class="op">+</span> <span class="str">"/"</span> <span class="op">+</span> fileName;
+    <span class="kw">const</span> meta        <span class="op">=</span> <span class="fn">getDropboxMetadata</span>(dropboxPath, accessToken);
+    <span class="kw">if</span> (meta <span class="op">&amp;&amp;</span> meta.size <span class="op">===</span> file.getSize()) { stats.skipped<span class="op">++</span>; <span class="kw">return</span>; }
+    <span class="fn">uploadFile</span>(file.getBlob(), dropboxPath, accessToken, stats);
+    <span class="kw">return</span>;
+  }
+
+  <span class="fn">syncGoogleFileWithSplitting</span>(file, folderPath, accessToken, stats);
+}
+
+<span class="kw">function</span> <span class="fn">syncGoogleFileWithSplitting</span>(originalFile, folderPath, accessToken, stats) {
+  <span class="kw">const</span> mimeType   <span class="op">=</span> originalFile.getMimeType();
+  <span class="kw">const</span> baseName   <span class="op">=</span> originalFile.getName();
+  <span class="kw">const</span> targetExt  <span class="op">=</span> (mimeType <span class="op">===</span> MimeType.GOOGLE_DOCS)   <span class="op">?</span> <span class="str">'.docx'</span>
+                    <span class="op">:</span> (mimeType <span class="op">===</span> MimeType.GOOGLE_SHEETS) <span class="op">?</span> <span class="str">'.xlsx'</span>
+                    <span class="op">:</span>                                          <span class="str">'.pptx'</span>;
+  <span class="kw">const</span> targetMime <span class="op">=</span> <span class="fn">getTargetMime</span>(mimeType);
+
+  <span class="kw">try</span> {
+    <span class="kw">const</span> dropboxPath <span class="op">=</span> folderPath <span class="op">+</span> <span class="str">"/"</span> <span class="op">+</span> baseName <span class="op">+</span> targetExt;
+    <span class="kw">if</span> (<span class="fn">getDropboxMetadata</span>(dropboxPath, accessToken)) { stats.skipped<span class="op">++</span>; <span class="kw">return</span>; }
+    <span class="fn">uploadFile</span>(<span class="fn">exportGoogleFile</span>(originalFile.getId(), targetMime), dropboxPath, accessToken, stats);
+  } <span class="kw">catch</span> (e) {
+    <span class="kw">if</span> (e.message.includes(<span class="str">"too large"</span>)) {
+      console.warn(<span class="str">`[制限超過] 分割プロトコル開始: ${baseName}`</span>);
+      <span class="fn">executeSplitAndUpload</span>(originalFile, <span class="num">2</span>, targetExt, targetMime, folderPath, accessToken, stats);
+    } <span class="kw">else</span> {
+      console.error(<span class="str">`[エラー] ${baseName}: ${e.message}`</span>);
+      stats.error<span class="op">++</span>;
+    }
+  }
+}
+
+<span class="kw">function</span> <span class="fn">executeSplitAndUpload</span>(originalFile, numParts, ext, targetMime, folderPath, accessToken, stats) {
+  <span class="kw">const</span> mimeType <span class="op">=</span> originalFile.getMimeType();
+  <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="num">1</span>; i <span class="op">&lt;=</span> numParts; i<span class="op">++</span>) {
+    <span class="kw">const</span> partName    <span class="op">=</span> <span class="str">`${originalFile.getName()}_part${i}_of_${numParts}${ext}`</span>;
+    <span class="kw">const</span> dropboxPath <span class="op">=</span> folderPath <span class="op">+</span> <span class="str">"/"</span> <span class="op">+</span> partName;
+    <span class="kw">if</span> (<span class="fn">getDropboxMetadata</span>(dropboxPath, accessToken)) { stats.skipped<span class="op">++</span>; <span class="kw">continue</span>; }
+
+    <span class="kw">const</span> tempCopy <span class="op">=</span> originalFile.makeCopy(<span class="str">`TEMP_${partName}`</span>);
+    <span class="kw">try</span> {
+      <span class="kw">if</span>      (mimeType <span class="op">===</span> MimeType.GOOGLE_DOCS)   <span class="fn">truncateDoc</span>(tempCopy.getId(), i, numParts);
+      <span class="kw">else if</span> (mimeType <span class="op">===</span> MimeType.GOOGLE_SHEETS) <span class="fn">truncateSheet</span>(tempCopy.getId(), i, numParts);
+      <span class="fn">uploadFile</span>(<span class="fn">exportGoogleFile</span>(tempCopy.getId(), targetMime), dropboxPath, accessToken, stats);
+    } <span class="kw">finally</span> {
+      tempCopy.setTrashed(<span class="kw">true</span>);
+    }
+  }
+}
+
+<span class="kw">function</span> <span class="fn">truncateDoc</span>(copyId, partIndex, totalParts) {
+  <span class="kw">const</span> doc         <span class="op">=</span> DocumentApp.openById(copyId);
+  <span class="kw">const</span> body        <span class="op">=</span> doc.getBody();
+  <span class="kw">const</span> numChildren <span class="op">=</span> body.getNumChildren();
+  <span class="kw">const</span> partSize    <span class="op">=</span> Math.floor(numChildren <span class="op">/</span> totalParts);
+  <span class="kw">const</span> startIdx    <span class="op">=</span> (partIndex <span class="op">-</span> <span class="num">1</span>) <span class="op">*</span> partSize;
+  <span class="kw">const</span> endIdx      <span class="op">=</span> (partIndex <span class="op">===</span> totalParts) <span class="op">?</span> numChildren <span class="op">:</span> partIndex <span class="op">*</span> partSize;
+  <span class="kw">for</span> (<span class="kw">let</span> i <span class="op">=</span> numChildren <span class="op">-</span> <span class="num">1</span>; i <span class="op">&gt;=</span> <span class="num">0</span>; i<span class="op">--</span>) {
+    <span class="kw">if</span> (i <span class="op">&lt;</span> startIdx <span class="op">||</span> i <span class="op">&gt;=</span> endIdx) body.getChild(i).removeFromParent();
+  }
+  doc.saveAndClose();
+}
+
+<span class="kw">function</span> <span class="fn">truncateSheet</span>(copyId, partIndex, totalParts) {
+  <span class="kw">const</span> ss <span class="op">=</span> SpreadsheetApp.openById(copyId);
+  ss.getSheets().forEach(sheet <span class="op">=&gt;</span> {
+    <span class="kw">const</span> lastRow  <span class="op">=</span> sheet.getLastRow();
+    <span class="kw">if</span> (lastRow <span class="op">&lt;=</span> <span class="num">1</span>) <span class="kw">return</span>;
+    <span class="kw">const</span> partSize <span class="op">=</span> Math.floor(lastRow <span class="op">/</span> totalParts);
+    <span class="kw">const</span> startRow <span class="op">=</span> (partIndex <span class="op">-</span> <span class="num">1</span>) <span class="op">*</span> partSize <span class="op">+</span> <span class="num">1</span>;
+    <span class="kw">const</span> endRow   <span class="op">=</span> (partIndex <span class="op">===</span> totalParts) <span class="op">?</span> lastRow <span class="op">:</span> partIndex <span class="op">*</span> partSize;
+    <span class="kw">if</span> (endRow <span class="op">&lt;</span> lastRow)  sheet.deleteRows(endRow <span class="op">+</span> <span class="num">1</span>, lastRow <span class="op">-</span> endRow);
+    <span class="kw">if</span> (startRow <span class="op">&gt;</span> <span class="num">1</span>)     sheet.deleteRows(<span class="num">1</span>, startRow <span class="op">-</span> <span class="num">1</span>);
+  });
+  SpreadsheetApp.flush();
+}
+
+<span class="kw">function</span> <span class="fn">uploadFile</span>(blob, path, accessToken, stats) {
+  <span class="kw">const</span> bytes <span class="op">=</span> blob.getBytes();
+  <span class="kw">if</span> (bytes.length <span class="op">&lt;=</span> SIMPLE_UPLOAD_LIMIT) <span class="fn">uploadSimple</span>(bytes, path, accessToken);
+  <span class="kw">else</span>                                       <span class="fn">uploadChunked</span>(bytes, path, accessToken);
+  stats.success<span class="op">++</span>;
+}
+
+<span class="kw">function</span> <span class="fn">uploadChunked</span>(bytes, path, accessToken) {
+  <span class="kw">const</span> totalSize <span class="op">=</span> bytes.length;
+  <span class="kw">const</span> startRes  <span class="op">=</span> UrlFetchApp.fetch(<span class="str">'https://content.dropboxapi.com/2/files/upload_session/start'</span>, {
+    method:  <span class="str">'post'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>:   <span class="str">'Bearer '</span> <span class="op">+</span> accessToken,
+      <span class="str">'Dropbox-API-Arg'</span>: JSON.stringify({ close: <span class="kw">false</span> }),
+      <span class="str">'Content-Type'</span>:    <span class="str">'application/octet-stream'</span>
+    },
+    payload: bytes.slice(<span class="num">0</span>, CHUNK_SIZE)
+  });
+  <span class="kw">const</span> sessionId <span class="op">=</span> JSON.parse(startRes.getContentText()).session_id;
+  <span class="kw">let</span>   offset    <span class="op">=</span> CHUNK_SIZE;
+
+  <span class="kw">while</span> (offset <span class="op">+</span> CHUNK_SIZE <span class="op">&lt;</span> totalSize) {
+    UrlFetchApp.fetch(<span class="str">'https://content.dropboxapi.com/2/files/upload_session/append_v2'</span>, {
+      method:  <span class="str">'post'</span>,
+      headers: {
+        <span class="str">'Authorization'</span>:   <span class="str">'Bearer '</span> <span class="op">+</span> accessToken,
+        <span class="str">'Dropbox-API-Arg'</span>: JSON.stringify({ cursor: { session_id: sessionId, offset }, close: <span class="kw">false</span> }),
+        <span class="str">'Content-Type'</span>:    <span class="str">'application/octet-stream'</span>
+      },
+      payload: bytes.slice(offset, offset <span class="op">+</span> CHUNK_SIZE)
+    });
+    offset <span class="op">+=</span> CHUNK_SIZE;
+  }
+
+  UrlFetchApp.fetch(<span class="str">'https://content.dropboxapi.com/2/files/upload_session/finish'</span>, {
+    method:  <span class="str">'post'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>:   <span class="str">'Bearer '</span> <span class="op">+</span> accessToken,
+      <span class="str">'Dropbox-API-Arg'</span>: JSON.stringify({
+        cursor: { session_id: sessionId, offset },
+        commit: { path, mode: <span class="str">'overwrite'</span>, mute: <span class="kw">true</span> }
+      }),
+      <span class="str">'Content-Type'</span>:    <span class="str">'application/octet-stream'</span>
+    },
+    payload: bytes.slice(offset)
+  });
+}
+
+<span class="kw">function</span> <span class="fn">uploadSimple</span>(bytes, path, accessToken) {
+  UrlFetchApp.fetch(<span class="str">'https://content.dropboxapi.com/2/files/upload'</span>, {
+    method:  <span class="str">'post'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>:   <span class="str">'Bearer '</span> <span class="op">+</span> accessToken,
+      <span class="str">'Dropbox-API-Arg'</span>: JSON.stringify({ path, mode: <span class="str">'overwrite'</span>, mute: <span class="kw">true</span> }),
+      <span class="str">'Content-Type'</span>:    <span class="str">'application/octet-stream'</span>
+    },
+    payload: bytes
+  });
+}
+
+<span class="kw">function</span> <span class="fn">getDropboxMetadata</span>(path, accessToken) {
+  <span class="kw">const</span> res <span class="op">=</span> UrlFetchApp.fetch(<span class="str">'https://api.dropboxapi.com/2/files/get_metadata'</span>, {
+    method:             <span class="str">'post'</span>,
+    headers:            { <span class="str">'Authorization'</span>: <span class="str">'Bearer '</span> <span class="op">+</span> accessToken, <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    payload:            JSON.stringify({ path }),
+    muteHttpExceptions: <span class="kw">true</span>
+  });
+  <span class="kw">return</span> res.getResponseCode() <span class="op">===</span> <span class="num">200</span> <span class="op">?</span> JSON.parse(res.getContentText()) <span class="op">:</span> <span class="kw">null</span>;
+}
+
+<span class="kw">function</span> <span class="fn">createDropboxFolder</span>(path, accessToken) {
+  UrlFetchApp.fetch(<span class="str">'https://api.dropboxapi.com/2/files/create_folder_v2'</span>, {
+    method:             <span class="str">'post'</span>,
+    headers:            { <span class="str">'Authorization'</span>: <span class="str">'Bearer '</span> <span class="op">+</span> accessToken, <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+    payload:            JSON.stringify({ path }),
+    muteHttpExceptions: <span class="kw">true</span>
+  });
+}
+
+<span class="kw">function</span> <span class="fn">exportGoogleFile</span>(fileId, targetMime) {
+  <span class="kw">const</span> url <span class="op">=</span> <span class="str">`https://www.googleapis.com/drive/v3/files/${fileId}/export?mimeType=${targetMime}`</span>;
+  <span class="kw">const</span> res <span class="op">=</span> UrlFetchApp.fetch(url, {
+    headers:            { Authorization: <span class="str">'Bearer '</span> <span class="op">+</span> ScriptApp.getOAuthToken() },
+    muteHttpExceptions: <span class="kw">true</span>
+  });
+  <span class="kw">if</span> (res.getResponseCode() <span class="op">!==</span> <span class="num">200</span>) <span class="kw">throw new</span> Error(<span class="str">"Google Export Error: "</span> <span class="op">+</span> res.getResponseCode());
+  <span class="kw">return</span> res.getBlob();
+}
+
+<span class="kw">function</span> <span class="fn">getTargetMime</span>(mime) {
+  <span class="kw">if</span> (mime <span class="op">===</span> MimeType.GOOGLE_DOCS)   <span class="kw">return</span> <span class="str">'application/vnd.openxmlformats-officedocument.wordprocessingml.document'</span>;
+  <span class="kw">if</span> (mime <span class="op">===</span> MimeType.GOOGLE_SHEETS) <span class="kw">return</span> <span class="str">'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'</span>;
+  <span class="kw">if</span> (mime <span class="op">===</span> MimeType.GOOGLE_SLIDES) <span class="kw">return</span> <span class="str">'application/vnd.openxmlformats-officedocument.presentationml.presentation'</span>;
+  <span class="kw">return</span> <span class="kw">null</span>;
+}
+
+<span class="kw">function</span> <span class="fn">getAccessToken</span>(key, secret, refresh) {
+  <span class="kw">const</span> res <span class="op">=</span> UrlFetchApp.fetch(<span class="str">'https://api.dropboxapi.com/oauth2/token'</span>, {
+    method:  <span class="str">'post'</span>,
+    payload: {
+      grant_type:    <span class="str">'refresh_token'</span>,
+      refresh_token: refresh,
+      client_id:     key,
+      client_secret: secret
+    }
+  });
+  <span class="kw">return</span> JSON.parse(res.getContentText()).access_token;
+}
+
+<span class="kw">function</span> <span class="fn">setupRefreshToken</span>() {
+  <span class="kw">const</span> props   <span class="op">=</span> PropertiesService.getScriptProperties();
+  <span class="kw">const</span> payload <span class="op">=</span> {
+    code:          props.getProperty(<span class="str">'DROPBOX_AUTH_CODE'</span>),
+    grant_type:    <span class="str">'authorization_code'</span>,
+    client_id:     props.getProperty(<span class="str">'DROPBOX_APP_KEY'</span>),
+    client_secret: props.getProperty(<span class="str">'DROPBOX_APP_SECRET'</span>)
+  };
+  <span class="kw">const</span> res  <span class="op">=</span> UrlFetchApp.fetch(<span class="str">'https://api.dropboxapi.com/oauth2/token'</span>, {
+    method: <span class="str">'post'</span>, payload, muteHttpExceptions: <span class="kw">true</span>
+  });
+  <span class="kw">const</span> json <span class="op">=</span> JSON.parse(res.getContentText());
+  <span class="kw">if</span> (json.refresh_token) {
+    props.setProperty(<span class="str">'DROPBOX_REFRESH_TOKEN'</span>, json.refresh_token);
+    console.log(<span class="str">"【成功】リフレッシュトークンを保存しました。"</span>);
+  } <span class="kw">else</span> {
+    console.error(<span class="str">"【失敗】トークン取得エラー。認可コードが古い可能性があります。"</span>);
+  }
+}</pre>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Dropbox 同期システム 完全復旧マニュアル &mdash; 2026-04-12</p>
+  <p style="margin-top:0.4rem;opacity:0.55">このページは外部ライブラリを一切使用していません。オフライン環境でも閲覧できます。</p>
+</footer>
+
+<script>
+  document.querySelectorAll('.copy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var targetId = btn.getAttribute('data-target');
+      var code = document.getElementById(targetId).textContent;
+      function markCopied() {
+        btn.textContent = 'コピー済み ✓';
+        btn.classList.add('copied');
+        setTimeout(function() {
+          btn.textContent = 'コピーする';
+          btn.classList.remove('copied');
+        }, 2500);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(markCopied).catch(function() {
+          fallbackCopy(code, markCopied);
+        });
+      } else {
+        fallbackCopy(code, markCopied);
+      }
+    });
+  });
+
+  function fallbackCopy(text, cb) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand('copy'); cb(); } catch(e) {}
+    document.body.removeChild(ta);
+  }
+</script>
+</body>
+</html>
