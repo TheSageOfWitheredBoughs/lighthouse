@@ -564,9 +564,279 @@
       table.prop-table th,
       table.prop-table td { padding: 0.75rem 0.9rem; font-size: 0.83rem; }
     }
+
+    /* ─────────────────────────────────────────
+       Back to Index Button
+    ───────────────────────────────────────── */
+    .back-btn {
+      position: fixed;
+      top: 1.1rem;
+      left: 1.1rem;
+      z-index: 500;
+      background: rgba(9, 30, 47, 0.82);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.88);
+      text-decoration: none;
+      padding: 0.48rem 1rem 0.48rem 0.75rem;
+      border-radius: 100px;
+      font-size: 0.79rem;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: background 0.22s, transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+      box-shadow: 0 2px 14px rgba(0,0,0,0.3);
+      font-family: var(--font-jp);
+      letter-spacing: 0.02em;
+    }
+    .back-btn:hover {
+      background: rgba(13,118,148,0.9);
+      border-color: rgba(26,159,191,0.5);
+      transform: translateX(-3px);
+      box-shadow: 0 6px 24px rgba(13,118,148,0.35);
+    }
+    .back-btn-icon { font-size: 1rem; line-height: 1; }
+    .back-btn-label { font-weight: 600; }
+    @media (max-width: 480px) { .back-btn-label { display: none; } }
+
+    /* ─────────────────────────────────────────
+       Feature Buttons (hero pills → buttons)
+    ───────────────────────────────────────── */
+    .feat-btn {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      padding: 0.5rem 1.1rem 0.45rem;
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.9);
+      cursor: pointer;
+      font-family: var(--font-jp);
+      transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      text-align: left;
+      position: relative;
+      overflow: hidden;
+    }
+    .feat-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .feat-btn:hover {
+      background: rgba(255,255,255,0.16);
+      border-color: rgba(255,255,255,0.42);
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    }
+    .feat-btn:hover::before { opacity: 1; }
+    .feat-hint {
+      display: block;
+      font-size: 0.67rem;
+      color: rgba(255,255,255,0.42);
+      margin-top: 0.1rem;
+      letter-spacing: 0.06em;
+    }
+
+    /* ─────────────────────────────────────────
+       Feature Modal
+    ───────────────────────────────────────── */
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(18px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(7, 24, 42, 0.72);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 28px 70px rgba(0,0,0,0.38);
+      display: none;
+    }
+    .modal-backdrop.open .modal-card {
+      display: block;
+      animation: modalIn 0.3s cubic-bezier(0.34,1.4,0.64,1) forwards;
+    }
+    .modal-stripe { height: 5px; }
+    .modal-top {
+      padding: 1.5rem 1.7rem 1.1rem;
+      position: relative;
+    }
+    .modal-emoji { font-size: 2rem; display: block; margin-bottom: 0.55rem; line-height: 1; }
+    .modal-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      color: var(--deep);
+      font-weight: 700;
+      line-height: 1.3;
+    }
+    .modal-sub {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+      margin-top: 0.2rem;
+      font-family: var(--font-mono);
+    }
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-light);
+      transition: background 0.15s, color 0.15s;
+    }
+    .modal-close:hover { background: var(--border); color: var(--text); }
+    .modal-divider { height: 1px; background: var(--border); margin: 0 1.7rem; }
+    .modal-body {
+      padding: 1.3rem 1.7rem 1.7rem;
+    }
+    .modal-body p { color: var(--text-mid); line-height: 1.85; margin-bottom: 0.8rem; }
+    .modal-body p:last-child { margin-bottom: 0; }
+    .modal-hl {
+      background: rgba(13,118,148,0.07);
+      border-left: 3px solid var(--primary-lt);
+      border-radius: 0 8px 8px 0;
+      padding: 0.8rem 1rem;
+      margin-top: 1rem;
+      font-size: 0.87rem;
+      color: var(--text-mid);
+    }
+    .modal-hl strong { color: var(--primary); display: block; margin-bottom: 0.25rem; }
+    code.mc {
+      font-family: var(--font-mono);
+      font-size: 0.8em;
+      background: rgba(13,118,148,0.1);
+      color: var(--primary);
+      padding: 0.1rem 0.4rem;
+      border-radius: 3px;
+    }
+
+    /* ─────────────────────────────────────────
+       Side Navigation
+    ───────────────────────────────────────── */
+    @keyframes navFadeIn {
+      from { opacity: 0; transform: translateX(12px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .sidenav {
+      position: fixed;
+      right: 1.3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 400;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      animation: navFadeIn 0.6s 0.8s ease both;
+    }
+    .sidenav-line {
+      position: absolute;
+      right: 4px;
+      top: 14px;
+      bottom: 14px;
+      width: 1px;
+      background: linear-gradient(to bottom,
+        transparent,
+        rgba(13,118,148,0.25) 20%,
+        rgba(13,118,148,0.25) 80%,
+        transparent
+      );
+    }
+    .sidenav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.5rem 0;
+      cursor: pointer;
+      position: relative;
+    }
+    .sidenav-label {
+      font-size: 0.74rem;
+      font-family: var(--font-jp);
+      white-space: nowrap;
+      background: rgba(9,30,47,0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: rgba(255,255,255,0.82);
+      padding: 0.28rem 0.7rem;
+      border-radius: 5px;
+      border: 1px solid rgba(255,255,255,0.1);
+      opacity: 0;
+      transform: translateX(8px);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      letter-spacing: 0.01em;
+    }
+    .sidenav-item:hover .sidenav-label {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .sidenav-item.active .sidenav-label {
+      opacity: 1;
+      transform: translateX(0);
+      background: rgba(13,118,148,0.9);
+      border-color: rgba(26,159,191,0.4);
+    }
+    .sidenav-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      border: 2px solid rgba(13,118,148,0.35);
+      background: rgba(255,255,255,0.9);
+      transition: border-color 0.22s, background 0.22s, transform 0.22s, box-shadow 0.22s;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+    }
+    .sidenav-item:hover .sidenav-dot {
+      border-color: var(--primary-lt);
+      background: var(--primary-lt);
+      transform: scale(1.25);
+    }
+    .sidenav-item.active .sidenav-dot {
+      border-color: var(--primary);
+      background: var(--primary);
+      transform: scale(1.45);
+      box-shadow: 0 0 0 3px rgba(13,118,148,0.2), 0 0 10px rgba(13,118,148,0.4);
+    }
+    @media (max-width: 1080px) { .sidenav { display: none; } }
   </style>
 </head>
 <body>
+
+<!-- Back to Index -->
+<a href="../../" class="back-btn" aria-label="lighthouse トップへ戻る">
+  <span class="back-btn-icon">🔦</span>
+  <span class="back-btn-label">lighthouse</span>
+</a>
 
 <!-- ════════════════════════════════════════
      HERO
@@ -591,10 +861,22 @@
       コードの知識がなくても、順番どおりに進めれば完成します。
     </p>
     <div class="hero-pills">
-      <span class="pill">⚡ 差分スキップで高速同期</span>
-      <span class="pill">🔒 原本を絶対に壊さない</span>
-      <span class="pill">📦 50MB 超の大容量対応</span>
-      <span class="pill">🗂 階層フォルダも自動追従</span>
+      <button class="feat-btn" data-feat="sync">
+        ⚡ 差分スキップで高速同期
+        <span class="feat-hint">クリックで詳細 →</span>
+      </button>
+      <button class="feat-btn" data-feat="protect">
+        🔒 原本を絶対に壊さない
+        <span class="feat-hint">クリックで詳細 →</span>
+      </button>
+      <button class="feat-btn" data-feat="large">
+        📦 50MB 超の大容量対応
+        <span class="feat-hint">クリックで詳細 →</span>
+      </button>
+      <button class="feat-btn" data-feat="tree">
+        🗂 階層フォルダも自動追従
+        <span class="feat-hint">クリックで詳細 →</span>
+      </button>
     </div>
   </div>
 </header>
@@ -604,7 +886,7 @@
   <!-- ════════════════════════════════════════
        INTRO
   ═══════════════════════════════════════════ -->
-  <div class="section">
+  <div class="section" id="section-intro">
     <div class="container">
       <h2 class="section-title reveal"><span class="icon">📖</span> このマニュアルについて</h2>
       <div class="intro-card reveal">
@@ -618,7 +900,7 @@
   <!-- ════════════════════════════════════════
        GLOSSARY
   ═══════════════════════════════════════════ -->
-  <div class="section" style="padding-top:0">
+  <div class="section" id="section-glossary" style="padding-top:0">
     <div class="container">
       <h2 class="section-title reveal"><span class="icon">📚</span> よく出てくる言葉の意味</h2>
       <div class="glossary-grid">
@@ -661,7 +943,7 @@
   <!-- ════════════════════════════════════════
        STEPS
   ═══════════════════════════════════════════ -->
-  <div class="section" style="padding-top:0">
+  <div class="section" id="section-steps" style="padding-top:0">
     <div class="container">
       <h2 class="section-title reveal"><span class="icon">🔧</span> 復旧ステップ（全 6 ステップ）</h2>
 
@@ -836,7 +1118,7 @@
   <!-- ════════════════════════════════════════
        PROPERTY MATRIX
   ═══════════════════════════════════════════ -->
-  <div class="section" style="padding-top:0">
+  <div class="section" id="section-props" style="padding-top:0">
     <div class="container">
       <h2 class="section-title reveal"><span class="icon">⚙️</span> Property 定義マトリクス</h2>
       <p class="reveal" style="color:var(--text-mid);margin-bottom:1.2rem">
@@ -888,7 +1170,7 @@
   <!-- ════════════════════════════════════════
        SOURCE CODE
   ═══════════════════════════════════════════ -->
-  <div class="section" style="padding-top:0">
+  <div class="section" id="section-code" style="padding-top:0">
     <div class="container">
       <h2 class="section-title reveal"><span class="icon">💻</span> 最終統合版ソースコード</h2>
       <p class="reveal" style="color:var(--text-mid);margin-bottom:1.2rem">
@@ -1174,6 +1456,50 @@
   <p style="margin-top:0.4rem;opacity:0.55">このページは外部ライブラリを一切使用していません。オフライン環境でも閲覧できます。</p>
 </footer>
 
+<!-- ════════════════════════════════════════
+     FEATURE MODAL
+═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="featModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <div class="modal-stripe" id="modalStripe"></div>
+    <div class="modal-top">
+      <span class="modal-emoji" id="modalEmoji"></span>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-sub" id="modalSub"></div>
+      <button class="modal-close" id="modalClose" aria-label="閉じる">✕</button>
+    </div>
+    <div class="modal-divider"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+     SIDE NAVIGATION
+═══════════════════════════════════════════ -->
+<nav class="sidenav" aria-label="ページ内ナビゲーション">
+  <div class="sidenav-line"></div>
+  <div class="sidenav-item" data-target="section-intro">
+    <span class="sidenav-label">このマニュアルについて</span>
+    <div class="sidenav-dot"></div>
+  </div>
+  <div class="sidenav-item" data-target="section-glossary">
+    <span class="sidenav-label">用語集</span>
+    <div class="sidenav-dot"></div>
+  </div>
+  <div class="sidenav-item" data-target="section-steps">
+    <span class="sidenav-label">復旧ステップ</span>
+    <div class="sidenav-dot"></div>
+  </div>
+  <div class="sidenav-item" data-target="section-props">
+    <span class="sidenav-label">Property マトリクス</span>
+    <div class="sidenav-dot"></div>
+  </div>
+  <div class="sidenav-item" data-target="section-code">
+    <span class="sidenav-label">ソースコード</span>
+    <div class="sidenav-dot"></div>
+  </div>
+</nav>
+
 <script>
   document.querySelectorAll('.copy-btn').forEach(function(btn) {
     btn.addEventListener('click', function() {
@@ -1208,6 +1534,92 @@
     try { document.execCommand('copy'); cb(); } catch(e) {}
     document.body.removeChild(ta);
   }
+
+  /* ── Feature Modal ── */
+  var featData = {
+    sync: {
+      emoji: '⚡',
+      title: '差分スキップで高速同期',
+      sub: 'DIFFERENTIAL SYNC',
+      stripe: 'linear-gradient(90deg, #0d7694, #1a9fbf)',
+      body: '<p>同期のたびに全ファイルを送り直すのは時間と通信量の無駄です。このシステムは<strong>転送前に Dropbox 側のファイル情報（サイズ）を照合</strong>し、変わっていないファイルはスキップします。</p><p>毎日の自動同期でも変更されたファイルだけが転送されるため、実行時間と GAS の実行制限（1 日 6 時間）の消費を最小限に抑えられます。</p><div class="modal-hl"><strong>対応する関数</strong><code class="mc">handleFileSync()</code> → <code class="mc">getDropboxMetadata()</code><br>meta.size === file.getSize() が一致すれば即スキップ。Google 形式ファイルはパス単位で存在チェック。</div>'
+    },
+    protect: {
+      emoji: '🔒',
+      title: '原本を絶対に壊さない',
+      sub: 'NON-DESTRUCTIVE SPLIT',
+      stripe: 'linear-gradient(90deg, #197346, #2d9e6b)',
+      body: '<p>Google ドキュメント・スプレッドシートが大きすぎて分割が必要になった場合でも、<strong>元のファイルには一切手を加えません。</strong></p><p><code class="mc">makeCopy()</code> で一時コピーを作成し、そのコピーだけを加工・分割・アップロードします。処理が完了すると一時コピーは自動でゴミ箱へ移動されます。</p><div class="modal-hl"><strong>対応する関数</strong><code class="mc">executeSplitAndUpload()</code><br><code class="mc">finally</code> ブロックで確実に <code class="mc">tempCopy.setTrashed(true)</code> が呼ばれるため、エラーが起きても一時コピーは残りません。</div>'
+    },
+    large: {
+      emoji: '📦',
+      title: '50MB 超の大容量対応',
+      sub: 'CHUNKED UPLOAD',
+      stripe: 'linear-gradient(90deg, #e87c2f, #f5a442)',
+      body: '<p>GAS には 1 回の HTTP 通信で送れるデータ量に上限があります。20MB を超えるファイルは<strong>10MB ずつのブロック（チャンク）に分割してアップロード</strong>する「セッションアップロード」方式を採用しています。</p><p>20MB 以下のファイルはシンプルアップロードで高速転送します。ファイルサイズに応じて自動で方式が切り替わるため、設定は不要です。</p><div class="modal-hl"><strong>対応する関数</strong><code class="mc">uploadFile()</code> → サイズ判定 → <code class="mc">uploadChunked()</code> または <code class="mc">uploadSimple()</code><br>CHUNK_SIZE = 10 MB、SIMPLE_UPLOAD_LIMIT = 20 MB で定数管理。</div>'
+    },
+    tree: {
+      emoji: '🗂',
+      title: '階層フォルダも自動追従',
+      sub: 'RECURSIVE FOLDER SYNC',
+      stripe: 'linear-gradient(90deg, #3d3d5c, #6a5acd)',
+      body: '<p>同期元フォルダの中にサブフォルダがあっても、<strong>同じ階層構造を Dropbox 側に自動で再現</strong>します。フォルダが存在しない場合は自動で作成されます。</p><p>再帰処理（<code class="mc">processFolder()</code> が自分自身を呼び出す）により、何階層ネストされていても対応します。Google Drive に新しいサブフォルダを追加するだけで、次回の同期から自動的に追従します。</p><div class="modal-hl"><strong>対応する関数</strong><code class="mc">processFolder()</code> + <code class="mc">createDropboxFolder()</code><br><code class="mc">getFolders()</code> で子フォルダを取得し、再帰的に <code class="mc">processFolder()</code> を呼び出します。</div>'
+    }
+  };
+
+  var modal    = document.getElementById('featModal');
+  var modalClose = document.getElementById('modalClose');
+
+  function openModal(key) {
+    var d = featData[key];
+    if (!d) return;
+    document.getElementById('modalEmoji').textContent  = d.emoji;
+    document.getElementById('modalTitle').textContent  = d.title;
+    document.getElementById('modalSub').textContent    = d.sub;
+    document.getElementById('modalStripe').style.background = d.stripe;
+    document.getElementById('modalBody').innerHTML     = d.body;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    modalClose.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.querySelectorAll('.feat-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() { openModal(btn.getAttribute('data-feat')); });
+  });
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeModal(); });
+
+  /* ── Side Navigation ── */
+  var sectionIds = ['section-intro','section-glossary','section-steps','section-props','section-code'];
+  var navItems   = document.querySelectorAll('.sidenav-item');
+
+  navItems.forEach(function(item) {
+    item.addEventListener('click', function() {
+      var el = document.getElementById(item.getAttribute('data-target'));
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  function updateSidenav() {
+    var threshold = window.scrollY + window.innerHeight * 0.38;
+    var active = -1;
+    sectionIds.forEach(function(id, i) {
+      var el = document.getElementById(id);
+      if (el && el.offsetTop <= threshold) active = i;
+    });
+    navItems.forEach(function(item, i) {
+      item.classList.toggle('active', i === active);
+    });
+  }
+
+  window.addEventListener('scroll', updateSidenav, { passive: true });
+  updateSidenav();
 </script>
 </body>
 </html>
